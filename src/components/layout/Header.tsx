@@ -5,7 +5,7 @@ import Link from "next/link";
 import UtilityBar from "./UtilityBar";
 import MobileMenu from "./MobileMenu";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const studyAbroadLinks = [
@@ -67,8 +67,20 @@ export default function Header() {
                 <NavigationMenuTrigger>About Us</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px] gap-2 p-4">
-                    <li><NavigationMenuLink asChild><Link href="/about" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">About Transit</Link></NavigationMenuLink></li>
-                    <li><NavigationMenuLink asChild><Link href="/team" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">Our Team</Link></NavigationMenuLink></li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link href="/about" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          About Transit
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link href="/team" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          Our Team
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -125,15 +137,15 @@ export default function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/blog" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Blogs</NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/blog">Blogs</Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/resources" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Resources</NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/resources">Resources</Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -158,9 +170,9 @@ export default function Header() {
 
         {/* CTA */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:inline-flex bg-brand hover:bg-brand-dark text-white rounded-lg font-semibold px-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
-            <Link href="/contact">Free Consultation</Link>
-          </Button>
+          <Link href="/contact" className={buttonVariants({ className: "hidden md:inline-flex bg-brand hover:bg-brand-dark text-white rounded-lg font-semibold px-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5" })}>
+            Free Consultation
+          </Link>
           <MobileMenu />
         </div>
       </div>

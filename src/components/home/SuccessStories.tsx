@@ -54,8 +54,13 @@ export default function SuccessStories() {
             {successStoriesData.map((story, i) => (
               <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0">
                 <div className="bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl h-[400px] relative overflow-hidden group">
-                  {/* Placeholder for visa approval image */}
-                  <div className="absolute inset-0 bg-gray-900 transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
+                    <img 
+                      src={story.approvalImage} 
+                      alt={story.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   
                   <div className="absolute top-4 right-4 bg-white text-black px-3 py-1 rounded-full text-xs font-bold shadow-sm">

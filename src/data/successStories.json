@@ -5,7 +5,7 @@
     "university": "Seneca College",
     "year": "2024",
     "course": "Cybersecurity",
-    "approvalImage": ""
+    "approvalImage": "/assets/wp-media/2021/04/Canada-story.png"
   },
   {
     "name": "Sajja G.",
@@ -13,7 +13,7 @@
     "university": "Macquarie University",
     "year": "2024",
     "course": "Master of Commerce",
-    "approvalImage": ""
+    "approvalImage": "/assets/wp-media/2021/04/AUS-1.png"
   },
   {
     "name": "Rohan K.",
@@ -21,7 +21,7 @@
     "university": "Brunel University",
     "year": "2024",
     "course": "MSc Engineering",
-    "approvalImage": ""
+    "approvalImage": "/assets/wp-media/2021/04/UK.png"
   },
   {
     "name": "Smriti P.",
@@ -29,6 +29,6 @@
     "university": "University of Texas",
     "year": "2023",
     "course": "BSc Computer Science",
-    "approvalImage": ""
+    "approvalImage": "/assets/wp-media/2021/04/USA-new.png"
   }
 ]

@@ -45,9 +45,17 @@ export default function Testimonials() {
                 "{t.body}"
               </p>
               <div className="border-t border-gray-100 pt-6 flex items-center gap-4 mt-auto">
-                <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm shrink-0">
-                  {t.name.charAt(0)}
-                </div>
+                {t.photo ? (
+                  <img 
+                    src={t.photo} 
+                    alt={t.name} 
+                    className="w-10 h-10 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    {t.name.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <h4 className="font-bold text-sm text-black">{t.name}</h4>
                   <p className="text-xs text-gray-500">{t.course}, {t.university}</p>

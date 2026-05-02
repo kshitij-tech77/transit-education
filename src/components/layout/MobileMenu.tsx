@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,9 +60,9 @@ export default function MobileMenu() {
               </nav>
 
               <div className="mt-8">
-                <Button asChild className="w-full bg-brand text-white hover:bg-brand-dark py-6 rounded-lg text-lg">
-                  <Link href="/contact" onClick={() => setIsOpen(false)}>Free Consultation</Link>
-                </Button>
+                <Link href="/contact" onClick={() => setIsOpen(false)} className={buttonVariants({ className: "w-full bg-brand text-white hover:bg-brand-dark py-6 rounded-lg text-lg" })}>
+                  Free Consultation
+                </Link>
               </div>
             </motion.div>
           </>

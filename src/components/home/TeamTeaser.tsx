@@ -42,8 +42,11 @@ export default function TeamTeaser() {
               className="group cursor-pointer"
             >
               <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
-                {/* Placeholder for image */}
-                <div className="absolute inset-0 bg-gray-200 transition-transform duration-500 group-hover:scale-105" />
+                <img 
+                  src={member.photo} 
+                  alt={member.name} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
               <h3 className="font-bold text-lg mb-1 relative inline-block">
                 {member.name}

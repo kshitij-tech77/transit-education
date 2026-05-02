@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const branches = [
   { name: "Kathmandu (HQ)", address: "Putalisadak, Kathmandu", phone: "(+977) 9851315991", slug: "kathmandu" },
-  { name: "Itahari", address: "Main Road, Itahari", phone: "(+977) 9800000001", slug: "itahari" },
-  { name: "Damak", address: "Campus Road, Damak", phone: "(+977) 9800000002", slug: "damak" },
-  { name: "Damauli", address: "Main Chowk, Damauli", phone: "(+977) 9800000003", slug: "damauli" },
+  { name: "Itahari", address: "Rano Complex, Sangit Chowk, Itahari", phone: "(+977) 025-590570", slug: "itahari" },
+  { name: "Damak", address: "Dipini Marg, Damak", phone: "(+977) 023-577162", slug: "damak" },
+  { name: "Damauli", address: "Main Road, Damauli", phone: "(+977) 065-590110", slug: "damauli" },
 ];
 
 export default function BranchesStrip() {

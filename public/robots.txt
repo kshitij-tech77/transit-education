@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://transiteducation.com.np
+
+# Sitemaps
+Sitemap: https://transiteducation.com.np/sitemap.xml
