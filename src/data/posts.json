@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Top 10 Universities in Canada for International Students",
+    "slug": "top-10-universities-in-canada",
+    "category": "Canada",
+    "excerpt": "Discover the best universities in Canada offering world-class education and PR pathways.",
+    "author": "Arjun Shrestha",
+    "publishedAt": "2024-03-15",
+    "cover": ""
+  },
+  {
+    "title": "IELTS vs PTE: Which English test should you take?",
+    "slug": "ielts-vs-pte",
+    "category": "Test Prep",
+    "excerpt": "A comprehensive comparison to help you choose the right English proficiency test for your goals.",
+    "author": "Roshan Karki",
+    "publishedAt": "2024-02-28",
+    "cover": ""
+  },
+  {
+    "title": "Navigating the UK Student Visa Process in 2024",
+    "slug": "uk-student-visa-process-2024",
+    "category": "UK",
+    "excerpt": "Everything you need to know about the new UK student visa rules, requirements, and document checklist.",
+    "author": "Bipana Thapa",
+    "publishedAt": "2024-02-10",
+    "cover": ""
+  }
+]

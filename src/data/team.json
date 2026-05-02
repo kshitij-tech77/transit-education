@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Arjun Shrestha",
+    "role": "Lead Counsellor",
+    "branch": "Kathmandu",
+    "photo": "/images/team-placeholder.jpg"
+  },
+  {
+    "name": "Bipana Thapa",
+    "role": "Visa Specialist",
+    "branch": "Itahari",
+    "photo": "/images/team-placeholder.jpg"
+  },
+  {
+    "name": "Roshan Karki",
+    "role": "IELTS Instructor",
+    "branch": "Damak",
+    "photo": "/images/team-placeholder.jpg"
+  },
+  {
+    "name": "Sita Gurung",
+    "role": "Admissions Officer",
+    "branch": "Damauli",
+    "photo": "/images/team-placeholder.jpg"
+  }
+]
