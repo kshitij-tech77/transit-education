@@ -1,26 +1,50 @@
 [
   {
-    "name": "Arjun Shrestha",
-    "role": "Lead Counsellor",
+    "name": "Bidhan Khadka",
+    "role": "CEO / Student Advisor",
     "branch": "Kathmandu",
-    "photo": "/assets/wp-media/2021/03/binay-scaled.jpg"
+    "photo": "/media-images/2021/03/IMG_20200501_155516-1.jpg"
   },
   {
-    "name": "Bipana Thapa",
-    "role": "Visa Specialist",
+    "name": "Hari Kattel",
+    "role": "Director / Student Advisor",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2021/03/Hari_pic_1-400x400-2.jpg"
+  },
+  {
+    "name": "Roshan Bhujel",
+    "role": "Director / Itahari Branch",
     "branch": "Itahari",
-    "photo": "/assets/wp-media/2025/02/Deepawoli.png"
+    "photo": "/media-images/2024/03/Photo-scaled.jpg"
   },
   {
-    "name": "Roshan Karki",
-    "role": "IELTS Instructor",
-    "branch": "Damak",
-    "photo": "/assets/wp-media/2021/03/IMG_20200501_155516.jpg"
+    "name": "Bikalpa Khadka",
+    "role": "Administrative & Finance Head",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2021/03/49669428_10215715022021427_4341110968634310656_n.jpg"
   },
   {
-    "name": "Sita Gurung",
-    "role": "Admissions Officer",
-    "branch": "Damauli",
-    "photo": "/assets/wp-media/2025/02/Dipika-Gurung.png"
+    "name": "Sangita Kattel",
+    "role": "Business Development Manager",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2023/05/Untitled-design-26.png"
+  },
+  {
+    "name": "Susma Prasain",
+    "role": "Student Advisor",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2023/05/81452769_2523776884611105_3835125561596837888_n.jpg"
+  },
+  {
+    "name": "Richa Basnet",
+    "role": "Admission Officer",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2023/05/Untitled-design-22.png"
+  },
+  {
+    "name": "Nitesh Chaulagain",
+    "role": "Documentation Officer",
+    "branch": "Kathmandu",
+    "photo": "/media-images/2023/05/Untitled-design-23.png"
   }
 ]

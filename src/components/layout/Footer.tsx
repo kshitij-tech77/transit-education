@@ -7,7 +7,13 @@ export default function Footer() {
       <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         {/* Column 1 */}
         <div>
-          <h3 className="text-white font-bold text-xl mb-6">Transit<span className="text-brand">.</span></h3>
+          <Link href="/" className="inline-block mb-6">
+            <img 
+              src="/media-images/2021/05/Logo-png_website.png" 
+              alt="Transit Education" 
+              className="h-10 w-auto brightness-0 invert"
+            />
+          </Link>
           <p className="mb-6 text-sm">Nepal's most trusted study abroad consultancy. Guiding students since 2015.</p>
           <div className="space-y-4 text-sm">
             <div>

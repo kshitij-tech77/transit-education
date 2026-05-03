@@ -33,7 +33,13 @@ export default function MobileMenu() {
               className="fixed top-0 right-0 bottom-0 w-[300px] bg-white z-[101] shadow-xl p-6 flex flex-col overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-8">
-                <span className="font-extrabold text-xl text-brand">Transit.</span>
+                <Link href="/" onClick={() => setIsOpen(false)}>
+                  <img 
+                    src="/media-images/2021/05/Logo-png_website.png" 
+                    alt="Transit Education" 
+                    className="h-8 w-auto"
+                  />
+                </Link>
                 <button onClick={() => setIsOpen(false)} className="p-2 -mr-2">
                   <X className="w-6 h-6 text-black" />
                 </button>

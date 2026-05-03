@@ -40,28 +40,38 @@ export default function WelcomeAbout() {
             viewport={{ once: true }}
             transition={{ duration: 0.55 }}
           >
-            <SectionLabel>About Us</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-black mb-6">Welcome to Transit Education</h2>
-            <p className="text-gray-600 mb-8 leading-relaxed">
-              As one of Nepal's most trusted educational consultancies, we are dedicated to helping ambitious students pursue higher education abroad. Since 2015, we've provided honest, transparent, and expert guidance to ensure your transition to a global destination is seamless and successful. Your global future starts here.
-            </p>
-            <Link href="/about" className={buttonVariants({ className: "bg-brand text-white hover:bg-brand-dark px-8" })}>
-              Know More →
+            <SectionLabel>Welcome to Transit Education</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-black mb-8 leading-tight">
+              Your Trusted Partner for <span className="text-brand">Global Education</span>
+            </h2>
+            <div className="space-y-6 text-gray-600 text-lg leading-relaxed mb-10">
+              <p>
+                Transit Education is a trusted educational consultancy dedicated to helping Nepalese students pursue higher education abroad. We provide comprehensive support for studying in Canada, the USA, the UK, Australia, New Zealand, Europe, and South Korea.
+              </p>
+              <p>
+                Our services include university application assistance, visa processing, accommodation arrangements, and personalized counseling to help students choose the right courses and institutions based on their interests and career goals.
+              </p>
+              <p>
+                With our expert guidance, students can navigate the study abroad process smoothly and confidently. We are committed to making international education accessible and ensuring a hassle-free experience for every student we assist.
+              </p>
+            </div>
+            <Link href="/about" className={buttonVariants({ className: "bg-brand text-white hover:bg-brand-dark px-10 py-6 rounded-2xl text-lg shadow-lg shadow-brand/20 transition-all hover:scale-105" })}>
+              Our Story →
             </Link>
           </motion.div>
 
-          <div className="grid gap-4">
+          <div className="grid sm:grid-cols-2 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: 0.1 }}
-              className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-6"
+              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 flex flex-col justify-center"
             >
-              <div className="text-4xl font-extrabold text-brand w-24">
-                <Counter from={0} to={50} duration={2} suffix="+" />
+              <div className="text-5xl font-black text-brand mb-2">
+                <Counter from={0} to={500} duration={2} suffix="+" />
               </div>
-              <div className="text-gray-800 font-medium">Institutions Worldwide</div>
+              <div className="text-gray-500 font-semibold uppercase tracking-wider text-sm">Visas Granted</div>
             </motion.div>
 
             <motion.div
@@ -69,12 +79,12 @@ export default function WelcomeAbout() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: 0.2 }}
-              className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-6"
+              className="bg-black text-white p-8 rounded-3xl shadow-xl shadow-black/10 flex flex-col justify-center"
             >
-              <div className="text-4xl font-extrabold text-brand w-24">
-                <Counter from={0} to={95} duration={2} suffix="%" />
+              <div className="text-5xl font-black text-white mb-2">
+                <Counter from={0} to={10} duration={2} suffix="+" />
               </div>
-              <div className="text-gray-800 font-medium">Satisfied Clients</div>
+              <div className="text-gray-400 font-semibold uppercase tracking-wider text-sm">Years Excellence</div>
             </motion.div>
 
             <motion.div
@@ -82,12 +92,17 @@ export default function WelcomeAbout() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: 0.3 }}
-              className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-6"
+              className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 flex flex-col justify-center sm:col-span-2"
             >
-              <div className="text-4xl font-extrabold text-brand w-24">
-                <Counter from={0} to={2000} duration={2.5} suffix="+" />
+              <div className="flex items-center gap-6">
+                <div className="text-5xl font-black text-brand">
+                  <Counter from={0} to={4} duration={1.5} />
+                </div>
+                <div>
+                  <div className="text-gray-900 font-bold text-xl leading-tight">Strategic Branches</div>
+                  <div className="text-gray-500 text-sm">Kathmandu, Itahari, Damak, Damauli</div>
+                </div>
               </div>
-              <div className="text-gray-800 font-medium">Students Placed</div>
             </motion.div>
           </div>
         </div>

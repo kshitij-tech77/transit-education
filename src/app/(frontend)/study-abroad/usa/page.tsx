@@ -40,7 +40,7 @@ export default function USAPage() {
         title="Study in the USA"
         subtitle="Study Abroad"
         description="The United States is the world's largest higher-education ecosystem, with more than 4,000 accredited universities and the broadest range of programmes anywhere."
-        image="/assets/wp-media/2021/05/Web-banner-USA.png"
+        image="/media-images/2021/05/Web-banner-USA.png"
       />
 
       <section className="py-24 bg-off-white">

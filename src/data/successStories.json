@@ -1,34 +1,50 @@
 [
   {
-    "name": "Bimal S.",
-    "country": "Canada",
-    "university": "Seneca College",
-    "year": "2024",
-    "course": "Cybersecurity",
-    "approvalImage": "/assets/wp-media/2021/04/Canada-story.png"
-  },
-  {
-    "name": "Sajja G.",
-    "country": "Australia",
-    "university": "Macquarie University",
-    "year": "2024",
-    "course": "Master of Commerce",
-    "approvalImage": "/assets/wp-media/2021/04/AUS-1.png"
-  },
-  {
-    "name": "Rohan K.",
-    "country": "UK",
-    "university": "Brunel University",
-    "year": "2024",
-    "course": "MSc Engineering",
-    "approvalImage": "/assets/wp-media/2021/04/UK.png"
-  },
-  {
-    "name": "Smriti P.",
+    "name": "Madan Aryal",
     "country": "USA",
-    "university": "University of Texas",
-    "year": "2023",
-    "course": "BSc Computer Science",
-    "approvalImage": "/assets/wp-media/2021/04/USA-new.png"
+    "university": "University of Central Missouri",
+    "year": "2025",
+    "course": "Master of Science",
+    "approvalImage": "/media-images/2025/02/Madan-Aryal.png"
+  },
+  {
+    "name": "Rojina Nepali",
+    "country": "USA",
+    "university": "Cleveland State University",
+    "year": "2025",
+    "course": "Master of Science",
+    "approvalImage": "/media-images/2025/02/Rojina-Nepali.png"
+  },
+  {
+    "name": "Aayush Dhungana",
+    "country": "USA",
+    "university": "University of New Orleans",
+    "year": "2025",
+    "course": "Bachelor of Science",
+    "approvalImage": "/media-images/2025/02/Aayush-Dhungana.png"
+  },
+  {
+    "name": "Ritik Shahi",
+    "country": "USA",
+    "university": "Youngstown State University",
+    "year": "2025",
+    "course": "Bachelor of Science",
+    "approvalImage": "/media-images/2025/02/Ritik-Shahi.png"
+  },
+  {
+    "name": "Kabir Raj Shakya",
+    "country": "USA",
+    "university": "Saint Louis University",
+    "year": "2025",
+    "course": "Master of Science",
+    "approvalImage": "/media-images/2025/02/Kabir-Raj-Shakya.png"
+  },
+  {
+    "name": "Bibek Thapa",
+    "country": "USA",
+    "university": "University of North Texas",
+    "year": "2025",
+    "course": "Bachelor of Science",
+    "approvalImage": "/media-images/2025/02/Bibek-Thapa.png"
   }
 ]

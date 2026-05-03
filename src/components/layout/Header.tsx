@@ -54,8 +54,12 @@ export default function Header() {
       <UtilityBar />
       <div className="container h-[80px] flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="font-extrabold text-2xl tracking-tighter text-brand">
-          Transit<span className="text-black">.</span>
+        <Link href="/" className="block">
+          <img 
+            src="/media-images/2021/05/Logo-png_website.png" 
+            alt="Transit Education" 
+            className="h-10 w-auto md:h-12"
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -68,17 +72,13 @@ export default function Header() {
                 <NavigationMenuContent>
                   <ul className="grid w-[200px] gap-2 p-4">
                     <li>
-                      <NavigationMenuLink asChild>
-                        <Link href="/about" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                          About Transit
-                        </Link>
+                      <NavigationMenuLink render={<Link href="/about" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                        About Transit
                       </NavigationMenuLink>
                     </li>
                     <li>
-                      <NavigationMenuLink asChild>
-                        <Link href="/team" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                          Our Team
-                        </Link>
+                      <NavigationMenuLink render={<Link href="/team" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                        Our Team
                       </NavigationMenuLink>
                     </li>
                   </ul>
@@ -91,10 +91,8 @@ export default function Header() {
                   <ul className="grid w-[400px] grid-cols-2 gap-2 p-4">
                     {studyAbroadLinks.map((link) => (
                       <li key={link.title}>
-                        <NavigationMenuLink asChild>
-                          <Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            {link.title}
-                          </Link>
+                        <NavigationMenuLink render={<Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                          {link.title}
                         </NavigationMenuLink>
                       </li>
                     ))}
@@ -108,10 +106,8 @@ export default function Header() {
                   <ul className="grid w-[250px] gap-2 p-4">
                     {servicesLinks.map((link) => (
                       <li key={link.title}>
-                        <NavigationMenuLink asChild>
-                          <Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            {link.title}
-                          </Link>
+                        <NavigationMenuLink render={<Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                          {link.title}
                         </NavigationMenuLink>
                       </li>
                     ))}
@@ -125,10 +121,8 @@ export default function Header() {
                   <ul className="grid w-[200px] gap-2 p-4">
                     {coursesLinks.map((link) => (
                       <li key={link.title}>
-                        <NavigationMenuLink asChild>
-                          <Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            {link.title}
-                          </Link>
+                        <NavigationMenuLink render={<Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                          {link.title}
                         </NavigationMenuLink>
                       </li>
                     ))}
@@ -137,15 +131,11 @@ export default function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link href="/blog">Blogs</Link>
-                </NavigationMenuLink>
+                <NavigationMenuLink render={<Link href="/blog" />} className={navigationMenuTriggerStyle()}>Blogs</NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link href="/resources">Resources</Link>
-                </NavigationMenuLink>
+                <NavigationMenuLink render={<Link href="/resources" />} className={navigationMenuTriggerStyle()}>Resources</NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
@@ -154,10 +144,8 @@ export default function Header() {
                   <ul className="grid w-[200px] gap-2 p-4">
                     {locationsLinks.map((link) => (
                       <li key={link.title}>
-                        <NavigationMenuLink asChild>
-                          <Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                            {link.title}
-                          </Link>
+                        <NavigationMenuLink render={<Link href={link.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                          {link.title}
                         </NavigationMenuLink>
                       </li>
                     ))}

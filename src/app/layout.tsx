@@ -35,11 +35,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${poppins.variable} font-sans antialiased scroll-smooth`}
+      suppressHydrationWarning
     >
       <head>
         <Schema type="Organization" data={orgSchema} />
       </head>
-      <body className="min-h-screen flex flex-col font-sans">{children}</body>
+      <body className="min-h-screen flex flex-col font-sans" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

@@ -40,7 +40,7 @@ export default function IrelandPage() {
         title="Study in Ireland"
         subtitle="Study Abroad"
         description="Ireland is the only English-speaking country in the European Union, offering globally ranked universities and a strong technology job market."
-        image="/assets/wp-media/2021/05/Web-banner-Ireland.png"
+        image="/media-images/2021/05/Europe-web-banner.png"
       />
 
       <section className="py-24 bg-off-white">

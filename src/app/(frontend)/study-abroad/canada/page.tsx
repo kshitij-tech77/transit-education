@@ -1,5 +1,7 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Schema from "@/components/shared/Schema";
+import { DestinationHero } from "@/components/destinations/DestinationContent";
+import { GraduationCap, CheckCircle2, ListChecks, FileText, HelpCircle } from "lucide-react";
 
 export default function CanadaPage() {
   const faqData = {
@@ -38,7 +40,7 @@ export default function CanadaPage() {
         title="Study in Canada"
         subtitle="Study Abroad"
         description="Canada offers an overabundance of opportunities for international students. It is fast emerging as one of the most favoured destinations and is home to some of the top 100 universities in the world."
-        image="/assets/wp-media/2021/05/Web-banner-Canada.png"
+        image="/media-images/2021/05/Web-banner-Canada.png"
       />
 
       <section className="py-24 bg-off-white">

@@ -42,9 +42,13 @@ export default function LatestBlog() {
               transition={{ duration: 0.55, delay: i * 0.1 }}
               className="group cursor-pointer flex flex-col h-full"
             >
-              <div className="aspect-video bg-gray-100 rounded-xl mb-6 overflow-hidden relative">
-                <div className="absolute inset-0 bg-gray-200 transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-brand uppercase tracking-wider">
+              <div className="aspect-video bg-gray-100 rounded-2xl mb-6 overflow-hidden relative border border-gray-100 shadow-sm">
+                <img 
+                  src={post.cover} 
+                  alt={post.title} 
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-brand uppercase tracking-[0.15em]">
                   {post.category}
                 </div>
               </div>
