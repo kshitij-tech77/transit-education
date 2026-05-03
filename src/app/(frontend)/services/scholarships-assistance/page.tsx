@@ -32,7 +32,7 @@ export default function ScholarshipsAssistancePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="/media-images/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
+            src="/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Scholarships Assistance"
             fill
             className="object-cover"
@@ -60,7 +60,7 @@ export default function ScholarshipsAssistancePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
               <Image
-                src="/media-images/2021/03/young-student-woman-looking-her-world-globe-sitting-cloud-scaled.jpg"
+                src="/media/2021/03/young-student-woman-looking-her-world-globe-sitting-cloud-scaled.jpg"
                 alt="Scholarship Opportunities"
                 fill
                 className="object-cover"

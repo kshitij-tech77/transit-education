@@ -1,0 +1,6 @@
+[
+  { "id": "1", "name": "Kathmandu", "addr": "Putalisadak, Kathmandu (Near Shankar Dev)", "phone": "9851315991", "mgr": "Ram Sharma", "hours": "10am–6pm", "count": 134 },
+  { "id": "2", "name": "Itahari", "addr": "Itahari-5, Sunsari (Near Gorkha Department Store)", "phone": "9800111111", "mgr: ": "Sita Rai", "hours": "10am–5pm", "count": 67 },
+  { "id": "3", "name": "Damak", "addr": "Damak-6, Jhapa (Main Road)", "phone": "9800222222", "mgr": "Hari Bdr", "hours": "10am–5pm", "count": 52 },
+  { "id": "4", "name": "Damauli", "addr": "Damauli Bazar, Tanahun", "phone": "9800333333", "mgr": "Gita Pun", "hours": "10am–5pm", "count": 31 }
+]

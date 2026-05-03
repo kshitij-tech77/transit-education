@@ -40,7 +40,7 @@ export default function AustraliaPage() {
         title="Study in Australia"
         subtitle="Study Abroad"
         description="Australia is home to nearly 700,000 international students. It is the third most preferred destination due to its excellent education system and safe environment."
-        image="/media-images/2021/05/Wwb-banner-Australia.png"
+        image="/media/2021/05/Wwb-banner-Australia.png"
       />
 
       <section className="py-24 bg-off-white">

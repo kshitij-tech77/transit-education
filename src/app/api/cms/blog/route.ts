@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { readJSON, writeJSON } from '@/lib/server/fs';
 import { BlogPost } from '@/lib/types/blog';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export async function GET() {
   try {
@@ -22,19 +22,40 @@ export async function POST(req: Request) {
     const slug =
       data.slug ||
       (data.title
-        ? data.title.toLowerCase().replace(/\s+/g, '-')
-        : uuidv4());
+        ? data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+        : crypto.randomUUID());
 
     const newPost: BlogPost = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       title,
       slug,
       body: data.body || '',
-      category: data.category || '',
+      category: data.category || 'Visa Tips',
       tags: data.tags || [],
       status: data.status || 'draft',
-      publishDate: data.publishDate || null,
+      publishDate: data.publishDate || new Date().toISOString(),
       featuredImage: data.featuredImage || '',
+      
+      // SEO Settings
+      metaTitle: data.metaTitle || '',
+      metaDescription: data.metaDescription || '',
+      focusKeyword: data.focusKeyword || '',
+      canonicalUrl: data.canonicalUrl || '',
+
+      // EEAT Signals
+      authorName: data.authorName || 'Kshitij Dhamala',
+      authorCredential: data.authorCredential || '',
+      authorBio: data.authorBio || '',
+      lastReviewed: data.lastReviewed || '',
+      sources: data.sources || [],
+
+      // AEO (Answer Engine)
+      primaryQuestion: data.primaryQuestion || '',
+      answerSummary: data.answerSummary || '',
+      faqItems: data.faqItems || [],
+
+      // Analytics
+      readingTime: data.readingTime || '1 min read'
     };
 
     posts.push(newPost);

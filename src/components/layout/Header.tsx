@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Menu, X, Phone, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import UtilityBar from "./UtilityBar";
 import MobileMenu from "./MobileMenu";
@@ -54,12 +55,14 @@ export default function Header() {
       <UtilityBar />
       <div className="container h-[80px] flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="block">
-          <img 
-            src="/media-images/2021/05/Logo-png_website.png" 
-            alt="Transit Education" 
-            className="h-10 w-auto md:h-12"
-          />
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-9 h-9 bg-[#A93226] rounded-lg flex items-center justify-center shadow-lg shadow-red-900/20 group-hover:scale-105 transition-transform">
+            <ArrowUpRight size={22} className="text-white" strokeWidth={3} />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[#111] font-[800] text-sm uppercase tracking-tight leading-none">Transit Education</span>
+            <span className="text-[#A93226] text-[9px] font-[700] uppercase tracking-[0.08em] mt-0.5">Global Education</span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}

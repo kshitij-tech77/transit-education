@@ -35,7 +35,7 @@ export default function MobileMenu() {
               <div className="flex justify-between items-center mb-8">
                 <Link href="/" onClick={() => setIsOpen(false)}>
                   <img 
-                    src="/media-images/2021/05/Logo-png_website.png" 
+                    src="/media/2021/05/Logo-png_website.png" 
                     alt="Transit Education" 
                     className="h-8 w-auto"
                   />

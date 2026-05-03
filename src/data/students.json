@@ -1,0 +1,98 @@
+[
+  {
+    "id": "1",
+    "name": "Roshan K. Adhikari",
+    "phone": "9851315991",
+    "email": "roshan@example.com",
+    "branch": "Kathmandu",
+    "country": "USA",
+    "counselor": "Ram Sharma",
+    "status": "APPROVED",
+    "date": "2025-01-10",
+    "notes": "Strong academic profile."
+  },
+  {
+    "id": "2",
+    "name": "Diwakar Lamichhane",
+    "phone": "9800111111",
+    "email": "diwakar@example.com",
+    "branch": "Kathmandu",
+    "country": "UK",
+    "counselor": "Ram Sharma",
+    "status": "APPROVED",
+    "date": "2025-01-15",
+    "notes": "IELTS 7.5"
+  },
+  {
+    "id": "3",
+    "name": "Priya Sharma",
+    "phone": "9800222222",
+    "email": "priya@example.com",
+    "branch": "Itahari",
+    "country": "Canada",
+    "counselor": "Sita Rai",
+    "status": "IN PROGRESS",
+    "date": "2025-02-01",
+    "notes": "Waiting for offer letter."
+  },
+  {
+    "id": "4",
+    "name": "Bikash Thapa",
+    "phone": "9800333333",
+    "email": "bikash@example.com",
+    "branch": "Damak",
+    "country": "Australia",
+    "counselor": "Hari Bdr",
+    "status": "PENDING",
+    "date": "2025-02-10",
+    "notes": "Financial docs pending."
+  },
+  {
+    "id": "5",
+    "name": "Suman KC",
+    "phone": "9851315992",
+    "email": "suman@example.com",
+    "branch": "Damauli",
+    "country": "Germany",
+    "counselor": "Gita Pun",
+    "status": "IN PROGRESS",
+    "date": "2025-02-18",
+    "notes": "Learning German A2."
+  },
+  {
+    "id": "6",
+    "name": "Anisha Gurung",
+    "phone": "9800444444",
+    "email": "anisha@example.com",
+    "branch": "Itahari",
+    "country": "New Zealand",
+    "counselor": "Sita Rai",
+    "status": "PENDING",
+    "date": "2025-03-01",
+    "notes": "Applying for Nursing."
+  },
+  {
+    "id": "7",
+    "name": "Rajesh Pokhrel",
+    "phone": "9851315993",
+    "email": "rajesh@example.com",
+    "branch": "Kathmandu",
+    "country": "USA",
+    "counselor": "Ram Sharma",
+    "status": "REJECTED",
+    "date": "2025-03-05",
+    "notes": "Visa denied (finances)."
+  },
+  {
+    "id": "8",
+    "name": "Nisha Tamang",
+    "phone": "9800555555",
+    "email": "nisha@example.com",
+    "branch": "Damak",
+    "country": "UK",
+    "counselor": "Hari Bdr",
+    "status": "IN PROGRESS",
+    "date": "2025-03-12",
+    "notes": "Applied for Masters."
+  }
+]

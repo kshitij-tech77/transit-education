@@ -39,7 +39,7 @@ export default function ResourcesPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/media-images/2021/04/lets-plan.png"
+            src="/media/2021/04/lets-plan.png"
             alt="Student Resources"
             fill
             className="object-cover"

@@ -1,9 +1,48 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
-import blogPosts from "@/data/blogPosts.json";
+import blogPostsRaw from "@/data/blogPosts.json";
 import { notFound } from "next/navigation";
-import { Calendar, User, Tag, ArrowLeft } from "lucide-react";
+import { Calendar, User, Tag, ArrowLeft, Clock, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Metadata } from "next";
+import { BlogPost } from "@/lib/types/blog";
+
+const blogPosts = blogPostsRaw as BlogPost[];
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = blogPosts.find((p) => p.slug === slug);
+  
+  if (!post) return {};
+
+  return {
+    title: post.metaTitle || post.title,
+    description: post.metaDescription || "Read the latest updates from Nepal's most trusted study abroad consultancy.",
+    alternates: {
+      canonical: post.canonicalUrl || `https://transiteducation.com.np/blog/${post.slug}`
+    },
+    openGraph: {
+      title: post.metaTitle || post.title,
+      description: post.metaDescription,
+      url: `https://transiteducation.com.np/blog/${post.slug}`,
+      type: "article",
+      images: [
+        {
+          url: post.featuredImage || "/media-images/2021/05/Logo-png_website.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.metaTitle || post.title,
+      description: post.metaDescription,
+      images: [post.featuredImage || "/media-images/2021/05/Logo-png_website.png"],
+    },
+  };
+}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -13,18 +52,66 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  // Schema.org JSON-LD
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "image": post.featuredImage,
+    "author": {
+      "@type": "Person",
+      "name": post.authorName || "Transit Editorial Team"
+    },
+    "datePublished": post.publishDate,
+    "dateModified": post.lastReviewed || post.publishDate,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Transit Education",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://transiteducation.com.np/logo.png"
+      }
+    }
+  };
+
+  const faqSchema = post.faqItems?.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": post.faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  } : null;
+
   return (
     <main className="pt-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
       {/* Hero Section */}
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-40">
-          <Image
-            src={post.featuredImage}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
+          {post.featuredImage && (
+            <Image
+              src={post.featuredImage}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         </div>
         <div className="container relative z-10">
@@ -41,11 +128,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </span>
               <span className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-brand" /> 
-                {new Date(post.publishDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {post.publishDate ? new Date(post.publishDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
               </span>
               <span className="flex items-center gap-2">
-                <User className="w-4 h-4 text-brand" /> Admin
+                <User className="w-4 h-4 text-brand" /> {post.authorName || "Admin"}
               </span>
+              {post.readingTime && (
+                <span className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-brand" /> {post.readingTime}
+                </span>
+              )}
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
               {post.title}
@@ -58,14 +150,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <section className="py-24 bg-white">
         <div className="container">
           <div className="max-w-4xl mx-auto">
+            {post.lastReviewed && (
+              <div className="mb-12 flex items-center gap-3 bg-green-50 text-green-700 px-6 py-3 rounded-2xl border border-green-100 text-sm font-medium">
+                <ShieldCheck className="w-5 h-5" />
+                <span>Fact-checked and last reviewed on {new Date(post.lastReviewed).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+            )}
+
             <div 
               className="prose prose-lg prose-slate max-w-none prose-headings:text-black prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-black prose-a:text-brand hover:prose-a:text-brand-dark transition-colors"
               dangerouslySetInnerHTML={{ __html: post.body }}
             />
             
+            {/* FAQ Section */}
+            {post.faqItems && post.faqItems.length > 0 && (
+              <div className="mt-20">
+                <h2 className="text-3xl font-bold text-black mb-10">Frequently Asked Questions</h2>
+                <div className="space-y-6">
+                  {post.faqItems.map((faq, i) => (
+                    <div key={i} className="bg-off-white p-8 rounded-[2rem] border border-gray-100">
+                      <h3 className="text-lg font-bold text-black mb-3">{faq.question}</h3>
+                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mt-16 pt-8 border-t border-gray-100">
               <div className="flex flex-wrap gap-3">
-                {post.tags.map((tag) => (
+                {post.tags?.map((tag) => (
                   <span key={tag} className="flex items-center gap-2 bg-off-white text-gray-500 px-4 py-2 rounded-xl text-sm font-medium border border-gray-100">
                     <Tag className="w-4 h-4" /> {tag}
                   </span>
@@ -79,9 +193,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <User className="w-12 h-12" />
               </div>
               <div className="text-center md:text-left">
-                <h3 className="text-xl font-bold text-black mb-2">Transit Editorial Team</h3>
+                <div className="flex flex-col md:flex-row items-center md:items-baseline gap-2 mb-2">
+                  <h3 className="text-xl font-bold text-black">{post.authorName || "Transit Editorial Team"}</h3>
+                  {post.authorCredential && (
+                    <span className="text-xs font-bold text-brand uppercase tracking-widest flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> {post.authorCredential}
+                    </span>
+                  )}
+                </div>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  Our team of expert counsellors and writers bring you the most accurate and up-to-date information regarding international education and visa processes.
+                  {post.authorBio || "Our team of expert counsellors and writers bring you the most accurate and up-to-date information regarding international education and visa processes."}
                 </p>
               </div>
             </div>
@@ -89,7 +210,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
       </section>
 
-      {/* Related Posts Placeholder */}
+      {/* Related Posts */}
       <section className="py-24 bg-off-white">
         <div className="container">
           <div className="text-center mb-16">
@@ -100,12 +221,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {blogPosts.filter(p => p.slug !== slug).slice(0, 3).map((relatedPost) => (
               <Link key={relatedPost.id} href={`/blog/${relatedPost.slug}`} className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all group">
                 <div className="relative h-48 w-full overflow-hidden">
-                  <Image
-                    src={relatedPost.featuredImage}
-                    alt={relatedPost.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
+                  {relatedPost.featuredImage && (
+                    <Image
+                      src={relatedPost.featuredImage}
+                      alt={relatedPost.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  )}
                 </div>
                 <div className="p-6">
                   <h4 className="font-bold text-black group-hover:text-brand transition-colors line-clamp-2 mb-4">{relatedPost.title}</h4>

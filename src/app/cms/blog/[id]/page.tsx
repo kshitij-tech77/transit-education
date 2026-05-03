@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
-import TiptapEditor from "@/components/ui/TiptapEditor";
+import TiptapEditor from "@/components/cms/TiptapEditor";
 import { BlogPost } from "@/lib/types/blog";
 
 export default function BlogEditPage() {
@@ -46,7 +46,7 @@ export default function BlogEditPage() {
       }
     };
     if (id) fetchPost();
-  }, [id]);
+  }, [id, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,91 +78,101 @@ export default function BlogEditPage() {
     return <div className="p-6">Loading...</div>;
   }
 
+  const inputClasses = "w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none focus:border-[#A93226] transition-colors bg-white";
+
   return (
-    <section className="p-6">
+    <section className="p-6 max-w-5xl mx-auto">
       <Toaster />
-      <h1 className="mb-4 text-2xl font-bold">Edit Blog Post</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Slug</label>
-          <input
-            type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
+      <div className="flex items-center gap-4 mb-8">
+        <Link href="/cms/blog" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>Back</Link>
+        <h1 className="text-2xl font-[800] text-[#111]">Edit Blog Post</h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white border border-[#EDE8E8] rounded-[12px] p-6 space-y-6 shadow-sm">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Category</label>
+            <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Title</label>
             <input
               type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className={inputClasses}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
+            <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Slug</label>
             <input
               type="text"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              className={inputClasses}
             />
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Status</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Category</label>
+              <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className={inputClasses}
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Tags (comma separated)</label>
+              <input
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                className={inputClasses}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as any)}
+                className={inputClasses}
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Publish Date</label>
+              <input
+                type="date"
+                value={publishDate}
+                onChange={(e) => setPublishDate(e.target.value)}
+                className={inputClasses}
+              />
+            </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Publish Date</label>
+            <label className="block text-[10px] font-[700] text-[#999] uppercase mb-1">Featured Image Path</label>
             <input
-              type="date"
-              value={publishDate}
-              onChange={(e) => setPublishDate(e.target.value)}
-              className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
+              type="text"
+              value={featuredImage}
+              onChange={(e) => setFeaturedImage(e.target.value)}
+              placeholder="/media-images/..."
+              className={inputClasses}
             />
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Featured Image Path</label>
-          <input
-            type="text"
-            value={featuredImage}
-            onChange={(e) => setFeaturedImage(e.target.value)}
-            placeholder="/media-images/..."
-            className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full")}
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Body</label>
+
+        <div className="bg-white border border-[#EDE8E8] rounded-[12px] p-6 shadow-sm">
+          <label className="block text-[10px] font-[700] text-[#999] uppercase mb-3">Post Content</label>
           <TiptapEditor value={body} onChange={setBody} />
         </div>
-        <div className="flex items-center space-x-3">
-          <button type="submit" className={cn(buttonVariants({ variant: "primary", size: "sm" }))}>
-            Save
+
+        <div className="flex items-center gap-3 pt-4">
+          <button type="submit" className="bg-[#A93226] text-white px-8 py-2.5 rounded-[8px] font-[600] text-[13px] hover:bg-[#7E2219] transition-colors">
+            Save Changes
           </button>
-          <Link href="/cms/blog" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
+          <Link href="/cms/blog" className="px-6 py-2.5 rounded-[8px] font-[600] text-[13px] border border-[#E0DADA] text-[#555] hover:bg-gray-50 transition-colors">
             Cancel
           </Link>
         </div>

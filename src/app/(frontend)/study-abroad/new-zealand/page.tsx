@@ -40,7 +40,7 @@ export default function NewZealandPage() {
         title="Study in New Zealand"
         subtitle="Study Abroad"
         description="New Zealand offers a British-system education within a small, safe, and welcoming country. All eight of its universities sit in the QS world top 500."
-        image="/media-images/2021/05/Web-banner-New-Zealand.png"
+        image="/media/2021/05/Web-banner-New-Zealand.png"
       />
 
       <section className="py-24 bg-off-white">

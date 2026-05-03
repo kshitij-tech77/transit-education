@@ -13,7 +13,7 @@ export default function TeamPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/media-images/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
+            src="/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
             alt="Transit Education Team"
             fill
             className="object-cover"

@@ -1,3 +1,8 @@
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -7,5 +12,26 @@ export interface BlogPost {
   tags?: string[];
   status: "draft" | "published";
   publishDate?: string; // ISO string
-  featuredImage?: string; // path under /public/media-images/
+  featuredImage?: string; // path under /public/media/
+  
+  // SEO Settings
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
+  canonicalUrl?: string;
+
+  // EEAT Signals
+  authorName?: string;
+  authorCredential?: string;
+  authorBio?: string;
+  lastReviewed?: string; // ISO string
+  sources?: string[]; // array of URLs
+
+  // AEO (Answer Engine)
+  primaryQuestion?: string;
+  answerSummary?: string;
+  faqItems?: FAQItem[];
+
+  // Analytics
+  readingTime?: string;
 }

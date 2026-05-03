@@ -32,7 +32,7 @@ export default function StudentVisaServicePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="/media-images/2021/03/happy-young-teenage-lady-holds-her-passport-documents-with-ticket-her-hands-isolated-green-studio-wall-scaled.jpg"
+            src="/media/2021/03/happy-young-teenage-lady-holds-her-passport-documents-with-ticket-her-hands-isolated-green-studio-wall-scaled.jpg"
             alt="Student Visa Service"
             fill
             className="object-cover"
@@ -83,7 +83,7 @@ export default function StudentVisaServicePage() {
             <div className="relative">
               <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="/media-images/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
+                  src="/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
                   alt="Visa Guidance"
                   fill
                   className="object-cover"

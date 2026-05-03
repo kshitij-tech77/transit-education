@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import postsData from "@/data/posts.json";
+import blogPosts from "@/data/blogPosts.json";
+import { BlogPost } from "@/lib/types/blog";
+
+const postsData = (blogPosts as BlogPost[]).slice(0, 3);
 import { Calendar, User } from "lucide-react";
 
 export default function LatestBlog() {

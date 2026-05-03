@@ -40,7 +40,7 @@ export default function UKPage() {
         title="Study in the UK"
         subtitle="Study Abroad"
         description="The United Kingdom hosts four of the world's top ten universities and a higher-education tradition that goes back nearly a thousand years. For Nepalese students, the UK offers internationally recognised degrees and a clear path to global careers."
-        image="/media-images/2021/05/web-banner-UK.png"
+        image="/media/2021/05/web-banner-UK.png"
       />
 
       <section className="py-24 bg-off-white">

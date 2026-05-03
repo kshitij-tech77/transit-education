@@ -40,7 +40,7 @@ export default function ItalyPage() {
         title="Study in Italy"
         subtitle="Study Abroad"
         description="Italy combines world-class universities with affordable tuition and generous scholarship opportunities, making it an ideal destination for European education."
-        image="/media-images/2021/05/Europe-web-banner.png"
+        image="/media/2021/05/Europe-web-banner.png"
       />
 
       <section className="py-24 bg-off-white">

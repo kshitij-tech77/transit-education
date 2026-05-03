@@ -5,7 +5,7 @@
     "university": "University of Central Missouri",
     "year": "2025",
     "course": "Master of Science",
-    "approvalImage": "/media-images/2025/02/Madan-Aryal.png"
+    "approvalImage": "/media/2025/02/Madan-Aryal.png"
   },
   {
     "name": "Rojina Nepali",
@@ -13,7 +13,7 @@
     "university": "Cleveland State University",
     "year": "2025",
     "course": "Master of Science",
-    "approvalImage": "/media-images/2025/02/Rojina-Nepali.png"
+    "approvalImage": "/media/2025/02/Rojina-Nepali.png"
   },
   {
     "name": "Aayush Dhungana",
@@ -21,7 +21,7 @@
     "university": "University of New Orleans",
     "year": "2025",
     "course": "Bachelor of Science",
-    "approvalImage": "/media-images/2025/02/Aayush-Dhungana.png"
+    "approvalImage": "/media/2025/02/Aayush-Dhungana.png"
   },
   {
     "name": "Ritik Shahi",
@@ -29,7 +29,7 @@
     "university": "Youngstown State University",
     "year": "2025",
     "course": "Bachelor of Science",
-    "approvalImage": "/media-images/2025/02/Ritik-Shahi.png"
+    "approvalImage": "/media/2025/02/Ritik-Shahi.png"
   },
   {
     "name": "Kabir Raj Shakya",
@@ -37,7 +37,7 @@
     "university": "Saint Louis University",
     "year": "2025",
     "course": "Master of Science",
-    "approvalImage": "/media-images/2025/02/Kabir-Raj-Shakya.png"
+    "approvalImage": "/media/2025/02/Kabir-Raj-Shakya.png"
   },
   {
     "name": "Bibek Thapa",
@@ -45,6 +45,6 @@
     "university": "University of North Texas",
     "year": "2025",
     "course": "Bachelor of Science",
-    "approvalImage": "/media-images/2025/02/Bibek-Thapa.png"
+    "approvalImage": "/media/2025/02/Bibek-Thapa.png"
   }
 ]

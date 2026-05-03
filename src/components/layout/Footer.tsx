@@ -9,7 +9,7 @@ export default function Footer() {
         <div>
           <Link href="/" className="inline-block mb-6">
             <img 
-              src="/media-images/2021/05/Logo-png_website.png" 
+              src="/media/2021/05/Logo-png_website.png" 
               alt="Transit Education" 
               className="h-10 w-auto brightness-0 invert"
             />

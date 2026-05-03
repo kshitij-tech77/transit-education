@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
 
 const destinations = [
-  { country: "Canada", slug: "canada", flag: "🇨🇦", tagline: "Most Popular", image: "/media-images/2021/05/Web-banner-Canada.png" },
-  { country: "Australia", slug: "australia", flag: "🇦🇺", tagline: "Work Rights", image: "/media-images/2021/05/Wwb-banner-Australia.png" },
-  { country: "UK", slug: "uk", flag: "🇬🇧", tagline: "1-Year Masters", image: "/media-images/2021/05/web-banner-UK.png" },
-  { country: "USA", slug: "usa", flag: "🇺🇸", tagline: "Top Universities", image: "/media-images/2021/05/Web-banner-USA.png" },
-  { country: "New Zealand", slug: "new-zealand", flag: "🇳🇿", tagline: "Safe & Quality", image: "/media-images/2021/05/Web-banner-New-Zealand.png" },
-  { country: "South Korea", slug: "south-korea", flag: "🇰🇷", tagline: "KGSP Scholarship", image: "/media-images/2025/03/Korea.png" },
-  { country: "Europe", slug: "italy", flag: "🇪🇺", tagline: "Low Tuition", image: "/media-images/2021/05/Europe-web-banner.png" },
-  { country: "Ireland", slug: "ireland", flag: "🇮🇪", tagline: "EU Tech Hub", image: "/media-images/2021/05/Europe-web-banner.png" },
+  { country: "Canada", slug: "canada", flag: "🇨🇦", tagline: "Most Popular", image: "/media/2021/05/Web-banner-Canada.png" },
+  { country: "Australia", slug: "australia", flag: "🇦🇺", tagline: "Work Rights", image: "/media/2021/05/Wwb-banner-Australia.png" },
+  { country: "UK", slug: "uk", flag: "🇬🇧", tagline: "1-Year Masters", image: "/media/2021/05/web-banner-UK.png" },
+  { country: "USA", slug: "usa", flag: "🇺🇸", tagline: "Top Universities", image: "/media/2021/05/Web-banner-USA.png" },
+  { country: "New Zealand", slug: "new-zealand", flag: "🇳🇿", tagline: "Safe & Quality", image: "/media/2021/05/Web-banner-New-Zealand.png" },
+  { country: "South Korea", slug: "south-korea", flag: "🇰🇷", tagline: "KGSP Scholarship", image: "/media/2025/03/Korea.png" },
+  { country: "Europe", slug: "italy", flag: "🇪🇺", tagline: "Low Tuition", image: "/media/2021/05/Europe-web-banner.png" },
+  { country: "Ireland", slug: "ireland", flag: "🇮🇪", tagline: "EU Tech Hub", image: "/media/2021/05/Europe-web-banner.png" },
 ];
 
 export default function Destinations() {

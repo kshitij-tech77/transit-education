@@ -11,7 +11,7 @@ export default function BlogPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/media-images/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
+            src="/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Transit Education Blog"
             fill
             className="object-cover"

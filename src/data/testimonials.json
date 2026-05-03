@@ -6,7 +6,7 @@
     "country": "Australia",
     "body": "Transit Education made my dream of studying in Australia a reality. From university selection to visa processing, everything was handled perfectly.",
     "rating": 5,
-    "photo": "/media-images/2025/02/testimonial1-free-img.jpg"
+    "photo": "/media/2025/02/testimonial1-free-img.jpg"
   },
   {
     "name": "Rabin Thapa",
@@ -15,7 +15,7 @@
     "country": "Canada",
     "body": "The counsellors are incredibly knowledgeable. They helped me secure a scholarship and guided me through the complex Canadian visa process.",
     "rating": 5,
-    "photo": "/media-images/2025/02/testimonial2-free-img.jpg"
+    "photo": "/media/2025/02/testimonial2-free-img.jpg"
   },
   {
     "name": "Anjali Gurung",
@@ -24,6 +24,6 @@
     "country": "UK",
     "body": "I highly recommend Transit Education for anyone looking to study in the UK. Their pre-departure briefing was especially helpful.",
     "rating": 5,
-    "photo": "/media-images/2025/02/testimonial3-free-img.jpg"
+    "photo": "/media/2025/02/testimonial3-free-img.jpg"
   }
 ]
