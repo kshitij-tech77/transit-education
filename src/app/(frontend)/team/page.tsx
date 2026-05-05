@@ -1,11 +1,29 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
-import teamData from "@/data/team.json";
+import { supabase } from "@/lib/supabase";
 import { Mail, Phone, MapPin } from "lucide-react";
 
-export default function TeamPage() {
-  const leadership = teamData.filter(m => m.role.toLowerCase().includes('ceo') || m.role.toLowerCase().includes('director'));
-  const staff = teamData.filter(m => !leadership.find(l => l.name === m.name));
+export default async function TeamPage() {
+  const { data: teamRaw } = await supabase
+    .from('team_members')
+    .select(`
+      *,
+      branches (name)
+    `)
+    .order('name', { ascending: true });
+
+  const teamData = teamRaw?.map(m => ({
+    ...m,
+    role: m.position,
+    photo: m.photo_url,
+    branch: (m as any).branches?.name || 'N/A'
+  })) || [];
+
+  const leadership = teamData.filter(m => {
+    const role = (m.role || '').toLowerCase();
+    return role.includes('ceo') || role.includes('director') || role.includes('founder');
+  });
+  const staff = teamData.filter(m => !leadership.find(l => l.id === m.id));
 
   return (
     <main className="pt-20">

@@ -1,21 +1,25 @@
 import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
-import { GraduationCap, CheckCircle2, ListChecks, HelpCircle } from "lucide-react";
-import { readJson } from "@/lib/cms-data";
+import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, FileText } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const countries = await readJson('countries.json');
-  const country = countries.find((c: any) => c.id === slug && c.status === 'LIVE');
+  const { data: country } = await supabase
+    .from('countries')
+    .select('*')
+    .eq('code', slug)
+    .eq('status', 'LIVE')
+    .single();
 
   if (!country) return {};
 
   const title = country.metaTitle || `Study in ${country.name} | Transit Education`;
   const description = country.metaDescription || `Everything you need to know about studying in ${country.name}. Visa requirements, tuition, and intakes.`;
-  const image = "/media-images/2021/05/Logo-png_website.png";
+  const image = "/media/2021/05/Logo-png_website.png";
 
   return {
     title,
@@ -37,19 +41,53 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CountryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const countries = await readJson('countries.json');
-  const country = countries.find((c: any) => c.id === slug && c.status === 'LIVE');
+  
+  // Try fetching page-specific FAQs first
+  let { data: faqsRaw } = await supabase
+    .from('faqs')
+    .select('*')
+    .eq('page_path', `study-abroad/${slug}`)
+    .eq('status', 'published')
+    .order('display_order', { ascending: true });
+
+  // Fallback to Global FAQs if none for this specific country
+  if (!faqsRaw || faqsRaw.length === 0) {
+    const { data: globalFaqs } = await supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', 'Homepage')
+      .eq('status', 'published')
+      .limit(6);
+    faqsRaw = globalFaqs;
+  }
+
+  const { data: country } = await supabase
+    .from('countries')
+    .select('*')
+    .eq('code', slug)
+    .eq('status', 'LIVE')
+    .single();
 
   if (!country) {
     notFound();
   }
 
   // Fetch FAQs for this page
-  const faqsAll = await readJson('faqs.json');
-  const pagePath = `study-abroad/${slug}`;
-  const faqs = faqsAll
-    .filter((f: any) => f.page === pagePath && f.status === 'Published')
-    .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+  const faqs = faqsRaw?.map(f => ({
+    ...f,
+    featured: f.is_featured,
+    status: 'Published'
+  })) || [];
+
+  // Transform country for compatibility
+  const formattedCountry = {
+    ...country,
+    heroTitle: country.hero_title,
+    whyStudy: country.why_study,
+    visaTime: country.visa_time,
+    tuition: country.tuition_range,
+    universities: country.top_universities?.join(', ')
+  };
 
   // FAQ Schema
   const faqSchema = faqs.length > 0 ? {
@@ -75,31 +113,31 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
       )}
       
       <DestinationHero 
-        title={country.heroTitle || `Study in ${country.name}`}
+        title={formattedCountry.heroTitle || `Study in ${formattedCountry.name}`}
         subtitle="Study Abroad"
-        description={country.whyStudy || `Comprehensive guide to studying in ${country.name}.`}
-        image="/media-images/2021/05/Web-banner-Canada.png"
+        description={formattedCountry.whyStudy || `Comprehensive guide to studying in ${formattedCountry.name}.`}
+        image="/media/2021/05/Web-banner-Canada.png"
       />
 
       <section className="py-24 bg-[#F7F3F3]">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16">
             <div>
-              <SectionLabel>Why {country.name}?</SectionLabel>
+              <SectionLabel>Why {formattedCountry.name}?</SectionLabel>
               <h2 className="text-3xl font-bold text-black mt-4 mb-8">Quality Education & Global Recognition</h2>
               <div className="space-y-6">
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex gap-4">
                   <GraduationCap className="w-8 h-8 text-[#A93226] shrink-0" />
                   <div>
                     <h3 className="font-bold text-black mb-2">Academic Excellence</h3>
-                    <p className="text-gray-600 text-sm">Institutions in {country.name} are known for their high standards and research contributions.</p>
+                    <p className="text-gray-600 text-sm">Institutions in {formattedCountry.name} are known for their high standards and research contributions.</p>
                   </div>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex gap-4">
                   <CheckCircle2 className="w-8 h-8 text-[#A93226] shrink-0" />
                   <div>
                     <h3 className="font-bold text-black mb-2">Global Career Path</h3>
-                    <p className="text-gray-600 text-sm">Degrees from {country.name} are recognized worldwide by employers and academic institutions.</p>
+                    <p className="text-gray-600 text-sm">Degrees from {formattedCountry.name} are recognized worldwide by employers and academic institutions.</p>
                   </div>
                 </div>
               </div>
@@ -110,18 +148,82 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
                 <ListChecks className="w-7 h-7 text-[#A93226]" /> Major Intakes
               </h3>
               <p className="text-gray-600 mb-8 leading-relaxed">
-                {country.intakes || "Varies by institution. Contact us for details."}
+                {formattedCountry.major_intakes_description || formattedCountry.intakes || "Varies by institution. Contact us for details."}
               </p>
-              <h3 className="text-xl font-bold text-black mb-4">Quick Facts:</h3>
+              <h3 className="text-xl font-bold text-black mb-4">Required Documents:</h3>
               <ul className="grid grid-cols-1 gap-3">
-                <li className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-[#A93226]" /> Visa Time: {country.visaTime}</li>
-                <li className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-[#A93226]" /> Tuition: {country.tuition}</li>
-                <li className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-[#A93226]" /> Top Unis: {country.universities}</li>
+                {(formattedCountry.required_documents?.length > 0 ? formattedCountry.required_documents : ["Passport Copy", "Academic Transcripts", "IELTS/PTE Score", "Statement of Purpose"]).map((doc: string) => (
+                  <li key={doc} className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-[#A93226]" /> {doc}</li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ENTRY REQUIREMENTS */}
+      {formattedCountry.entry_requirements && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <div className="max-w-3xl mx-auto text-center mb-16">
+              <SectionLabel>Entry Requirements</SectionLabel>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Eligibility for Nepali Students</h2>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="p-8 rounded-3xl bg-[#A93226]/5 border border-[#A93226]/10 h-full">
+                <h3 className="text-xl font-bold text-black mb-6">Undergraduate / Bachelors</h3>
+                <ul className="space-y-4">
+                  {(formattedCountry.entry_requirements.ug || ["Completed Grade 12 with good standing", "IELTS 6.0 or equivalent"]).map((req: string, i: number) => (
+                    <li key={i} className="flex gap-3 text-gray-700">
+                      <div className="w-6 h-6 rounded-full bg-[#A93226] text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
+                      <p>{req}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-8 rounded-3xl bg-black/5 border border-black/10 h-full">
+                <h3 className="text-xl font-bold text-black mb-6">Masters / Postgraduate</h3>
+                <ul className="space-y-4">
+                  {(formattedCountry.entry_requirements.pg || ["Bachelors degree from recognized university", "IELTS 6.5 or equivalent"]).map((req: string, i: number) => (
+                    <li key={i} className="flex gap-3 text-gray-700">
+                      <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
+                      <p>{req}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* VISA PROCESS */}
+      {formattedCountry.visa_process?.length > 0 && (
+        <section className="py-24 bg-[#F7F3F3]">
+          <div className="container max-w-4xl">
+            <div className="text-center mb-16">
+              <SectionLabel>Visa Process</SectionLabel>
+              <h2 className="text-3xl font-bold text-black mt-4">The Step-by-Step Journey</h2>
+            </div>
+            
+            <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-300 before:to-transparent">
+              {formattedCountry.visa_process.map((step: any, i: number) => (
+                <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-[#A93226] text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 className="font-bold text-black mb-1">Step {i+1}: {step.title}</h4>
+                    <p className="text-sm text-gray-600">{step.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* FAQ SECTION */}
       {faqs.length > 0 && (

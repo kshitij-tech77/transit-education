@@ -9,7 +9,19 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuT
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const studyAbroadLinks = [
+interface NavLink {
+  title: string;
+  href: string;
+}
+
+interface HeaderProps {
+  studyAbroadLinks?: NavLink[];
+  locationsLinks?: NavLink[];
+  servicesLinks?: NavLink[];
+  coursesLinks?: NavLink[];
+}
+
+const DEFAULT_STUDY_ABROAD = [
   { title: "Canada", href: "/study-abroad/canada" },
   { title: "Australia", href: "/study-abroad/australia" },
   { title: "UK", href: "/study-abroad/uk" },
@@ -20,26 +32,31 @@ const studyAbroadLinks = [
   { title: "Italy", href: "/study-abroad/italy" },
 ];
 
-const servicesLinks = [
+const DEFAULT_SERVICES = [
   { title: "Admission Counselling", href: "/services/admission-counselling" },
   { title: "Student Visa Service", href: "/services/student-visa-service" },
   { title: "Test Preparation", href: "/services/test-preparation" },
   { title: "Scholarships Assistance", href: "/services/scholarships-assistance" },
 ];
 
-const coursesLinks = [
+const DEFAULT_COURSES = [
   { title: "Test Preparation", href: "/courses/test-preparation" },
   { title: "Language Training", href: "/courses/language-training" },
 ];
 
-const locationsLinks = [
+const DEFAULT_LOCATIONS = [
   { title: "Kathmandu", href: "/locations/kathmandu" },
   { title: "Itahari", href: "/locations/itahari" },
   { title: "Damak", href: "/locations/damak" },
   { title: "Damauli", href: "/locations/damauli" },
 ];
 
-export default function Header() {
+export default function Header({
+  studyAbroadLinks = DEFAULT_STUDY_ABROAD,
+  locationsLinks = DEFAULT_LOCATIONS,
+  servicesLinks = DEFAULT_SERVICES,
+  coursesLinks = DEFAULT_COURSES
+}: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -54,15 +71,12 @@ export default function Header() {
     <header className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300", scrolled ? "bg-white shadow-md" : "bg-white")}>
       <UtilityBar />
       <div className="container h-[80px] flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 bg-[#A93226] rounded-lg flex items-center justify-center shadow-lg shadow-red-900/20 group-hover:scale-105 transition-transform">
-            <ArrowUpRight size={22} className="text-white" strokeWidth={3} />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[#111] font-[800] text-sm uppercase tracking-tight leading-none">Transit Education</span>
-            <span className="text-[#A93226] text-[9px] font-[700] uppercase tracking-[0.08em] mt-0.5">Global Education</span>
-          </div>
+        <Link href="/" className="flex items-center group">
+          <img 
+            src="/media/2021/05/Logo-png_website.png" 
+            alt="Transit Education" 
+            className="h-12 w-auto transition-transform group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -160,11 +174,16 @@ export default function Header() {
         </div>
 
         {/* CTA */}
-        <div className="flex items-center gap-4">
-          <Link href="/contact" className={buttonVariants({ className: "hidden md:inline-flex bg-brand hover:bg-brand-dark text-white rounded-lg font-semibold px-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5" })}>
+        <div className="flex items-center gap-2 lg:gap-4">
+          <Link href="/contact" className={buttonVariants({ variant: "brand", className: "hidden md:inline-flex px-6 rounded-lg" })}>
             Free Consultation
           </Link>
-          <MobileMenu />
+          <div className="ml-2 lg:ml-0">
+            <MobileMenu 
+              studyAbroadLinks={studyAbroadLinks}
+              locationsLinks={locationsLinks}
+            />
+          </div>
         </div>
       </div>
     </header>

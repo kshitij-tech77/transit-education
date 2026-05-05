@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/server/fs';
-import { BlogPost } from '@/lib/types/blog';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(
   _req: Request,
@@ -8,10 +7,48 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const posts = await readJSON<BlogPost[]>('blogPosts.json');
-    const post = posts.find((p) => p.id === id);
-    if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    return NextResponse.json(post);
+    const { data: post, error } = await supabase
+      .from('blog_posts')
+      .select(`
+        *,
+        authors (
+          name,
+          credential,
+          bio
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error || !post) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    // Transform to match old JSON shape
+    const formattedPost = {
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      body: post.body,
+      category: post.category,
+      tags: post.tags,
+      status: post.status,
+      publishDate: post.publish_date,
+      featuredImage: post.featured_image,
+      metaTitle: post.meta_title,
+      metaDescription: post.meta_description,
+      focusKeyword: post.focus_keyword,
+      canonicalUrl: post.canonical_url,
+      authorName: post.authors?.name || 'Transit Education',
+      authorCredential: post.authors?.credential || '',
+      authorBio: post.authors?.bio || '',
+      lastReviewed: post.last_reviewed_at,
+      sources: post.sources,
+      primaryQuestion: post.primary_question,
+      answerSummary: post.answer_summary,
+      faqItems: post.faq_schema,
+      readingTime: post.reading_time
+    };
+
+    return NextResponse.json(formattedPost);
   } catch (err) {
     console.error('GET /api/cms/blog/[id] error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
@@ -25,12 +62,32 @@ export async function PUT(
   try {
     const { id } = await params;
     const data = await req.json();
-    const posts = await readJSON<BlogPost[]>('blogPosts.json');
-    const index = posts.findIndex((p) => p.id === id);
-    if (index === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    const updated = { ...posts[index], ...data };
-    posts[index] = updated;
-    await writeJSON('blogPosts.json', posts);
+
+    const { data: updated, error } = await supabase
+      .from('blog_posts')
+      .update({
+        title: data.title,
+        slug: data.slug,
+        body: data.body,
+        category: data.category,
+        tags: data.tags,
+        status: data.status,
+        publish_date: data.publishDate,
+        featured_image: data.featuredImage,
+        meta_title: data.metaTitle,
+        meta_description: data.metaDescription,
+        focus_keyword: data.focusKeyword,
+        canonical_url: data.canonicalUrl,
+        primary_question: data.primaryQuestion,
+        answer_summary: data.answerSummary,
+        faq_schema: data.faqItems,
+        reading_time: data.readingTime
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
     return NextResponse.json(updated);
   } catch (err) {
     console.error('PUT /api/cms/blog/[id] error:', err);
@@ -44,9 +101,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const posts = await readJSON<BlogPost[]>('blogPosts.json');
-    const filtered = posts.filter((p) => p.id !== id);
-    await writeJSON('blogPosts.json', filtered);
+    const { error } = await supabase
+      .from('blog_posts')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('DELETE /api/cms/blog/[id] error:', err);

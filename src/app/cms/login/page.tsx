@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Loader2, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
 
 export default function CmsLogin() {
   const [email, setEmail] = useState("");
@@ -18,26 +19,15 @@ export default function CmsLogin() {
     setError("");
 
     try {
-      // In a real app, we hit the Payload login endpoint
-      // For this prototype, we'll simulate success if any input is provided
-      // and set a cookie (Payload uses cookies by default)
-      
-      const res = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      if (res.ok) {
+      if (error) {
+        setError(error.message);
+      } else if (data.user) {
         router.push('/cms');
-      } else {
-        // Fallback for simulation if database isn't connected
-        if (email === "admin@transiteducation.com" && password === "admin123") {
-          document.cookie = "payload-token=simulated-token; path=/";
-          router.push('/cms');
-        } else {
-          setError("Invalid email or password");
-        }
       }
     } catch (err) {
       setError("Login failed. Please try again.");

@@ -1,45 +1,71 @@
+import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, Plane, FileText } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import FAQAccordion from "@/components/shared/FAQAccordion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import Schema from "@/components/shared/Schema";
-import { DestinationHero } from "@/components/destinations/DestinationContent";
-import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, Plane } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function AustraliaPage() {
-  const faqData = {
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is the minimum IELTS / PTE score for Australia from Nepal?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For Bachelor's degrees, an IELTS score of 6.0 overall is usually required. For Diplomas, 5.5 overall is common. PTE equivalents are also widely accepted."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I bring my spouse to Australia on a student visa?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, international students can include their spouse or dependent children in their visa application. Dependents are usually granted work rights for the same duration as the primary applicant."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What are the major intakes for Australian universities?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The major intakes in Australia are February and July. Some institutions also offer smaller intakes in September and November."
-        }
-      }
-    ]
-  };
+export default async function AustraliaPage() {
+  const [countryRes, faqsRes] = await Promise.all([
+    supabase
+      .from('countries')
+      .select('*')
+      .eq('id', 'australia')
+      .single(),
+    supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', 'study-abroad/australia')
+      .eq('status', 'published')
+      .order('display_order', { ascending: true })
+  ]);
+
+  const { data: country } = countryRes;
+  let { data: faqsRaw } = faqsRes;
+
+  if (!country) notFound();
+
+  // Fallback to Global FAQs if none for Australia
+  if (!faqsRaw || faqsRaw.length === 0) {
+    const { data: globalFaqs } = await supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', 'Homepage')
+      .eq('status', 'published')
+      .limit(6);
+    faqsRaw = globalFaqs;
+  }
+
+  const faqs = faqsRaw?.map(f => ({
+    ...f,
+    featured: f.is_featured,
+    status: 'Published'
+  })) || [];
 
   return (
     <main>
-      <Schema type="FAQPage" data={faqData} />
+      {faqs.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": faqs.map(f => ({
+                "@type": "Question",
+                "name": f.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": f.answer
+                }
+              }))
+            })
+          }}
+        />
+      )}
       <DestinationHero 
-        title="Study in Australia"
+        title={country.hero_title || "Study in Australia"}
         subtitle="Study Abroad"
-        description="Australia is home to nearly 700,000 international students. It is the third most preferred destination due to its excellent education system and safe environment."
+        description={country.why_study || "Australia is home to nearly 700,000 international students. It is the third most preferred destination due to its excellent education system and safe environment."}
         image="/media/2021/05/Wwb-banner-Australia.png"
       />
 
@@ -72,7 +98,7 @@ export default function AustraliaPage() {
                 <ListChecks className="w-7 h-7 text-brand" /> Major Intakes
               </h3>
               <p className="text-gray-600 mb-8 leading-relaxed">
-                Australia usually has two major intakes: <strong>February and July</strong>. Some universities and colleges also offer intakes in September and November.
+                {country.intakes || "Australia usually has two major intakes: February and July. Some universities and colleges also offer intakes in September and November."}
               </p>
               <h3 className="text-xl font-bold text-black mb-4">Required Documents:</h3>
               <ul className="grid grid-cols-1 gap-3">
@@ -87,92 +113,101 @@ export default function AustraliaPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <SectionLabel>Entry Requirements</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Eligibility for Nepali Students</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="p-8 rounded-3xl bg-brand/5 border border-brand/10">
-              <h3 className="text-xl font-bold text-black mb-6">Undergraduate / Bachelors</h3>
-              <ul className="space-y-4">
-                <li className="flex gap-3 text-gray-700">
-                  <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center shrink-0 text-xs font-bold">1</div>
-                  <p>At least B in High School Certificate or 12 years of schooling.</p>
-                </li>
-                <li className="flex gap-3 text-gray-700">
-                  <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center shrink-0 text-xs font-bold">2</div>
-                  <p>IELTS - Each band 6.0 for Bachelor / 5.5 for Diploma.</p>
-                </li>
-              </ul>
+      {/* Dynamic Sections from DB */}
+      {country.entry_requirements && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <div className="max-w-3xl mx-auto text-center mb-16">
+              <SectionLabel>Entry Requirements</SectionLabel>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Eligibility for Nepali Students</h2>
             </div>
-
-            <div className="p-8 rounded-3xl bg-black/5 border border-black/10">
-              <h3 className="text-xl font-bold text-black mb-6">Postgraduate / Masters</h3>
-              <ul className="space-y-4">
-                <li className="flex gap-3 text-gray-700">
-                  <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center shrink-0 text-xs font-bold">1</div>
-                  <p>At least 55% in Bachelors Degree from a recognized university.</p>
-                </li>
-                <li className="flex gap-3 text-gray-700">
-                  <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center shrink-0 text-xs font-bold">2</div>
-                  <p>IELTS - 6.5 overall with not less than 6.0 in each band.</p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-off-white">
-        <div className="container max-w-4xl">
-          <div className="text-center mb-16">
-            <SectionLabel>Visa Process</SectionLabel>
-            <h2 className="text-3xl font-bold text-black mt-4">Subclass 500 Journey</h2>
-          </div>
-          
-          <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-300 before:to-transparent">
-            {[
-              { title: "Gather Documents", text: "Collect academics, passport, and English test scores." },
-              { title: "GTE Requirement", text: "Prepare your Genuine Temporary Entrant statement and financial proof." },
-              { title: "Confirmation of Enrollment", text: "Pay your tuition and get your COE from the university." },
-              { title: "Visa Lodgement", text: "Apply for Student Visa (Subclass 500) online." },
-              { title: "Visa Decision", text: "Await your visa grant and start your travel arrangements." }
-            ].map((step, i) => (
-              <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-brand text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                  <Plane className="w-5 h-5" />
-                </div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                  <h4 className="font-bold text-black mb-1">Step {i+1}: {step.title}</h4>
-                  <p className="text-sm text-gray-600">{step.text}</p>
-                </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="p-8 rounded-3xl bg-brand/5 border border-brand/10">
+                <h3 className="text-xl font-bold text-black mb-6">Undergraduate / Bachelors</h3>
+                <ul className="space-y-4">
+                  {(country.entry_requirements.ug || ["At least B in High School Certificate or 12 years of schooling.", "IELTS - Each band 6.0 for Bachelor / 5.5 for Diploma."]).map((req: string, i: number) => (
+                    <li key={i} className="flex gap-3 text-gray-700">
+                      <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
+                      <p>{req}</p>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section className="py-24 bg-white">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <SectionLabel>Questions?</SectionLabel>
-            <h2 className="text-3xl font-bold text-black mt-4">Frequently Asked Questions</h2>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> English Proficiency?</h4>
-              <p className="text-gray-600 text-sm">English Language Proficiency certificate is a mandatory visa requirement. Australia accepts IELTS, PTE, and TOEFL.</p>
-            </div>
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> Spouse/Dependent Visa?</h4>
-              <p className="text-gray-600 text-sm">Spouse/dependents can get a Dependent Visa and a work permit for the same duration as the primary applicant.</p>
+              <div className="p-8 rounded-3xl bg-black/5 border border-black/10">
+                <h3 className="text-xl font-bold text-black mb-6">Postgraduate / Masters</h3>
+                <ul className="space-y-4">
+                  {(country.entry_requirements.pg || ["At least 55% in Bachelors Degree from a recognized university.", "IELTS - 6.5 overall with not less than 6.0 in each band."]).map((req: string, i: number) => (
+                    <li key={i} className="flex gap-3 text-gray-700">
+                      <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
+                      <p>{req}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Visa Process */}
+      {country.visa_process && (
+        <section className="py-24 bg-off-white">
+          <div className="container max-w-4xl">
+            <div className="text-center mb-16">
+              <SectionLabel>Visa Process</SectionLabel>
+              <h2 className="text-3xl font-bold text-black mt-4">The Step-by-Step Journey</h2>
+            </div>
+            
+            <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-300 before:to-transparent">
+              {country.visa_process.map((step: any, i: number) => (
+                <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-brand text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 className="font-bold text-black mb-1">Step {i+1}: {step.title}</h4>
+                    <p className="text-sm text-gray-600">{step.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Dynamic FAQs */}
+      {faqs.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <SectionLabel>Questions?</SectionLabel>
+                <h2 className="text-4xl font-bold text-black mt-4">Frequently Asked Questions</h2>
+              </div>
+              <FAQAccordion items={faqs} />
+            </div>
+          </div>
+        </section>
+      )}
     </main>
+  );
+}
+
+function DestinationHero({ title, subtitle, description, image }: any) {
+  return (
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 opacity-40">
+        <img src={image} alt={title} className="w-full h-full object-cover" />
+      </div>
+      <div className="container relative z-10">
+        <div className="max-w-3xl">
+          <SectionLabel className="text-white border-white/20 bg-white/10">{subtitle}</SectionLabel>
+          <h1 className="text-5xl lg:text-7xl font-black mt-8 mb-8 leading-[0.9] tracking-tight">{title}</h1>
+          <p className="text-xl text-gray-300 leading-relaxed">{description}</p>
+        </div>
+      </div>
+    </section>
   );
 }

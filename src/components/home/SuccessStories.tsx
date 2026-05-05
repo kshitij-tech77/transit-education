@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import successStoriesData from "@/data/successStories.json";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function SuccessStories() {
+export default function SuccessStories({ stories }: { stories: any[] }) {
+  const successStoriesData = stories || [];
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
 
   const scrollPrev = useCallback(() => {
@@ -49,10 +49,10 @@ export default function SuccessStories() {
           </motion.div>
         </div>
 
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
+        <div className="overflow-hidden px-4" ref={emblaRef}>
+          <div className="flex gap-4 md:gap-6">
             {successStoriesData.map((story, i) => (
-              <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0">
+              <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-2">
                 <div className="bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl h-[400px] relative overflow-hidden group">
                   <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
                     <img 

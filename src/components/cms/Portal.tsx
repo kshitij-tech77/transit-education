@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import {
   LayoutDashboard,
   Users,
@@ -27,6 +28,7 @@ import {
   Clock,
   ArrowLeft,
   FileText,
+  FileDown,
   Trash2,
   Edit,
   GripVertical,
@@ -43,7 +45,7 @@ import {
 // ─── TYPES ───
 type Section = 
   | "Dashboard" | "Students" | "Blog Posts" | "FAQ Manager" | "Country Pages" 
-  | "Success Stories" | "Media Library" | "Testimonials"
+  | "Success Stories" | "Resources" | "Media Library" | "Testimonials"
   | "Branches" | "Menus" | "Settings";
 
 // ─── COMPONENTS ───
@@ -116,6 +118,8 @@ export default function TransitPortal() {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
 
   // ─── DATA STATE ───
   const [data, setData] = useState<any>({
@@ -124,6 +128,7 @@ export default function TransitPortal() {
     faqs: [],
     countries: [],
     successStories: [],
+    resources: [],
     branches: [],
     testimonials: [],
     settings: {},
@@ -148,13 +153,14 @@ export default function TransitPortal() {
         fetch('/api/cms/faqs'),
         fetch('/api/cms/countries'),
         fetch('/api/cms/success-stories'),
+        fetch('/api/cms/resources'),
         fetch('/api/cms/branches'),
         fetch('/api/cms/testimonials'),
         fetch('/api/cms/settings'),
         fetch('/api/cms/media')
       ]);
 
-      const [students, posts, faqs, countries, stories, branches, testimonials, settings, media] = await Promise.all(
+      const [students, posts, faqs, countries, stories, resources, branches, testimonials, settings, media] = await Promise.all(
         responses.map(res => res.json())
       );
 
@@ -162,12 +168,33 @@ export default function TransitPortal() {
         ...prev,
         students: Array.isArray(students) ? students : [],
         posts: Array.isArray(posts) ? posts : [],
-        faqs: Array.isArray(faqs) ? faqs : [],
-        countries: Array.isArray(countries) ? countries : [],
+        faqs: Array.isArray(faqs) ? faqs.map((f: any) => ({ ...f, page: f.page_path })) : [],
+        countries: Array.isArray(countries) ? countries.map((c: any) => ({
+          ...c,
+          heroTitle: c.hero_title,
+          whyStudy: c.why_study,
+          entryRequirements: c.entry_requirements,
+          visaProcess: c.visa_process,
+          intakes: c.intakes,
+          visaTime: c.visa_time,
+          tuition: c.tuition_range,
+          universities: Array.isArray(c.top_universities) ? c.top_universities.join(', ') : c.top_universities
+        })) : [],
         successStories: Array.isArray(stories) ? stories : [],
+        resources: Array.isArray(resources) ? resources : [],
         branches: Array.isArray(branches) ? branches : [],
         testimonials: Array.isArray(testimonials) ? testimonials : [],
-        settings,
+        settings: settings ? {
+          ...settings,
+          siteName: settings.site_name,
+          email: settings.email,
+          phone: settings.phone,
+          tagline: settings.tagline,
+          facebookUrl: settings.facebook_url,
+          instagramUrl: settings.instagram_url,
+          linkedinUrl: settings.linkedin_url,
+          whatsappNumber: settings.whatsapp_number
+        } : {},
         media
       }));
     } catch (error) {
@@ -178,7 +205,26 @@ export default function TransitPortal() {
     }
   };
 
+  const fetchUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/cms/login');
+      return;
+    }
+    setUser(user);
+
+    // Fetch profile for role
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    
+    setProfile(profile);
+  };
+
   useEffect(() => {
+    fetchUser();
     fetchData();
   }, []);
 
@@ -233,9 +279,9 @@ export default function TransitPortal() {
     }
   };
 
-  const handleLogout = () => {
-    document.cookie = "payload-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    window.location.href = "/cms/login";
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/cms/login');
   };
 
   // ─── NAVIGATION LOGIC ───
@@ -249,6 +295,7 @@ export default function TransitPortal() {
       { id: "FAQ Manager", icon: HelpCircle, badge: data.faqs.length },
       { id: "Country Pages", icon: Globe, badge: null },
       { id: "Success Stories", icon: GraduationCap, badge: data.successStories.length },
+      { id: "Resources", icon: FileDown, badge: data.resources.length },
       { id: "Media Library", icon: ImageIcon, badge: null },
       { id: "Testimonials", icon: MessageSquare, badge: null },
     ]},
@@ -339,7 +386,7 @@ export default function TransitPortal() {
               <div key={i} className="min-w-[200px] bg-[#FEF2F1] border border-[#F5C4BF] p-4 rounded-[12px] text-center group hover:bg-[#A93226] transition-all cursor-pointer">
                 <div className="text-[10px] font-[700] text-[#A93226] group-hover:text-white uppercase tracking-widest mb-1">{story.flag} {story.country}</div>
                 <div className="text-[13px] font-[700] text-[#111] group-hover:text-white truncate">{story.name}</div>
-                <div className="text-[11px] text-[#999] group-hover:text-white/80 truncate">{story.uni}</div>
+                <div className="text-[11px] text-[#999] group-hover:text-white/80 truncate">{story.university}</div>
               </div>
             ))}
           </div>
@@ -410,7 +457,8 @@ export default function TransitPortal() {
           <div className="flex gap-[12px] flex-1 max-w-2xl">
             <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} /><input type="text" placeholder="Search FAQs..." className="w-full pl-10 pr-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
             <select className="border border-[#E0DADA] rounded-[8px] px-3 py-2 text-[13px] outline-none bg-white"><option>All Categories</option>{categories.map(c => <option key={c}>{c}</option>)}</select>
-            <select className="border border-[#E0DADA] rounded-[8px] px-3 py-2 text-[13px] outline-none bg-white"><option>All Pages</option><option>Homepage</option>{data.countries.map((c: any) => <option key={c.code}>study-abroad/{c.code.toLowerCase()}</option>)}</select>
+                        <select className="border border-[#E0DADA] rounded-[8px] px-3 py-2 text-[13px] outline-none bg-white"><option>All Pages</option><option value="Homepage">Homepage</option><option value="Blog">Blog</option><option value="About">About</option><option value="Contact">Contact</option><option value="Services">Services</option>{data.countries.map((c: any) => <option key={c.id} value={`study-abroad/${c.id}`}>study-abroad/{c.id}</option>)}</select>
+
           </div>
           <Button onClick={() => { setEditingItem({ status: 'Published', featured: false, order: 1 }); setShowModal("FAQ"); }}><Plus size={14} /> Add FAQ</Button>
         </div>
@@ -463,6 +511,8 @@ export default function TransitPortal() {
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Tuition Range</label><input type="text" value={editingItem.tuition || ''} onChange={e => setEditingItem({...editingItem, tuition: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
             </div>
             <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Why Study Here</label><textarea rows={4} value={editingItem.whyStudy || ''} onChange={e => setEditingItem({...editingItem, whyStudy: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Entry Requirements</label><textarea rows={4} value={editingItem.entryRequirements || ''} onChange={e => setEditingItem({...editingItem, entryRequirements: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="Rich text or bullet points..."></textarea></div>
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Visa Process</label><textarea rows={4} value={editingItem.visaProcess || ''} onChange={e => setEditingItem({...editingItem, visaProcess: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="Rich text or bullet points..."></textarea></div>
             <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Top Universities</label><textarea rows={2} value={editingItem.universities || ''} onChange={e => setEditingItem({...editingItem, universities: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
             <div className="flex items-center gap-4 py-4">
               <span className="text-[13px] font-[600]">Status:</span>
@@ -495,12 +545,216 @@ export default function TransitPortal() {
       <div className="grid grid-cols-3 gap-[16px]">
         {data.successStories.map((s: any, i: number) => (
           <Card key={i}>
-            <div className="flex items-center gap-4 mb-4"><div className="w-10 h-10 rounded-full bg-[#FEF2F1] text-[#A93226] flex items-center justify-center font-bold">{s.name[0]}</div><div><h4 className="font-bold text-[13px] text-[#111]">{s.name}</h4><p className="text-[11px] text-[#A93226] font-bold">{s.flag} {s.country}</p></div></div>
-            <div className="text-[12px] text-[#555] space-y-1 mb-4"><p className="truncate"><strong>Uni:</strong> {s.uni}</p><p className="truncate"><strong>Course:</strong> {s.course}</p><p><strong>Year:</strong> {s.year}</p></div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#FEF2F1] text-[#A93226] flex items-center justify-center font-bold overflow-hidden border border-[#EDE8E8]">
+                {s.approvalImage ? <img src={s.approvalImage} alt={s.name} className="w-full h-full object-cover" /> : s.name[0]}
+              </div>
+              <div>
+                <h4 className="font-bold text-[13px] text-[#111]">{s.name}</h4>
+                <p className="text-[11px] text-[#A93226] font-bold">{s.flag} {s.country}</p>
+              </div>
+            </div>
+            <div className="text-[12px] text-[#555] space-y-1 mb-4">
+              <p className="truncate"><strong>Uni:</strong> {s.university}</p>
+              <p className="truncate"><strong>Course:</strong> {s.course}</p>
+              <p><strong>Year:</strong> {s.year}</p>
+            </div>
             <div className="flex gap-2 pt-4 border-t"><Button variant="ghost" className="flex-1" onClick={() => { setEditingItem(s); setShowModal("Story"); }}><Edit size={12} /></Button><Button variant="destructive" className="flex-1" onClick={() => handleDelete('success-stories', s.id)}><Trash2 size={12} /></Button></div>
           </Card>
         ))}
       </div>
+    </div>
+  );
+
+  const renderMediaLibrary = () => {
+    const allFiles = Object.values(data.media).flat() as any[];
+    return (
+      <div className="space-y-[20px]">
+        <div className="flex justify-between items-center bg-white p-[20px] rounded-[12px] border border-[#EDE8E8]">
+          <div className="flex gap-[12px] flex-1 max-w-md">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} />
+              <input type="text" placeholder="Search media..." className="w-full pl-10 pr-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" />
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="secondary"><Filter size={14} /> Filter</Button>
+            <Button onClick={() => alert("Upload logic would go here")}><Plus size={14} /> Upload New</Button>
+          </div>
+        </div>
+        <div className="grid grid-cols-6 gap-[16px]">
+          {allFiles.map((file: any, i: number) => (
+            <div key={i} className="group relative aspect-square bg-white border border-[#EDE8E8] rounded-[12px] overflow-hidden hover:border-[#A93226] transition-all cursor-pointer">
+              <img src={file.path} alt={file.name} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-center">
+                <p className="text-white text-[10px] font-bold truncate w-full">{file.name}</p>
+                <p className="text-white/70 text-[8px] mb-2">{file.size}</p>
+                <div className="flex gap-2">
+                  <button className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full text-white"><Eye size={12} /></button>
+                  <button className="p-1.5 bg-white/20 hover:bg-red-500/40 rounded-full text-white"><Trash2 size={12} /></button>
+                </div>
+              </div>
+            </div>
+          ))}
+          {allFiles.length === 0 && (
+            <div className="col-span-6 py-20 text-center text-[#999]">
+              <ImageIcon size={48} className="mx-auto mb-4 opacity-20" />
+              <p>No media files found in public/media</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderResources = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Student Resources</h2>
+        <Button onClick={() => { setEditingItem({ status: 'published', type: 'PDF' }); setShowModal("Resource"); }}><Plus size={14} /> Add Resource</Button>
+      </div>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Title</th>
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Type</th>
+              <th className="px-6 py-4">Size/Link</th>
+              <th className="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.resources.map((r: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4 font-[600] text-[#111]">{r.title}</td>
+                <td className="px-6 py-4 text-[#777]">{r.category}</td>
+                <td className="px-6 py-4"><span className="bg-[#F3F4F6] text-[#6B7280] px-2 py-1 rounded text-[10px] font-bold uppercase">{r.type}</span></td>
+                <td className="px-6 py-4 text-[#BBB]">{r.file_size}</td>
+                <td className="px-6 py-4 flex gap-2">
+                  <Button variant="ghost" onClick={() => { setEditingItem(r); setShowModal("Resource"); }}><Edit size={14} /></Button>
+                  <Button variant="destructive" onClick={() => handleDelete('resources', r.id)}><Trash2 size={14} /></Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+
+  const renderTestimonials = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Student Testimonials</h2>
+        <Button onClick={() => { setEditingItem(null); setShowModal("Testimonial"); }}><Plus size={14} /> Add Testimonial</Button>
+      </div>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Student</th>
+              <th className="px-6 py-4">Country</th>
+              <th className="px-6 py-4">Testimonial</th>
+              <th className="px-6 py-4">Rating</th>
+              <th className="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.testimonials.map((t: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FEF2F1] overflow-hidden border border-[#EDE8E8]">
+                      {t.photo ? <img src={t.photo} alt={t.name} className="w-full h-full object-cover" /> : t.name[0]}
+                    </div>
+                    <div>
+                      <p className="font-[600] text-[#111]">{t.name}</p>
+                      <p className="text-[11px] text-[#999]">{t.course}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4">{t.country}</td>
+                <td className="px-6 py-4 max-w-md truncate text-[#777]">{t.body}</td>
+                <td className="px-6 py-4">
+                  <div className="flex gap-0.5 text-yellow-400">
+                    {[...Array(5)].map((_, idx) => <Star key={idx} size={12} fill={idx < t.rating ? "currentColor" : "none"} />)}
+                  </div>
+                </td>
+                <td className="px-6 py-4 flex gap-2">
+                  <Button variant="ghost" onClick={() => { setEditingItem(t); setShowModal("Testimonial"); }}><Edit size={14} /></Button>
+                  <Button variant="destructive" onClick={() => handleDelete('testimonials', t.id)}><Trash2 size={14} /></Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+
+  const renderBranches = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Our Branches</h2>
+        <Button onClick={() => { setEditingItem(null); setShowModal("Branch"); }}><Plus size={14} /> Add Branch</Button>
+      </div>
+      <div className="grid grid-cols-2 gap-[20px]">
+        {data.branches.map((b: any, i: number) => (
+          <Card key={i} className="flex gap-6 items-start">
+            <div className="w-[60px] h-[60px] bg-[#FEF2F1] rounded-[16px] flex items-center justify-center text-[#A93226] shrink-0">
+              <MapPin size={24} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-[16px] font-[700] text-[#111]">{b.name}</h3>
+                <div className="flex gap-2">
+                  <Button variant="ghost" className="!p-2" onClick={() => { setEditingItem(b); setShowModal("Branch"); }}><Edit size={14} /></Button>
+                  <Button variant="destructive" className="!p-2" onClick={() => handleDelete('branches', b.id)}><Trash2 size={14} /></Button>
+                </div>
+              </div>
+              <div className="space-y-2 text-[12px] text-[#666]">
+                <p className="flex items-center gap-2"><MapPin size={14} className="text-[#BBB]" /> {b.addr}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <p className="flex items-center gap-2"><Phone size={14} className="text-[#BBB]" /> {b.phone}</p>
+                  <p className="flex items-center gap-2"><User size={14} className="text-[#BBB]" /> {b.mgr}</p>
+                </div>
+                <p className="flex items-center gap-2"><Clock size={14} className="text-[#BBB]" /> {b.hours}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderMenus = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Navigation Menus</h2>
+        <Button onClick={() => alert("Menu management ready")}><Plus size={14} /> Add Menu Item</Button>
+      </div>
+      <Card className="max-w-2xl">
+        <div className="space-y-3">
+          {data.menus.map((m: any, i: number) => (
+            <div key={i} className="flex items-center gap-4 p-3 bg-[#F9F7F7] rounded-[8px] border border-[#EDE8E8] group">
+              <div className="cursor-move text-[#CCC] group-hover:text-[#A93226] transition-colors"><GripVertical size={18} /></div>
+              <div className="flex-1">
+                <p className="text-[13px] font-[600] text-[#111]">{m.label}</p>
+                <p className="text-[11px] text-[#999]">{m.url}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                {m.dropdown && <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold">Has Dropdown</span>}
+                <Button variant="ghost" className="!p-1.5"><Edit size={14} /></Button>
+                <Button variant="destructive" className="!p-1.5"><X size={14} /></Button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 pt-6 border-t flex justify-end">
+          <Button variant="primary">Save Menu Order</Button>
+        </div>
+      </Card>
     </div>
   );
 
@@ -513,6 +767,16 @@ export default function TransitPortal() {
           <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Contact Email</label><input type="text" value={data.settings.email || ''} onChange={e => setData({...data, settings: {...data.settings, email: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
           <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Phone</label><input type="text" value={data.settings.phone || ''} onChange={e => setData({...data, settings: {...data.settings, phone: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
         </div>
+        <div className="mt-8 pt-8 border-t border-[#EDE8E8]">
+          <h3 className="text-[13px] font-[700] text-[#111] mb-6">Social Media & Communication</h3>
+          <div className="grid grid-cols-2 gap-[14px]">
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Facebook URL</label><input type="text" value={data.settings.facebookUrl || ''} onChange={e => setData({...data, settings: {...data.settings, facebookUrl: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Instagram URL</label><input type="text" value={data.settings.instagramUrl || ''} onChange={e => setData({...data, settings: {...data.settings, instagramUrl: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">LinkedIn URL</label><input type="text" value={data.settings.linkedinUrl || ''} onChange={e => setData({...data, settings: {...data.settings, linkedinUrl: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">WhatsApp Number</label><input type="text" value={data.settings.whatsappNumber || ''} onChange={e => setData({...data, settings: {...data.settings, whatsappNumber: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. 9779851315991" /></div>
+          </div>
+        </div>
+
       </Card>
       <Button className="px-10 py-3 text-[14px]" loading={loading} onClick={() => handleSave('settings', data.settings)}>Save All Settings</Button>
     </div>
@@ -530,18 +794,15 @@ export default function TransitPortal() {
 
       {/* SIDEBAR */}
       <aside className="w-[232px] bg-white border-r border-[#EDE8E8] flex flex-col h-full shrink-0">
-        <div className="p-[20px] px-[18px] border-b border-[#EDE8E8] mb-[6px]">
-          <div className="flex items-center gap-[12px]">
-            <div className="w-[36px] h-[36px] bg-white rounded-[8px] flex items-center justify-center overflow-hidden border border-[#F0ECEC]">
-              <img 
-                src="/media/2021/05/Logo-png_website.png" 
-                alt="Transit Logo" 
-                className="w-full h-full object-contain p-1"
-              />
-            </div>
-            <div className="text-[#111] font-[800] text-[13px] leading-tight tracking-tight uppercase">
-              Transit Education<br/>
-              <span className="text-[#A93226] text-[10px] font-[700] tracking-[0.08em]">CMS PORTAL</span>
+        <div className="p-[28px] border-b border-[#F0ECEC] bg-white">
+          <div className="flex flex-col gap-[12px]">
+            <img 
+              src="/media/2021/05/Logo-png_website.png" 
+              alt="Transit Education" 
+              className="h-10 w-auto"
+            />
+            <div className="text-[#A93226] text-[10px] font-[700] tracking-[0.08em] uppercase">
+              CMS PORTAL
             </div>
           </div>
         </div>
@@ -563,10 +824,12 @@ export default function TransitPortal() {
         </div>
         <div className="p-[16px] border-t border-[#F0ECEC] bg-[#F9F4F4]">
           <div className="flex items-center gap-[10px]">
-            <div className="w-[32px] h-[32px] bg-[#A93226] text-white rounded-full flex items-center justify-center font-[700] text-[12px] shadow-md shadow-red-900/20">KD</div>
+            <div className="w-[32px] h-[32px] bg-[#A93226] text-white rounded-full flex items-center justify-center font-[700] text-[12px] shadow-md shadow-red-900/20">
+              {profile?.email?.[0]?.toUpperCase() || 'U'}
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-[600] text-[#111] truncate">Kshitij Dhamala</p>
-              <p className="text-[10px] text-[#A93226] font-[700] uppercase tracking-widest">Super Admin</p>
+              <p className="text-[12px] font-[600] text-[#111] truncate">{profile?.email?.split('@')[0] || 'User'}</p>
+              <p className="text-[10px] text-[#A93226] font-[700] uppercase tracking-widest">{profile?.role || 'User'}</p>
             </div>
             <button onClick={handleLogout} className="text-[#BBB] hover:text-[#A93226] transition-colors"><LogOut size={16} /></button>
           </div>
@@ -587,6 +850,11 @@ export default function TransitPortal() {
           {activeSection === "FAQ Manager" && renderFaqs()}
           {activeSection === "Country Pages" && renderCountries()}
           {activeSection === "Success Stories" && renderStories()}
+          {activeSection === "Resources" && renderResources()}
+          {activeSection === "Media Library" && renderMediaLibrary()}
+          {activeSection === "Testimonials" && renderTestimonials()}
+          {activeSection === "Branches" && renderBranches()}
+          {activeSection === "Menus" && renderMenus()}
           {activeSection === "Settings" && renderSettings()}
         </main>
       </div>
@@ -596,7 +864,18 @@ export default function TransitPortal() {
         <Modal 
           title={editingItem ? `Edit ${showModal}` : `New ${showModal}`} 
           onClose={() => { setShowModal(null); setEditingItem(null); }} 
-          onSave={() => handleSave(showModal === "Student" ? "students" : showModal === "Blog" ? "blog" : "success-stories", editingItem)}
+          onSave={() => {
+            const sectionMap: Record<string, string> = {
+              "Student": "students",
+              "Blog": "blog",
+              "Story": "success-stories",
+              "FAQ": "faqs",
+              "Testimonial": "testimonials",
+              "Branch": "branches",
+              "Resource": "resources"
+            };
+            handleSave(sectionMap[showModal] || showModal.toLowerCase(), editingItem);
+          }}
           loading={loading}
         >
           {showModal === "Student" && (
@@ -611,14 +890,14 @@ export default function TransitPortal() {
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Counselor</label><input type="text" value={editingItem?.counselor || ''} onChange={e => setEditingItem({...editingItem, counselor: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
             </>
           )}
-          {/* Blog Modal Removed in favor of full page editor */}
           {showModal === "FAQ" && (
             <>
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Question</label><input type="text" value={editingItem?.question || ''} onChange={e => setEditingItem({...editingItem, question: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none focus:border-[#A93226]" /></div>
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Answer</label><textarea rows={4} value={editingItem?.answer || ''} onChange={e => setEditingItem({...editingItem, answer: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none focus:border-[#A93226] resize-none"></textarea></div>
               <div className="grid grid-cols-2 gap-[14px]">
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Category</label><select value={editingItem?.category || ''} onChange={e => setEditingItem({...editingItem, category: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="">Select Category</option>{["General", "Canada", "Australia", "UK", "USA", "Germany", "New Zealand", "Japan", "South Korea", "Ireland", "Italy"].map(c => <option key={c} value={c}>{c}</option>)}</select></div>
-                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Appears On Page</label><select value={editingItem?.page || ''} onChange={e => setEditingItem({...editingItem, page: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="Homepage">Homepage</option>{data.countries.map((c:any) => <option key={c.code} value={`study-abroad/${c.code.toLowerCase()}`}>study-abroad/{c.code.toLowerCase()}</option>)}</select></div>
+                                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Appears On Page</label><select value={editingItem?.page || 'Homepage'} onChange={e => setEditingItem({...editingItem, page: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="Homepage">Homepage</option><option value="Blog">Blog</option><option value="About">About</option><option value="Contact">Contact</option><option value="Services">Services</option>{data.countries.map((c:any) => <option key={c.id} value={`study-abroad/${c.id}`}>study-abroad/{c.id}</option>)}</select></div>
+
               </div>
               <div className="grid grid-cols-3 gap-[14px]">
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Status</label><select value={editingItem?.status || 'Draft'} onChange={e => setEditingItem({...editingItem, status: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="Draft">Draft</option><option value="Published">Published</option></select></div>
@@ -631,8 +910,49 @@ export default function TransitPortal() {
             <>
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Student Name</label><input type="text" value={editingItem?.name || ''} onChange={e => setEditingItem({...editingItem, name: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
               <div className="grid grid-cols-2 gap-[14px]">
-                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">University</label><input type="text" value={editingItem?.uni || ''} onChange={e => setEditingItem({...editingItem, uni: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">University</label><input type="text" value={editingItem?.university || ''} onChange={e => setEditingItem({...editingItem, university: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Year</label><input type="text" value={editingItem?.year || ''} onChange={e => setEditingItem({...editingItem, year: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              </div>
+                            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Course</label><input type="text" value={editingItem?.course || ''} onChange={e => setEditingItem({...editingItem, course: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Approval Image URL</label><input type="text" value={editingItem?.approvalImage || ''} onChange={e => setEditingItem({...editingItem, approvalImage: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/filename.png" /></div>
+
+            </>
+          )}
+          {showModal === "Resource" && (
+            <>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Title</label><input type="text" value={editingItem?.title || ''} onChange={e => setEditingItem({...editingItem, title: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Category</label><select value={editingItem?.category || ''} onChange={e => setEditingItem({...editingItem, category: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="">Select Category</option><option value="Visa Documents">Visa Documents</option><option value="Official Links">Official Links</option><option value="Test Prep Materials">Test Prep Materials</option></select></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Type</label><select value={editingItem?.type || 'PDF'} onChange={e => setEditingItem({...editingItem, type: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="PDF">PDF</option><option value="External">External Link</option><option value="DOCX">Word Document</option></select></div>
+              </div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">URL / Link</label><input type="text" value={editingItem?.url || ''} onChange={e => setEditingItem({...editingItem, url: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="https://... or /media/..." /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">File Size / Label</label><input type="text" value={editingItem?.file_size || ''} onChange={e => setEditingItem({...editingItem, file_size: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. 1.2 MB or Link" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Display Order</label><input type="number" value={editingItem?.display_order || 0} onChange={e => setEditingItem({...editingItem, display_order: parseInt(e.target.value)})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              </div>
+            </>
+          )}
+          {showModal === "Testimonial" && (
+            <>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Student Name</label><input type="text" value={editingItem?.name || ''} onChange={e => setEditingItem({...editingItem, name: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">University</label><input type="text" value={editingItem?.university || ''} onChange={e => setEditingItem({...editingItem, university: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Course</label><input type="text" value={editingItem?.course || ''} onChange={e => setEditingItem({...editingItem, course: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Country</label><input type="text" value={editingItem?.country || ''} onChange={e => setEditingItem({...editingItem, country: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Rating (1-5)</label><input type="number" min="1" max="5" value={editingItem?.rating || 5} onChange={e => setEditingItem({...editingItem, rating: parseInt(e.target.value)})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              </div>
+                            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Testimonial Body</label><textarea rows={4} value={editingItem?.body || ''} onChange={e => setEditingItem({...editingItem, body: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Photo URL</label><input type="text" value={editingItem?.photo || ''} onChange={e => setEditingItem({...editingItem, photo: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/filename.png" /></div>
+
+            </>
+          )}
+          {showModal === "Branch" && (
+            <>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Branch Name</label><input type="text" value={editingItem?.name || ''} onChange={e => setEditingItem({...editingItem, name: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Address</label><input type="text" value={editingItem?.addr || ''} onChange={e => setEditingItem({...editingItem, addr: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Phone</label><input type="text" value={editingItem?.phone || ''} onChange={e => setEditingItem({...editingItem, phone: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Manager</label><input type="text" value={editingItem?.mgr || ''} onChange={e => setEditingItem({...editingItem, mgr: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
               </div>
             </>
           )}

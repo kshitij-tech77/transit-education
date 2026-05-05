@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
-import testimonialsData from "@/data/testimonials.json";
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials }: { testimonials: any[] }) {
+  const testimonialsData = testimonials || [];
   return (
     <section className="py-20 bg-off-white">
       <div className="container">
@@ -48,17 +48,17 @@ export default function Testimonials() {
                 {t.photo ? (
                   <img 
                     src={t.photo} 
-                    alt={t.name} 
+                    alt={t.name || "Student"} 
                     className="w-10 h-10 rounded-full object-cover shrink-0"
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {t.name.charAt(0)}
+                    {t.name ? t.name.charAt(0) : "S"}
                   </div>
                 )}
                 <div>
-                  <h4 className="font-bold text-sm text-black">{t.name}</h4>
-                  <p className="text-xs text-gray-500">{t.course}, {t.university}</p>
+                  <h4 className="font-bold text-sm text-black">{t.name || "Transit Student"}</h4>
+                  <p className="text-xs text-gray-500">{t.course || "International Student"}, {t.university || "University"}</p>
                 </div>
               </div>
             </motion.div>

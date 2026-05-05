@@ -6,7 +6,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
-export default function MobileMenu() {
+interface NavLink {
+  title: string;
+  href: string;
+}
+
+interface MobileMenuProps {
+  studyAbroadLinks?: NavLink[];
+  locationsLinks?: NavLink[];
+}
+
+export default function MobileMenu({ 
+  studyAbroadLinks = [], 
+  locationsLinks = [] 
+}: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -53,15 +66,38 @@ export default function MobileMenu() {
 
                 <div className="font-semibold text-brand mt-2 text-sm uppercase tracking-widest">Destinations</div>
                 <div className="pl-4 flex flex-col gap-3 text-base text-gray-600 border-l-2 border-brand-light">
-                  <Link href="/study-abroad/canada" onClick={() => setIsOpen(false)}>Canada</Link>
-                  <Link href="/study-abroad/australia" onClick={() => setIsOpen(false)}>Australia</Link>
-                  <Link href="/study-abroad/uk" onClick={() => setIsOpen(false)}>UK</Link>
-                  <Link href="/study-abroad/usa" onClick={() => setIsOpen(false)}>USA</Link>
+                  {studyAbroadLinks.length > 0 ? (
+                    studyAbroadLinks.map((link) => (
+                      <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>{link.title}</Link>
+                    ))
+                  ) : (
+                    <>
+                      <Link href="/study-abroad/canada" onClick={() => setIsOpen(false)}>Canada</Link>
+                      <Link href="/study-abroad/australia" onClick={() => setIsOpen(false)}>Australia</Link>
+                      <Link href="/study-abroad/uk" onClick={() => setIsOpen(false)}>UK</Link>
+                      <Link href="/study-abroad/usa" onClick={() => setIsOpen(false)}>USA</Link>
+                    </>
+                  )}
                 </div>
                 
                 <Link href="/services/admission-counselling" onClick={() => setIsOpen(false)}>Services</Link>
                 <Link href="/courses/test-preparation" onClick={() => setIsOpen(false)}>Courses</Link>
                 <Link href="/blog" onClick={() => setIsOpen(false)}>Blogs</Link>
+                
+                <div className="font-semibold text-brand mt-2 text-sm uppercase tracking-widest">Locations</div>
+                <div className="pl-4 flex flex-col gap-3 text-base text-gray-600 border-l-2 border-brand-light">
+                  {locationsLinks.length > 0 ? (
+                    locationsLinks.map((link) => (
+                      <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>{link.title}</Link>
+                    ))
+                  ) : (
+                    <>
+                      <Link href="/locations/kathmandu" onClick={() => setIsOpen(false)}>Kathmandu</Link>
+                      <Link href="/locations/itahari" onClick={() => setIsOpen(false)}>Itahari</Link>
+                    </>
+                  )}
+                </div>
+
                 <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
               </nav>
 

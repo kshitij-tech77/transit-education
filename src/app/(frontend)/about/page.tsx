@@ -1,8 +1,19 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import { GraduationCap, Globe2, Target, Heart, Award, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import FAQAccordion from "@/components/shared/FAQAccordion";
+import { buttonVariants } from "@/components/ui/button";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { data: faqs } = await supabase
+    .from('faqs')
+    .select('*')
+    .eq('page_path', 'About')
+    .eq('status', 'published')
+    .order('display_order', { ascending: true });
+
   const values = [
     {
       title: "Integrity",
@@ -139,6 +150,23 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <SectionLabel>FAQ</SectionLabel>
+                <h2 className="text-3xl font-bold text-black mt-4">Questions about Transit?</h2>
+              </div>
+              <div className="bg-off-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* CTA Section */}
       <section className="py-24">
         <div className="container">
@@ -154,18 +182,18 @@ export default function AboutPage() {
                 Join thousands of successful students who found their transit to success with us. Book a free consultation today.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <a 
+                <Link 
                   href="/contact" 
-                  className="bg-white text-brand px-8 py-4 rounded-full font-bold hover:bg-black hover:text-white transition-all shadow-lg"
+                  className={buttonVariants({ variant: "brand", size: "lg", className: "px-12 py-5 rounded-full bg-white text-brand hover:bg-black hover:text-white" })}
                 >
                   Book Free Consultation
-                </a>
-                <a 
+                </Link>
+                <Link 
                   href="/study-abroad" 
-                  className="bg-black/20 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-all"
+                  className={buttonVariants({ size: "lg", className: "bg-black/20 backdrop-blur-md text-white border border-white/30 px-12 py-5 rounded-full hover:bg-white/10" })}
                 >
                   Explore Destinations
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -174,3 +202,4 @@ export default function AboutPage() {
     </main>
   );
 }
+

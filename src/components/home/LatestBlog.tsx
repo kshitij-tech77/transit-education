@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import blogPosts from "@/data/blogPosts.json";
-import { BlogPost } from "@/lib/types/blog";
-
-const postsData = (blogPosts as BlogPost[]).slice(0, 3);
 import { Calendar, User } from "lucide-react";
 
-export default function LatestBlog() {
+export default function LatestBlog({ posts }: { posts: any[] }) {
+  const postsData = posts || [];
   return (
     <section className="py-20 bg-white">
       <div className="container">
@@ -47,7 +44,7 @@ export default function LatestBlog() {
             >
               <div className="aspect-video bg-gray-100 rounded-2xl mb-6 overflow-hidden relative border border-gray-100 shadow-sm">
                 <img 
-                  src={post.cover} 
+                  src={post.featuredImage} 
                   alt={post.title} 
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -55,15 +52,17 @@ export default function LatestBlog() {
                   {post.category}
                 </div>
               </div>
-              <h3 className="font-bold text-xl mb-3 leading-snug group-hover:text-brand transition-colors">
-                {post.title}
-              </h3>
+              <Link href={`/blog/${post.slug}`}>
+                <h3 className="font-bold text-xl mb-3 leading-snug group-hover:text-brand transition-colors">
+                  {post.title}
+                </h3>
+              </Link>
               <p className="text-gray-600 text-sm mb-6 line-clamp-3 flex-1">
-                {post.excerpt}
+                {post.body?.replace(/<[^>]*>?/gm, '').slice(0, 120)}...
               </p>
               <div className="flex items-center gap-4 text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
-                <span className="flex items-center gap-1.5"><User size={14} /> {post.author}</span>
-                <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="flex items-center gap-1.5"><User size={14} /> {post.authorName || 'Admin'}</span>
+                <span className="flex items-center gap-1.5"><Calendar size={14} /> {post.publishDate ? new Date(post.publishDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
               </div>
             </motion.div>
           ))}

@@ -1,32 +1,52 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { readJson, writeJson } from '@/lib/cms-data';
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
     const body = await req.json();
-    const data = await readJson('successStories.json');
-    const index = data.findIndex((item: any) => item.id === id);
-    
-    if (index === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    
-    data[index] = { ...data[index], ...body };
-    await writeJson('successStories.json', data);
-    
-    return NextResponse.json(data[index]);
+
+    const { data: updated, error } = await supabase
+      .from('success_stories')
+      .update({
+        name: body.name,
+        country: body.country,
+        flag: body.flag,
+        university: body.university,
+        course: body.course,
+        year: body.year,
+        image_url: body.approvalImage
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json(updated);
   } catch (error) {
+    console.error('PUT /api/cms/success-stories/[id] error:', error);
     return NextResponse.json({ error: "Update failed" }, { status: 400 });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
-    let data = await readJson('successStories.json');
-    data = data.filter((item: any) => item.id !== id);
-    await writeJson('successStories.json', data);
+    const { error } = await supabase
+      .from('success_stories')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('DELETE /api/cms/success-stories/[id] error:', error);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import teamData from "@/data/team.json";
 
-export default function TeamTeaser() {
+export default function TeamTeaser({ members }: { members: any[] }) {
+  const teamData = members || [];
   return (
     <section className="py-20 bg-white">
       <div className="container">

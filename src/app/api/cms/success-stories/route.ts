@@ -1,26 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readJson, writeJson } from '@/lib/cms-data';
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
-  const data = await readJson('successStories.json');
-  return NextResponse.json(data);
+  try {
+    const { data, error } = await supabase
+      .from('success_stories')
+      .select(`
+        *,
+        countries:country_id (name)
+      `)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+
+    // Transform for compatibility
+    const formattedData = data.map(s => ({
+      id: s.id,
+      name: s.student_name,
+      country: (s as any).countries?.name || s.country_id,
+      university: s.university,
+      year: s.year,
+      course: s.course,
+      approvalImage: s.approval_image_url
+    }));
+
+    return NextResponse.json(formattedData);
+  } catch (err) {
+    console.error('GET /api/cms/success-stories error:', err);
+    return NextResponse.json({ error: "Failed to load stories" }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const data = await readJson('successStories.json');
-    
-    const newItem = {
-      ...body,
-      id: Date.now().toString(),
-    };
-    
-    data.push(newItem);
-    await writeJson('successStories.json', data);
-    
+    const { data: newItem, error } = await supabase
+      .from('success_stories')
+      .insert({
+        student_name: body.name,
+        country_id: body.country?.toLowerCase().replace(/\s+/g, '-'),
+        university: body.university,
+        year: body.year,
+        course: body.course,
+        approval_image_url: body.approvalImage
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {
+    console.error('POST /api/cms/success-stories error:', error);
     return NextResponse.json({ error: "Failed to create story" }, { status: 400 });
   }
 }

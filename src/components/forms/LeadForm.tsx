@@ -30,16 +30,29 @@ export default function LeadForm() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Save to Supabase via our CMS API
+      const response = await fetch('/api/cms/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.fullName,
+          phone: data.whatsapp,
+          country: data.destination,
+          notes: `IELTS Status: ${data.ieltsStatus}`,
+          status: 'PENDING'
+        })
+      });
+
+      if (!response.ok) throw new Error("Failed to save lead");
+
       toast.success("Request sent successfully! We will contact you soon.");
       
-      // WhatsApp Deep Link
+      // WhatsApp Deep Link for immediate engagement
       const msg = `Hi, I'm ${data.fullName}. I'm interested in studying in ${data.destination}. My IELTS status is: ${data.ieltsStatus}.`;
       window.open(`https://wa.me/9779851315991?text=${encodeURIComponent(msg)}`, '_blank');
       
     } catch (error) {
+      console.error("Lead submission error:", error);
       toast.error("Something went wrong. Please try again.");
     }
   };
@@ -104,7 +117,7 @@ export default function LeadForm() {
         {errors.ieltsStatus && <p className="text-red-500 text-xs mt-1">{errors.ieltsStatus.message}</p>}
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-brand text-white hover:bg-brand-dark py-6 text-base font-bold rounded-lg mt-4 shadow-sm hover:-translate-y-0.5 transition-all">
+      <Button type="submit" disabled={isSubmitting} variant="brand" className="w-full py-6 text-base rounded-lg mt-4">
         {isSubmitting ? "Sending..." : "Send my free profile review →"}
       </Button>
     </form>

@@ -1,35 +1,30 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import { FileDown, Globe2, BookOpen, ClipboardList, Info, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const { data: resources } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('status', 'published')
+    .order('display_order', { ascending: true });
+
   const categories = [
     {
       title: "Visa Documents",
       icon: <ClipboardList className="w-8 h-8" />,
-      resources: [
-        { name: "NOC Application Guide", type: "PDF", size: "1.2 MB" },
-        { name: "SOP Writing Checklist", type: "PDF", size: "850 KB" },
-        { name: "Financial Affidavit Template", type: "DOCX", size: "45 KB" },
-      ],
+      resources: resources?.filter(r => r.category === 'Visa Documents') || [],
     },
     {
       title: "Official Links",
       icon: <Globe2 className="w-8 h-8" />,
-      resources: [
-        { name: "Canada IRCC Portal", type: "External", size: "Link" },
-        { name: "Australia Home Affairs", type: "External", size: "Link" },
-        { name: "UK VI Portal", type: "External", size: "Link" },
-      ],
+      resources: resources?.filter(r => r.category === 'Official Links') || [],
     },
     {
       title: "Test Prep Materials",
       icon: <BookOpen className="w-8 h-8" />,
-      resources: [
-        { name: "IELTS Vocabulary List", type: "PDF", size: "3.5 MB" },
-        { name: "PTE Practice Test 1", type: "PDF", size: "2.1 MB" },
-        { name: "TOEFL Structure Guide", type: "PDF", size: "1.1 MB" },
-      ],
+      resources: resources?.filter(r => r.category === 'Test Prep Materials') || [],
     },
   ];
 
@@ -70,18 +65,24 @@ export default function ResourcesPage() {
                 </div>
                 
                 <div className="space-y-4">
-                  {category.resources.map((res, rIdx) => (
-                    <div key={rIdx} className="bg-off-white p-6 rounded-2xl border border-gray-100 flex items-center justify-between group hover:border-brand/20 transition-all">
+                  {category.resources.map((res: any, rIdx: number) => (
+                    <a 
+                      key={rIdx} 
+                      href={res.url}
+                      target={res.type === 'External' ? '_blank' : '_self'}
+                      rel={res.type === 'External' ? 'noopener noreferrer' : ''}
+                      className="bg-off-white p-6 rounded-2xl border border-gray-100 flex items-center justify-between group hover:border-brand/20 transition-all block"
+                    >
                       <div>
-                        <h3 className="font-bold text-black text-sm group-hover:text-brand transition-colors">{res.name}</h3>
+                        <h3 className="font-bold text-black text-sm group-hover:text-brand transition-colors">{res.title}</h3>
                         <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">
-                          {res.type} &bull; {res.size}
+                          {res.type} &bull; {res.file_size}
                         </p>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:bg-brand group-hover:text-white transition-all cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:bg-brand group-hover:text-white transition-all">
                         <FileDown className="w-5 h-5" />
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>

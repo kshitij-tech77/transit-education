@@ -1,19 +1,13 @@
 import { MapPin, Phone, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-const branches = [
-  { name: "Kathmandu (HQ)", address: "Putalisadak, Kathmandu", phone: "(+977) 9851315991", slug: "kathmandu" },
-  { name: "Itahari", address: "Rano Complex, Sangit Chowk, Itahari", phone: "(+977) 025-590570", slug: "itahari" },
-  { name: "Damak", address: "Dipini Marg, Damak", phone: "(+977) 023-577162", slug: "damak" },
-  { name: "Damauli", address: "Main Road, Damauli", phone: "(+977) 065-590110", slug: "damauli" },
-];
-
-export default function BranchesStrip() {
+export default function BranchesStrip({ branches }: { branches: any[] }) {
+  const branchData = branches || [];
   return (
     <section className="py-12 bg-black border-t border-gray-800">
       <div className="container">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {branches.map((branch) => (
+          {branchData.map((branch) => (
             <Link key={branch.slug} href={`/locations/${branch.slug}`} className="bg-gray-900/50 hover:bg-gray-800 border border-gray-800 p-6 rounded-xl transition-all group">
               <h3 className="text-white font-bold text-lg mb-4">{branch.name}</h3>
               <div className="space-y-3 mb-6">

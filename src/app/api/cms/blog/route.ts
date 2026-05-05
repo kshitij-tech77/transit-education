@@ -1,11 +1,48 @@
 import { NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/server/fs';
-import { BlogPost } from '@/lib/types/blog';
-
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const posts = await readJSON<BlogPost[]>('blogPosts.json');
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select(`
+        *,
+        authors (
+          name,
+          credential,
+          bio
+        )
+      `)
+      .order('publish_date', { ascending: false });
+
+    if (error) throw error;
+
+    // Transform to match old JSON shape (author details at top level, camelCase)
+    const posts = data.map((post: any) => ({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      body: post.body,
+      category: post.category,
+      tags: post.tags,
+      status: post.status,
+      publishDate: post.publish_date,
+      featuredImage: post.featured_image,
+      metaTitle: post.meta_title,
+      metaDescription: post.meta_description,
+      focusKeyword: post.focus_keyword,
+      canonicalUrl: post.canonical_url,
+      authorName: post.authors?.name || 'Transit Education',
+      authorCredential: post.authors?.credential || '',
+      authorBio: post.authors?.bio || '',
+      lastReviewed: post.last_reviewed_at,
+      sources: post.sources,
+      primaryQuestion: post.primary_question,
+      answerSummary: post.answer_summary,
+      faqItems: post.faq_schema,
+      readingTime: post.reading_time
+    }));
+
     return NextResponse.json(posts);
   } catch (err) {
     console.error('GET /api/cms/blog error:', err);
@@ -16,7 +53,6 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    const posts = await readJSON<BlogPost[]>('blogPosts.json');
 
     const title = data.title || 'Untitled';
     const slug =
@@ -25,41 +61,30 @@ export async function POST(req: Request) {
         ? data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
         : crypto.randomUUID());
 
-    const newPost: BlogPost = {
-      id: crypto.randomUUID(),
-      title,
-      slug,
-      body: data.body || '',
-      category: data.category || 'Visa Tips',
-      tags: data.tags || [],
-      status: data.status || 'draft',
-      publishDate: data.publishDate || new Date().toISOString(),
-      featuredImage: data.featuredImage || '',
-      
-      // SEO Settings
-      metaTitle: data.metaTitle || '',
-      metaDescription: data.metaDescription || '',
-      focusKeyword: data.focusKeyword || '',
-      canonicalUrl: data.canonicalUrl || '',
+    const { data: newPost, error } = await supabase
+      .from('blog_posts')
+      .insert({
+        title,
+        slug,
+        body: data.body || '',
+        category: data.category || 'Visa Tips',
+        tags: data.tags || [],
+        status: data.status || 'draft',
+        publish_date: data.publishDate || new Date().toISOString(),
+        featured_image: data.featuredImage || '',
+        meta_title: data.metaTitle || '',
+        meta_description: data.metaDescription || '',
+        focus_keyword: data.focusKeyword || '',
+        canonical_url: data.canonicalUrl || '',
+        primary_question: data.primaryQuestion || '',
+        answer_summary: data.answerSummary || '',
+        faq_schema: data.faqItems || [],
+        reading_time: data.readingTime || '1 min read'
+      })
+      .select()
+      .single();
 
-      // EEAT Signals
-      authorName: data.authorName || 'Kshitij Dhamala',
-      authorCredential: data.authorCredential || '',
-      authorBio: data.authorBio || '',
-      lastReviewed: data.lastReviewed || '',
-      sources: data.sources || [],
-
-      // AEO (Answer Engine)
-      primaryQuestion: data.primaryQuestion || '',
-      answerSummary: data.answerSummary || '',
-      faqItems: data.faqItems || [],
-
-      // Analytics
-      readingTime: data.readingTime || '1 min read'
-    };
-
-    posts.push(newPost);
-    await writeJSON('blogPosts.json', posts);
+    if (error) throw error;
     return NextResponse.json(newPost, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/blog error:', err);

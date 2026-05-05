@@ -1,10 +1,49 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
-import blogPosts from "@/data/blogPosts.json";
+import { supabase } from "@/lib/supabase";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
+import FAQAccordion from "@/components/shared/FAQAccordion";
+import NewsletterForm from "@/components/layout/NewsletterForm";
 
-export default function BlogPage() {
+
+export default async function BlogPage() {
+  const [{ data: posts }, { data: categoriesRaw }, { data: faqs }] = await Promise.all([
+    supabase
+      .from('blog_posts')
+      .select(`
+        *,
+        authors (name)
+      `)
+      .eq('status', 'published')
+      .order('publish_date', { ascending: false }),
+    supabase
+      .from('blog_posts')
+      .select('category')
+      .eq('status', 'published'),
+    supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', 'Blog')
+      .eq('status', 'published')
+      .order('display_order', { ascending: true })
+  ]);
+
+  const blogPosts = posts?.map(p => ({
+    ...p,
+    publishDate: p.publish_date,
+    featuredImage: p.featured_image,
+    authorName: (p as any).authors?.name || "Admin",
+    excerpt: p.body?.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...'
+  })) || [];
+
+  const categoryCounts = categoriesRaw?.reduce((acc: any, curr) => {
+    acc[curr.category] = (acc[curr.category] || 0) + 1;
+    return acc;
+  }, {}) || {};
+
+  const categories = Object.entries(categoryCounts).map(([name, count]) => ({ name, count: count as number }));
+
   return (
     <main className="pt-20">
       {/* Hero Section */}
@@ -34,15 +73,17 @@ export default function BlogPage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-16">
-              {blogPosts.map((post) => (
+              {blogPosts.length > 0 ? blogPosts.map((post) => (
                 <article key={post.id} className="group">
                   <Link href={`/blog/${post.slug}`} className="block relative h-[400px] rounded-[2.5rem] overflow-hidden mb-8 shadow-lg group-hover:shadow-2xl transition-all duration-500">
-                    <Image
-                      src={post.featuredImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
+                    {post.featuredImage && (
+                      <Image
+                        src={post.featuredImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    )}
                     <div className="absolute top-6 left-6">
                       <span className="bg-brand text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">
                         {post.category}
@@ -57,7 +98,7 @@ export default function BlogPage() {
                         {new Date(post.publishDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </span>
                       <span className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-brand" /> Admin
+                        <User className="w-4 h-4 text-brand" /> {post.authorName}
                       </span>
                     </div>
                     
@@ -68,7 +109,7 @@ export default function BlogPage() {
                     </Link>
                     
                     <p className="text-gray-600 leading-relaxed line-clamp-3">
-                      Everything you need to know about navigating the latest requirements and ensuring a successful application journey for your chosen destination.
+                      {post.excerpt}
                     </p>
                     
                     <Link 
@@ -79,7 +120,11 @@ export default function BlogPage() {
                     </Link>
                   </div>
                 </article>
-              ))}
+              )) : (
+                <div className="py-20 text-center">
+                  <p className="text-gray-500 text-lg">No blog posts found.</p>
+                </div>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -101,10 +146,10 @@ export default function BlogPage() {
               <div className="bg-off-white p-8 rounded-[2rem] border border-gray-100">
                 <h3 className="text-xl font-bold text-black mb-6">Categories</h3>
                 <ul className="space-y-4">
-                  {['Canada', 'Australia', 'UK', 'USA', 'Visa Guides', 'Success Stories'].map((cat) => (
-                    <li key={cat}>
-                      <Link href="#" className="flex items-center justify-between text-gray-600 hover:text-brand font-medium transition-colors">
-                        {cat} <span className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-400 border border-gray-100">0</span>
+                  {categories.map((cat) => (
+                    <li key={cat.name}>
+                      <Link href={`/blog?category=${cat.name}`} className="flex items-center justify-between text-gray-600 hover:text-brand font-medium transition-colors">
+                        {cat.name} <span className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-400 border border-gray-100">{cat.count}</span>
                       </Link>
                     </li>
                   ))}
@@ -118,21 +163,29 @@ export default function BlogPage() {
                 <p className="text-white/80 mb-8 text-sm leading-relaxed">
                   Get the latest updates and visa news directly in your inbox.
                 </p>
-                <div className="space-y-4">
-                  <input 
-                    type="email" 
-                    placeholder="Your Email"
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-3 px-4 text-white placeholder:text-white/50 focus:outline-none focus:bg-white/20 transition-all"
-                  />
-                  <button className="w-full bg-white text-brand py-3 rounded-xl font-bold hover:bg-black hover:text-white transition-all">
-                    Subscribe
-                  </button>
-                </div>
+                <NewsletterForm />
               </div>
             </aside>
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <section className="py-24 bg-off-white">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <SectionLabel>Blog FAQ</SectionLabel>
+                <h2 className="text-3xl font-bold text-black mt-4">Frequently Asked Questions</h2>
+              </div>
+              <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

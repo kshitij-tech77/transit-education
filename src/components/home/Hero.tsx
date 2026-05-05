@@ -20,6 +20,15 @@ export default function Hero() {
     dragFree: true
   });
 
+  const getFlagEmoji = (countryCode: string) => {
+    if (!countryCode || countryCode.length !== 2) return countryCode;
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+  };
+
   const fetchData = async () => {
     try {
       const [storiesRes, countriesRes] = await Promise.all([
@@ -29,8 +38,16 @@ export default function Hero() {
       const stories = await storiesRes.json();
       const countries = await countriesRes.json();
       
+      const mappedCountries = countries.map((c: any) => {
+        const flagCode = (c.flag || c.code || '').trim();
+        return {
+          ...c,
+          flag: flagCode.length === 2 ? getFlagEmoji(flagCode) : flagCode
+        };
+      });
+
       setSuccessStories(stories.slice(0, 6)); // Latest 6
-      setLiveCountries(countries.filter((c: any) => c.status === 'LIVE'));
+      setLiveCountries(mappedCountries.filter((c: any) => c.status === 'LIVE'));
     } catch (error) {
       console.error("Failed to fetch hero data:", error);
     } finally {
@@ -58,14 +75,26 @@ export default function Hero() {
 
   if (loading) {
     return (
-      <section className="relative h-screen flex items-center justify-center bg-[#FAFAF8]">
-        <Loader2 className="animate-spin text-[#A93226]" size={40} />
+      <section className="relative pt-24 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-[#FAFAF8]">
+        <div className="container relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+          <div className="lg:col-span-6 xl:col-span-7">
+            <div className="w-48 h-8 bg-gray-200 animate-pulse rounded-full mb-10" />
+            <div className="w-full h-32 bg-gray-200 animate-pulse rounded-2xl mb-8" />
+            <div className="w-3/4 h-8 bg-gray-200 animate-pulse rounded-lg mb-12" />
+            <div className="flex gap-5">
+              <div className="w-48 h-16 bg-gray-200 animate-pulse rounded-2xl" />
+            </div>
+          </div>
+          <div className="lg:col-span-6 xl:col-span-5">
+            <div className="w-full h-[400px] bg-gray-200 animate-pulse rounded-[40px]" />
+          </div>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="relative pt-24 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-[#FAFAF8]">
+    <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-[#FAFAF8]">
       {/* ─── PREMIUM SUBTLE BACKGROUND ─── */}
       <div className="absolute inset-0 z-0">
         <motion.div 
@@ -103,7 +132,7 @@ export default function Hero() {
           </motion.p>
           
           <div className="flex flex-col sm:flex-row gap-5">
-            <Link href="/contact" className={buttonVariants({ size: "lg", className: "bg-[#A93226] text-white hover:bg-[#8E241C] font-black text-base h-16 px-12 rounded-2xl shadow-xl transition-all" })}>
+            <Link href="/contact" className={buttonVariants({ variant: "brand", size: "lg", className: "h-16 px-12 rounded-2xl" })}>
               Book Free Consultation
             </Link>
           </div>
@@ -111,7 +140,7 @@ export default function Hero() {
           <div className="mt-16 flex flex-col sm:flex-row items-start sm:items-center gap-8">
             <div className="flex -space-x-4">
               {[10, 20, 32, 45].map(id => (
-                <div key={id} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative">
+                <div key={id} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
                    <Image src={`https://i.pravatar.cc/100?u=${id}`} alt="Student" fill sizes="56px" className="object-cover" />
                 </div>
               ))}
@@ -138,12 +167,19 @@ export default function Hero() {
               <div className="relative h-[360px] rounded-[30px] overflow-hidden shadow-2xl bg-black/10">
                 <AnimatePresence mode="wait">
                   <motion.div key={current} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
-                    {/* Fallback to initials if no URL, but using placeholder for now */}
-                    <div className="w-full h-full bg-[#A93226]/20 flex items-center justify-center text-white/20 text-6xl font-black">{successStories[current].flag}</div>
+                    {successStories[current].image_url ? (
+                      <Image src={successStories[current].image_url} alt={successStories[current].name} fill className="object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#A93226]/20 flex items-center justify-center text-white/20 text-6xl font-black">{successStories[current].flag}</div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+                    <div className="absolute top-6 left-6 flex items-center gap-2">
+                       <span className="text-2xl">{successStories[current].flag}</span>
+                       <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full border border-white/10 uppercase tracking-widest">{successStories[current].country}</span>
+                    </div>
                     <div className="absolute bottom-8 left-8 right-8 text-white">
                       <h4 className="font-black text-3xl mb-1">{successStories[current].name}</h4>
-                      <p className="text-sm font-medium opacity-80 flex items-center gap-1.5"><MapPin size={16} /> {successStories[current].country}</p>
+                      <p className="text-sm font-medium opacity-80 flex items-center gap-1.5">{successStories[current].university}</p>
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -164,7 +200,7 @@ export default function Hero() {
               <div className="flex gap-5">
                 {liveCountries.map((c) => (
                   <div key={c.id} className="flex-[0_0_190px] min-w-0">
-                    <Link href={`/study-abroad/${c.id}`}>
+                    <Link href={`/study-abroad/${c.code}`}>
                       <div className="bg-white p-6 rounded-[28px] shadow-sm flex flex-col items-start gap-6 border border-gray-100 group transition-all">
                         <div className="flex justify-between items-center w-full">
                           <div className="text-3xl">{c.flag}</div>

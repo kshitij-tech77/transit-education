@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/server/fs';
+import { supabase } from '@/lib/supabase';
 
 export async function PUT(
   req: Request,
@@ -8,14 +8,26 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
-    const data = await readJSON<any[]>('faqs.json');
-    const index = data.findIndex(item => item.id === id);
-    if (index === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    
-    data[index] = { ...data[index], ...body };
-    await writeJSON('faqs.json', data);
-    return NextResponse.json(data[index]);
+
+    const { data: updated, error } = await supabase
+      .from('faqs')
+      .update({
+        question: body.question,
+        answer: body.answer,
+        category: body.category,
+        page_path: body.page,
+        status: body.status?.toLowerCase(),
+        is_featured: body.featured,
+        display_order: body.order
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json(updated);
   } catch (err) {
+    console.error('PUT /api/cms/faqs/[id] error:', err);
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
 }
@@ -26,11 +38,15 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const data = await readJSON<any[]>('faqs.json');
-    const filtered = data.filter(item => item.id !== id);
-    await writeJSON('faqs.json', filtered);
+    const { error } = await supabase
+      .from('faqs')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (err) {
+    console.error('DELETE /api/cms/faqs/[id] error:', err);
     return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }

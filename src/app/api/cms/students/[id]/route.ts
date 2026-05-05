@@ -1,29 +1,64 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { readJson, writeJson } from '@/lib/cms-data';
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
     const body = await req.json();
-    const data = await readJson('students.json');
-    const index = data.findIndex((item: any) => item.id === id);
-    if (index === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    data[index] = { ...data[index], ...body };
-    await writeJson('students.json', data);
-    return NextResponse.json(data[index]);
+
+    // Handle branch lookup if name provided
+    let branchId = body.branch_id;
+    if (body.branch && !branchId) {
+      const { data: branch } = await supabase
+        .from('branches')
+        .select('id')
+        .eq('name', body.branch)
+        .maybeSingle();
+      if (branch) branchId = branch.id;
+    }
+
+    const { data: updated, error } = await supabase
+      .from('students')
+      .update({
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        branch_id: branchId,
+        interested_country_id: body.country?.toLowerCase().replace(/\s+/g, '-'),
+        counselor_name: body.counselor,
+        status: body.status?.toUpperCase(),
+        notes: body.notes
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json(updated);
   } catch (error) {
+    console.error('PUT /api/cms/students/[id] error:', error);
     return NextResponse.json({ error: "Update failed" }, { status: 400 });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params;
-    let data = await readJson('students.json');
-    data = data.filter((item: any) => item.id !== id);
-    await writeJson('students.json', data);
+    const { error } = await supabase
+      .from('students')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('DELETE /api/cms/students/[id] error:', error);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }

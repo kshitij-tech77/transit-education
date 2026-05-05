@@ -1,8 +1,11 @@
 import Hero from "@/components/home/Hero";
+import UniversityLogos from "@/components/home/UniversityLogos";
 import Destinations from "@/components/home/Destinations";
 import WelcomeAbout from "@/components/home/WelcomeAbout";
 import Services from "@/components/home/Services";
 import WhyTransit from "@/components/home/WhyTransit";
+import StatsSection from "@/components/home/StatsSection";
+import ProcessSteps from "@/components/shared/ProcessSteps";
 import SuccessStories from "@/components/home/SuccessStories";
 import TeamTeaser from "@/components/home/TeamTeaser";
 import Testimonials from "@/components/home/Testimonials";
@@ -11,7 +14,7 @@ import ContactCTA from "@/components/home/ContactCTA";
 import BranchesStrip from "@/components/home/BranchesStrip";
 import SectionLabel from "@/components/shared/SectionLabel";
 import FAQAccordion from "@/components/shared/FAQAccordion";
-import { readJson } from "@/lib/cms-data";
+import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,10 +23,104 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const faqsAll = await readJson('faqs.json');
-  const featuredFaqs = faqsAll
-    .filter((f: any) => f.featured === true && f.status === 'Published')
-    .slice(0, 6);
+  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, branchesRes, settingsRes, unisRes] = await Promise.all([
+    supabase
+      .from('faqs')
+      .select('*')
+      .eq('is_featured', true)
+      .eq('status', 'published')
+      .order('display_order', { ascending: true })
+      .limit(6),
+    supabase
+      .from('team_members')
+      .select(`
+        *,
+        branches (name)
+      `)
+      .order('name', { ascending: true })
+      .limit(4),
+    supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('status', 'published')
+      .order('publish_date', { ascending: false })
+      .limit(3),
+    supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(3),
+    supabase
+      .from('success_stories')
+      .select('*')
+      .order('year', { ascending: false })
+      .limit(8),
+    supabase
+      .from('branches')
+      .select('*')
+      .order('name', { ascending: true }),
+    supabase
+      .from('site_settings')
+      .select('*')
+      .single(),
+    supabase
+      .from('universities')
+      .select('*')
+      .eq('is_featured', true)
+  ]);
+
+  const getFlagEmoji = (countryCode: string) => {
+    if (!countryCode || countryCode.length !== 2) return countryCode;
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+  };
+
+  const featuredFaqs = faqsRes.data?.map(f => ({
+    ...f,
+    featured: f.is_featured,
+    status: 'Published'
+  })) || [];
+
+  const teamMembers = teamRes.data?.map(m => ({
+    ...m,
+    role: m.position,
+    photo: m.photo_url,
+    branch: (m as any).branches?.name || 'N/A'
+  })) || [];
+
+  const blogPosts = postsRes.data?.map(p => ({
+    ...p,
+    publishDate: p.publish_date,
+    featuredImage: p.featured_image
+  })) || [];
+
+  const testimonials = testimonialsRes.data?.map(t => {
+    const flagCode = (t.country_id || '').trim();
+    return {
+      ...t,
+      name: t.student_name,
+      photo: t.photo_url,
+      country: flagCode.length === 2 ? getFlagEmoji(flagCode) : flagCode
+    };
+  }) || [];
+
+  const successStories = successStoriesRes.data?.map(s => {
+    const flagCode = (s.country_id || '').trim();
+    return {
+      ...s,
+      name: s.student_name,
+      flag: flagCode.length === 2 ? getFlagEmoji(flagCode) : flagCode,
+      approvalImage: s.image_url
+    };
+  }) || [];
+
+  const branches = branchesRes.data?.map(b => ({
+    ...b,
+    slug: b.location_slug || b.id
+  })) || [];
 
   // FAQ Schema for Homepage
   const faqSchema = featuredFaqs.length > 0 ? {
@@ -48,13 +145,16 @@ export default async function Home() {
         />
       )}
       <Hero />
+      <UniversityLogos universities={unisRes.data || []} />
       <Destinations />
       <WelcomeAbout />
       <Services />
+      <StatsSection stats={settingsRes.data} />
       <WhyTransit />
-      <SuccessStories />
-      <TeamTeaser />
-      <Testimonials />
+      <ProcessSteps />
+      <SuccessStories stories={successStories} />
+      <TeamTeaser members={teamMembers} />
+      <Testimonials testimonials={testimonials} />
       
       {/* FAQ Section */}
       <section className="py-24 bg-[#F7F3F3]">
@@ -74,9 +174,9 @@ export default async function Home() {
         </div>
       </section>
 
-      <LatestBlog />
+      <LatestBlog posts={blogPosts} />
       <ContactCTA />
-      <BranchesStrip />
+      <BranchesStrip branches={branches} />
     </>
   );
 }
