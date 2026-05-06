@@ -175,7 +175,7 @@ export default function Header({
 
         {/* CTA */}
         <div className="flex items-center gap-2 lg:gap-4">
-          <Link href="/contact" className={buttonVariants({ variant: "brand", className: "hidden md:inline-flex px-6 rounded-lg" })}>
+          <Link href="/contact" className={buttonVariants({ variant: "brand", className: "hidden lg:inline-flex px-6 rounded-lg" })}>
             Free Consultation
           </Link>
           <div className="ml-2 lg:ml-0">

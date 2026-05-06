@@ -33,7 +33,7 @@ export default async function FrontendLayout({
         studyAbroadLinks={studyAbroadLinks.length > 0 ? studyAbroadLinks : undefined}
         locationsLinks={locationsLinks.length > 0 ? locationsLinks : undefined}
       />
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main className="flex-1 flex flex-col overflow-x-hidden relative">{children}</main>
       <Footer settings={settings} />
       <WhatsAppButton phoneNumber={settings?.whatsapp_number} />
       <CookieConsent />

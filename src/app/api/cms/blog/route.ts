@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('blog_posts')
       .select(`
@@ -52,6 +53,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
     const data = await req.json();
 
     const title = data.title || 'Untitled';

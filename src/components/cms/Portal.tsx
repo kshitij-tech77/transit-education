@@ -240,7 +240,11 @@ export default function TransitPortal() {
     setLoading(true);
     try {
       const isEdit = !!item.id;
-      const apiPath = section === "Blog" ? "blog" : section === "Country Pages" ? "countries" : section.toLowerCase().replace(" ", "-");
+      const apiPath = 
+        section === "Blog" ? "blog" : 
+        section === "Country Pages" ? "countries" : 
+        section === "FAQ" ? "faqs" : 
+        section.toLowerCase().replace(" ", "-");
       const url = isEdit ? `/api/cms/${apiPath}/${item.id || item.code}` : `/api/cms/${apiPath}`;
       const method = isEdit ? 'PUT' : 'POST';
 
@@ -274,6 +278,25 @@ export default function TransitPortal() {
       fetchData();
     } catch (error) {
       setToast("Error deleting item");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteMedia = async (filePath: string) => {
+    if (!confirm("Are you sure you want to delete this file? This cannot be undone.")) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/cms/media', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filePath })
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      setToast("Media deleted successfully!");
+      fetchData();
+    } catch (error) {
+      setToast("Error deleting media");
     } finally {
       setLoading(false);
     }
@@ -591,7 +614,12 @@ export default function TransitPortal() {
                 <p className="text-white/70 text-[8px] mb-2">{file.size}</p>
                 <div className="flex gap-2">
                   <button className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full text-white"><Eye size={12} /></button>
-                  <button className="p-1.5 bg-white/20 hover:bg-red-500/40 rounded-full text-white"><Trash2 size={12} /></button>
+                  <button 
+                    onClick={() => handleDeleteMedia(file.path)}
+                    className="p-1.5 bg-white/20 hover:bg-red-500/40 rounded-full text-white"
+                  >
+                    <Trash2 size={12} />
+                  </button>
                 </div>
               </div>
             </div>

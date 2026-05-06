@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { Calendar, User, Tag, ArrowLeft, Clock, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Metadata } from "next";
+import DOMPurify from "isomorphic-dompurify";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -202,7 +203,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             <div 
               className="prose prose-lg prose-slate max-w-none prose-headings:text-black prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-black prose-a:text-brand hover:prose-a:text-brand-dark transition-colors"
-              dangerouslySetInnerHTML={{ __html: formattedPost.body }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formattedPost.body) }}
             />
             
             {/* FAQ Section */}

@@ -56,21 +56,24 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protected routes for /cms (except /cms/login)
-  if (request.nextUrl.pathname.startsWith('/cms') && !request.nextUrl.pathname.startsWith('/cms/login')) {
-    if (!user) {
+  const isCmsRoute = request.nextUrl.pathname.startsWith('/cms') && !request.nextUrl.pathname.startsWith('/cms/login')
+  const isCmsApiRoute = request.nextUrl.pathname.startsWith('/api/cms')
+
+  if (isCmsRoute || isCmsApiRoute) {
+    // Allow public POST to /api/cms/students for lead generation
+    const isPublicLeadPost = isCmsApiRoute && request.nextUrl.pathname === '/api/cms/students' && request.method === 'POST'
+
+    if (!user && !isPublicLeadPost) {
+      if (isCmsApiRoute) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
       return NextResponse.redirect(new URL('/cms/login', request.url))
     }
-
-    // Role check if needed
-    // You could fetch the profile here, but for now we'll just check if user exists
-    // The user's role from the profiles table should determine what they can access
-    // This part can be more detailed in the actual CMS components
   }
 
   return response
 }
 
 export const config = {
-  matcher: ['/cms/:path*'],
+  matcher: ['/cms/:path*', '/api/cms/:path*'],
 }

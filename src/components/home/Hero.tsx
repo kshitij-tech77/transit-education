@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, MapPin, ArrowUpRight, Globe2, Sparkles, Loader2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import useEmblaCarousel from 'embla-carousel-react';
+import "flag-icons/css/flag-icons.min.css";
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
@@ -94,20 +95,20 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-[#FAFAF8]">
+    <section className="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-x-hidden bg-[#FAFAF8]">
       {/* ─── PREMIUM SUBTLE BACKGROUND ─── */}
       <div className="absolute inset-0 z-0">
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[#A93226] rounded-full blur-[150px] pointer-events-none opacity-10" 
+          className="absolute top-[-10%] -right-20 lg:right-[-5%] w-[500px] lg:w-[800px] h-[500px] lg:h-[800px] bg-[#A93226] rounded-full blur-[100px] lg:blur-[150px] pointer-events-none opacity-10" 
         />
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
-      <div className="container relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+      <div className="container px-4 relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center overflow-x-hidden">
         {/* ─── LEFT CONTENT ─── */}
-        <div className="lg:col-span-6 xl:col-span-7">
+        <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -121,23 +122,23 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8 }}
-            className="text-[clamp(48px,6.5vw,90px)] font-black leading-[0.98] mb-8 tracking-[-0.04em] text-[#A93226]"
+            className="text-4xl sm:text-5xl lg:text-[clamp(48px,6.5vw,90px)] font-black leading-[1.15] lg:leading-[0.98] mb-8 tracking-[-0.04em] text-[#A93226] max-w-full break-words"
           >
-            Your Transit to<br />
-            <span className="text-[#111111]">Global Destinations</span>
+            Dream. Apply.<br />
+            <span className="text-[#111111]">Fly.</span>
           </motion.h1>
           
           <motion.p className="text-gray-600 text-lg lg:text-xl max-w-[580px] mb-12 leading-relaxed">
             Expert visa guidance for Canada, Australia, UK, USA & Europe. 4 branches across Nepal.
           </motion.p>
           
-          <div className="flex flex-col sm:flex-row gap-5">
-            <Link href="/contact" className={buttonVariants({ variant: "brand", size: "lg", className: "h-16 px-12 rounded-2xl" })}>
+          <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto px-4 sm:px-0">
+            <Link href="/contact" className={buttonVariants({ variant: "brand", size: "lg", className: "h-14 sm:h-16 px-8 sm:px-12 rounded-xl sm:rounded-2xl w-full sm:w-auto" })}>
               Book Free Consultation
             </Link>
           </div>
 
-          <div className="mt-16 flex flex-col sm:flex-row items-start sm:items-center gap-8">
+          <div className="mt-16 flex flex-col sm:flex-row items-center lg:items-start gap-8">
             <div className="flex -space-x-4">
               {[10, 20, 32, 45].map(id => (
                 <div key={id} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
@@ -146,7 +147,7 @@ export default function Hero() {
               ))}
               <div className="w-14 h-14 rounded-full border-[3px] border-white bg-[#A93226] flex items-center justify-center text-[13px] font-black text-white shadow-lg z-10">+2k</div>
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-lg font-black text-[#111111]">2,000+ Success Stories</p>
               <p className="text-[10px] text-[#A93226] uppercase tracking-[0.2em] font-bold mt-2">Certified Education Gateway</p>
             </div>
@@ -156,7 +157,7 @@ export default function Hero() {
         {/* ─── RIGHT CONTENT ─── */}
         <div className="lg:col-span-6 xl:col-span-5 flex flex-col gap-10">
           {successStories.length > 0 && (
-            <motion.div className="bg-[#A93226]/95 backdrop-blur-md border border-white/10 rounded-[40px] p-8 relative overflow-hidden shadow-2xl">
+            <motion.div className="bg-[#A93226]/95 backdrop-blur-md border border-white/10 rounded-[2rem] lg:rounded-[40px] p-6 lg:p-8 relative overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center mb-6 relative z-10">
                 <div><h3 className="text-white font-black text-2xl tracking-tight">Visa Success</h3><p className="text-white/50 text-[11px] font-bold uppercase tracking-[0.2em]">Latest Approvals</p></div>
                 <div className="flex gap-3">
@@ -188,7 +189,7 @@ export default function Hero() {
           )}
 
           {/* COUNTRY CAROUSEL */}
-          <div className="relative">
+          <div className="relative hidden lg:block">
             <div className="flex justify-between items-center mb-5 px-3">
                <h4 className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.25em] flex items-center gap-2"><Globe2 size={14} /> Live Countries</h4>
                <div className="flex gap-2">
@@ -199,14 +200,25 @@ export default function Hero() {
             <div className="overflow-hidden" ref={emblaRef}>
               <div className="flex gap-5">
                 {liveCountries.map((c) => (
-                  <div key={c.id} className="flex-[0_0_190px] min-w-0">
-                    <Link href={`/study-abroad/${c.code}`}>
-                      <div className="bg-white p-6 rounded-[28px] shadow-sm flex flex-col items-start gap-6 border border-gray-100 group transition-all">
+                  <div key={c.id} className="flex-[0_0_160px] md:flex-[0_0_200px] min-w-0">
+                    <Link href={`/study-abroad/${c.code.toLowerCase()}`}>
+                      <div className="bg-white p-7 rounded-[2.5rem] shadow-sm flex flex-col items-start gap-8 border border-gray-100 group transition-all hover:shadow-xl hover:shadow-[#A93226]/5 hover:-translate-y-1">
                         <div className="flex justify-between items-center w-full">
-                          <div className="text-3xl">{c.flag}</div>
-                          <div className="w-9 h-9 rounded-full bg-[#A93226]/5 flex items-center justify-center text-[#A93226] group-hover:bg-[#A93226] group-hover:text-white transition-all"><ArrowUpRight size={18} /></div>
+                          <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 group-hover:scale-110 transition-transform">
+                            <span className={`fi fi-${c.code.toLowerCase()} text-3xl shadow-sm rounded-sm`} />
+                          </div>
+                          <div className="w-10 h-10 rounded-full bg-[#A93226]/5 flex items-center justify-center text-[#A93226] group-hover:bg-[#A93226] group-hover:text-white transition-all">
+                            <ArrowUpRight size={20} />
+                          </div>
                         </div>
-                        <div><h4 className="font-black text-lg text-[#111] group-hover:text-[#A93226] transition-colors">{c.name}</h4><span className="text-[10px] text-[#A93226] font-bold uppercase tracking-widest">View Details</span></div>
+                        <div>
+                          <h4 className="font-black text-xl text-black group-hover:text-[#A93226] transition-colors mb-1">
+                            {c.name}
+                          </h4>
+                          <span className="text-[10px] text-[#A93226] font-bold uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
+                            View Details
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   </div>
