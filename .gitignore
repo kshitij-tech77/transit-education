@@ -42,3 +42,6 @@ next-env.d.ts
 
 # archive
 /_archive/
+
+# supabase
+.env.*
