@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(
   _req: Request,
@@ -7,7 +12,7 @@ export async function GET(
 ) {
   try {
     const { code } = await params;
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('countries')
       .select('*')
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`)
@@ -31,7 +36,7 @@ export async function PUT(
     const { code } = await params;
     const body = await req.json();
 
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('countries')
       .update({
         name: body.name,
@@ -39,13 +44,19 @@ export async function PUT(
         flag: body.flag,
         hero_title: body.heroTitle,
         why_study: body.whyStudy,
-        entry_requirements: body.entryRequirements,
-        visa_process: body.visaProcess,
+        entry_requirements: body.entryRequirements || { ug: [], pg: [] },
+        visa_process: body.visaProcess || [],
         intakes: body.intakes,
         visa_time: body.visaTime,
         tuition_range: body.tuition,
         status: body.status,
-        top_universities: body.universities ? (Array.isArray(body.universities) ? body.universities : body.universities.split(',').map((u: string) => u.trim())) : []
+        top_universities: body.universities
+          ? (Array.isArray(body.universities) ? body.universities : body.universities.split(',').map((u: string) => u.trim()))
+          : [],
+        required_documents: body.requiredDocuments || [],
+        major_intakes_description: body.majorIntakesDescription,
+        meta_title: body.metaTitle,
+        meta_description: body.metaDescription
       })
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`)
       .select()
@@ -65,7 +76,7 @@ export async function DELETE(
 ) {
   try {
     const { code } = await params;
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('countries')
       .delete()
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`);

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('site_settings')
       .select('*')
@@ -11,18 +12,18 @@ export async function GET() {
     
     if (error) throw error;
 
-    // Transform for compatibility
-    const formattedData = {
+    const socials = (data.social_links as any) || {};
+    return NextResponse.json({
       siteName: data.site_name,
       tagline: data.tagline,
       email: data.contact_email,
       phone: data.contact_phone,
       address: data.office_address,
-      socials: data.social_links,
-      seo: data.seo_config
-    };
-
-    return NextResponse.json(formattedData);
+      facebookUrl: socials.facebook || '',
+      instagramUrl: socials.instagram || '',
+      linkedinUrl: socials.linkedin || '',
+      whatsappNumber: socials.whatsapp || ''
+    });
   } catch (err) {
     console.error('GET /api/cms/settings error:', err);
     return NextResponse.json({ error: "Failed to load settings" }, { status: 500 });
@@ -31,6 +32,7 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
+    const supabase = await createClient();
     const body = await req.json();
     const { data: updated, error } = await supabase
       .from('site_settings')
@@ -40,8 +42,12 @@ export async function PUT(req: NextRequest) {
         contact_email: body.email,
         contact_phone: body.phone,
         office_address: body.address,
-        social_links: body.socials,
-        seo_config: body.seo
+        social_links: {
+          facebook: body.facebookUrl || '',
+          instagram: body.instagramUrl || '',
+          linkedin: body.linkedinUrl || '',
+          whatsapp: body.whatsappNumber || ''
+        }
       })
       .eq('id', 1)
       .select()

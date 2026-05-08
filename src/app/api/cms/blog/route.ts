@@ -6,17 +6,13 @@ export async function GET() {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('blog_posts')
-      .select(`
-        *,
-        authors (
-          name,
-          credential,
-          bio
-        )
-      `)
+      .select('*, authors (name, credential, bio)')
       .order('publish_date', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('GET /api/cms/blog Supabase error:', error.message);
+      return NextResponse.json([]);
+    }
 
     // Transform to match old JSON shape (author details at top level, camelCase)
     const posts = data.map((post: any) => ({
@@ -47,7 +43,7 @@ export async function GET() {
     return NextResponse.json(posts);
   } catch (err) {
     console.error('GET /api/cms/blog error:', err);
-    return NextResponse.json({ error: 'Failed to load posts' }, { status: 500 });
+    return NextResponse.json([]);
   }
 }
 

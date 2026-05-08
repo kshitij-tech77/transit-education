@@ -3,6 +3,7 @@ import { MapPin, Phone, Mail, Clock, ArrowRight, ExternalLink, MessageSquare, Ch
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import LocationClient from "@/components/locations/LocationClient";
+import GuideLeadForm from "@/components/locations/GuideLeadForm";
 import LocationFAQ from "@/components/locations/LocationFAQ";
 
 const locationsData = {
@@ -279,7 +280,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── LEAD CAPTURE ─── */}
-      <section className="py-[100px] bg-white border-t border-[#E5E4E0]">
+      <section id="guide-form" className="py-25 bg-white border-t border-[#E5E4E0]">
         <div className="container max-w-[1180px] mx-auto px-10">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
@@ -289,11 +290,11 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
               </div>
               <h2 className="text-[clamp(28px,3.5vw,44px)] font-extrabold leading-[1.1] text-[#111] mb-[18px] tracking-[-0.02em]">Get the Free<br /><em className="italic font-light text-[#A93226] not-italic">2025 Study Abroad Guide</em><br />for Nepali Students</h2>
               <p className="text-sm font-light text-[#6B6966] leading-[1.85] mb-9">Everything you need to know before applying — destination costs in NPR, IELTS requirements, intake calendars, and the most common visa mistakes to avoid.</p>
-              
+
               <div className="space-y-3">
                 {["Top 8 countries for Nepali students", "Full cost breakdown in NPR", "Minimum IELTS scores by destination", "2025 intake deadlines calendar"].map((perk, i) => (
                   <div key={i} className="flex items-center gap-3 text-[13px] text-[#6B6966] hover:text-[#111] transition-colors">
-                    <div className="w-5 h-5 bg-[#F5E8E7] rounded-full flex items-center justify-center group-hover:bg-[#A93226]">
+                    <div className="w-5 h-5 bg-[#F5E8E7] rounded-full flex items-center justify-center">
                       <Check className="w-2.5 h-2.5 text-[#A93226]" />
                     </div>
                     {perk}
@@ -302,24 +303,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
               </div>
             </div>
 
-            <div className="bg-black p-12 rounded-2xl shadow-xl">
-              <h3 className="text-xl font-bold text-white mb-1.5">Get Your Free Guide</h3>
-              <p className="text-xs text-[#777] mb-7">Enter your details — sent to WhatsApp instantly.</p>
-              <div className="space-y-3.5">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[9px] font-bold tracking-[0.13em] uppercase text-[#777] mb-1.5">Full Name</label>
-                    <input type="text" className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-[#A93226] transition-colors" placeholder="Your name" />
-                  </div>
-                  <div>
-                    <label className="block text-[9px] font-bold tracking-[0.13em] uppercase text-[#777] mb-1.5">WhatsApp Number</label>
-                    <input type="tel" className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-[#A93226] transition-colors" placeholder="98X-XXXXXXX" />
-                  </div>
-                </div>
-                <button className="w-full bg-[#A93226] text-white text-xs font-bold tracking-[0.08em] uppercase py-[17px] rounded-[10px] hover:bg-[#7E2219] transition-colors mt-1.5">Send Me the Free Guide →</button>
-                <p className="text-[10px] text-[#444] text-center mt-2.5">We never share your number. WhatsApp only.</p>
-              </div>
-            </div>
+            <GuideLeadForm whatsapp={location.whatsapp} branchName={location.name} />
           </div>
         </div>
       </section>
@@ -375,7 +359,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
           <h2 className="text-[clamp(26px,3.5vw,44px)] font-extrabold text-white mb-3.5 tracking-[-0.02em]">Start Your Journey<br />from <span className="text-[#A93226]">{slug.charAt(0).toUpperCase() + slug.slice(1)} Today</span></h2>
           <p className="text-sm font-light text-[#777] mb-10 max-w-lg mx-auto">Walk in, call {location.phone}, or WhatsApp {location.whatsapp}. Free counselling. No appointment needed.</p>
           <div className="flex justify-center gap-3.5 flex-wrap">
-            <button className="bg-[#A93226] text-white text-[13px] font-semibold px-8 py-4 rounded-[10px] hover:bg-[#7E2219] transition-all">Download Free 2025 Guide</button>
+            <a href="#guide-form" className="bg-[#A93226] text-white text-[13px] font-semibold px-8 py-4 rounded-[10px] hover:bg-[#7E2219] transition-all">Download Free 2025 Guide</a>
             <a href={`https://wa.me/977${location.whatsapp}`} target="_blank" className="bg-transparent text-white text-[13px] font-medium px-7 py-4 border border-white/35 rounded-[10px] hover:border-white hover:bg-white/10 transition-all">WhatsApp Us →</a>
           </div>
         </div>

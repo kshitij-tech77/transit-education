@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { createBrowserClient } from '@supabase/ssr'
 import { ArrowUpRight, Loader2, Lock, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
 
 export default function CmsLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,18 +21,42 @@ export default function CmsLogin() {
     setError("");
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      console.log('--- LOGIN START ---');
+      console.log('Attempting login for:', email);
+      
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        setError(error.message);
-      } else if (data.user) {
-        router.push('/cms');
+      if (loginError) {
+        console.error('LOGIN ERROR:', loginError);
+        setError(loginError.message);
+        return;
       }
+
+      console.log('LOGIN SUCCESS! User:', data.user?.email);
+      
+      // Get and log session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('SESSION FETCH ERROR:', sessionError);
+      } else {
+        console.log('FULL SESSION OBJECT:', session);
+        console.log('Access Token exists:', !!session?.access_token);
+        console.log('Refresh Token exists:', !!session?.refresh_token);
+      }
+
+      console.log('Waiting 500ms before redirect...');
+      setTimeout(() => {
+        console.log('--- REDIRECTING TO /cms ---');
+        window.location.href = '/cms';
+      }, 500);
+      
     } catch (err) {
-      setError("Login failed. Please try again.");
+      console.error("UNEXPECTED ERROR DURING LOGIN:", err);
+      setError("Login failed. Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -43,14 +69,14 @@ export default function CmsLogin() {
         * { font-family: 'Poppins', sans-serif !important; }
       `}</style>
 
-      <div className="w-full max-w-[400px] bg-white rounded-[24px] shadow-2xl border border-[#EDE8E8] overflow-hidden animate-in fade-in zoom-in duration-500">
+      <div className="w-full max-w-[400px] bg-white rounded-[24px] shadow-2xl border border-[#EDE8E8] overflow-hidden">
         <div className="p-10 pb-6 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-[60px] h-[60px] bg-[#A93226] rounded-[16px] flex items-center justify-center shadow-lg shadow-red-900/20">
+            <div className="w-[60px] h-[60px] bg-[#A93226] rounded-[16px] flex items-center justify-center shadow-lg">
               <ArrowUpRight size={34} className="text-white" strokeWidth={3} />
             </div>
           </div>
-          <h1 className="text-[24px] font-[800] text-[#111] leading-tight uppercase tracking-tight">Transit Education</h1>
+          <h1 className="text-[24px] font-[800] text-[#111] leading-tight uppercase">Transit Education</h1>
           <p className="text-[#A93226] text-[12px] font-[700] tracking-[0.1em] uppercase mt-1">CMS Portal Access</p>
         </div>
 
@@ -94,14 +120,10 @@ export default function CmsLogin() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-[#A93226] text-white py-3.5 rounded-[12px] text-[14px] font-[700] hover:bg-[#7E2219] shadow-xl shadow-red-900/10 transition-all flex items-center justify-center gap-2 mt-4"
+            className="w-full bg-[#A93226] text-white py-3.5 rounded-[12px] text-[14px] font-[700] hover:bg-[#7E2219] shadow-xl transition-all flex items-center justify-center gap-2 mt-4"
           >
             {loading ? <Loader2 className="animate-spin" size={18} /> : "Sign In to Portal"}
           </button>
-
-          <p className="text-[11px] text-[#BBB] text-center mt-6">
-            Authorized Personnel Only. Est 2015.
-          </p>
         </form>
       </div>
     </div>

@@ -55,11 +55,14 @@ export default function SuccessStories({ stories }: { stories: any[] }) {
               <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-2">
                 <div className="bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl h-[400px] relative overflow-hidden group">
                   <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
-                    <img 
-                      src={story.approvalImage} 
-                      alt={story.name} 
-                      className="w-full h-full object-cover"
-                    />
+                    {story.approvalImage ? (
+                      <img
+                        src={story.approvalImage}
+                        alt={story.name}
+                        className="w-full h-full object-cover"
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : null}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   

@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('resources')
       .select('*')
       .order('category', { ascending: true })
       .order('display_order', { ascending: true });
-    
+
     if (error) throw error;
     return NextResponse.json(data);
   } catch (err) {
@@ -20,7 +25,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { data: newItem, error } = await supabase
+    const { data: newItem, error } = await supabaseAdmin
       .from('resources')
       .insert({
         title: body.title,
@@ -38,6 +43,6 @@ export async function POST(req: Request) {
     return NextResponse.json(newItem, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/resources error:', err);
-    return NextResponse.json({ error: 'Failed to create' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create' }, { status: 400 });
   }
 }

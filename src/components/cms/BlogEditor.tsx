@@ -29,6 +29,8 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
+  const [tagsInput, setTagsInput] = useState((initialData?.tags || []).join(", "));
+  const featuredImageInputRef = React.useRef<HTMLInputElement>(null);
 
   // ─── STATE ───
   const [formData, setFormData] = useState<Partial<BlogPost>>(
@@ -43,7 +45,14 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       metaTitle: "",
       metaDescription: "",
       faqItems: [],
-      sources: []
+      sources: [],
+      primaryQuestion: "",
+      answerSummary: "",
+      focusKeyword: "",
+      authorCredential: "",
+      lastReviewed: "",
+      authorBio: "",
+      featuredImage: "",
     }
   );
 
@@ -68,6 +77,23 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const handleChange = (field: keyof BlogPost, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setIsSaved(false);
+  };
+
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/api/cms/media', { method: 'POST', body: form });
+      if (!res.ok) throw new Error();
+      const { path } = await res.json();
+      handleChange('featuredImage', path);
+      toast.success(`Uploaded: ${file.name}`);
+    } catch {
+      toast.error('Upload failed');
+    }
   };
 
   const handleSave = async (statusOverride?: "draft" | "published") => {
@@ -356,21 +382,30 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             </div>
             <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Featured Image URL</label>
-                <input 
-                  type="text"
-                  placeholder="/media/..."
-                  value={formData.featuredImage}
-                  onChange={(e) => handleChange("featuredImage", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
-                />
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Featured Image</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="/media/..."
+                    value={formData.featuredImage}
+                    onChange={(e) => handleChange("featuredImage", e.target.value)}
+                    className="flex-1 bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
+                  />
+                  <input ref={featuredImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleFeaturedImageUpload} />
+                  <button type="button" onClick={() => featuredImageInputRef.current?.click()} className="px-3 py-2 bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] text-[11px] font-[700] text-[#A93226] hover:bg-[#FEF2F1] whitespace-nowrap">Upload</button>
+                </div>
+                {formData.featuredImage && (
+                  <img src={formData.featuredImage} alt="preview" className="w-full h-28 object-cover rounded-[8px] border border-[#EDE8E8] mt-1" />
+                )}
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Tags (comma separated)</label>
-                <input 
+                <input
                   type="text"
-                  value={formData.tags?.join(", ")}
-                  onChange={(e) => handleChange("tags", e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean))}
+                  value={tagsInput}
+                  onChange={(e) => setTagsInput(e.target.value)}
+                  onBlur={() => handleChange("tags", tagsInput.split(",").map((s: string) => s.trim()).filter(Boolean))}
+                  placeholder="visa, canada, study abroad"
                   className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
                 />
               </div>

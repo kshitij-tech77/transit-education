@@ -7,14 +7,13 @@ import FAQAccordion from "@/components/shared/FAQAccordion";
 import NewsletterForm from "@/components/layout/NewsletterForm";
 
 
+export const dynamic = 'force-dynamic';
+
 export default async function BlogPage() {
   const [{ data: posts }, { data: categoriesRaw }, { data: faqs }] = await Promise.all([
     supabase
       .from('blog_posts')
-      .select(`
-        *,
-        authors (name)
-      `)
+      .select('*, authors (name)')
       .eq('status', 'published')
       .order('publish_date', { ascending: false }),
     supabase
@@ -33,7 +32,7 @@ export default async function BlogPage() {
     ...p,
     publishDate: p.publish_date,
     featuredImage: p.featured_image,
-    authorName: (p as any).authors?.name || "Admin",
+    authorName: (p as any).authors?.name || "Transit Education",
     excerpt: p.body?.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...'
   })) || [];
 

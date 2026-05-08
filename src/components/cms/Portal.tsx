@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import {
@@ -11,7 +11,6 @@ import {
   Image as ImageIcon,
   MapPin,
   MessageSquare,
-  Menu as MenuIcon,
   Settings,
   Plus,
   Search,
@@ -31,7 +30,6 @@ import {
   FileDown,
   Trash2,
   Edit,
-  GripVertical,
   Eye,
   Link as LinkIcon,
   Filter,
@@ -43,10 +41,10 @@ import {
 } from "lucide-react";
 
 // ─── TYPES ───
-type Section = 
-  | "Dashboard" | "Students" | "Blog Posts" | "FAQ Manager" | "Country Pages" 
+type Section =
+  | "Dashboard" | "Students" | "Blog Posts" | "FAQ Manager" | "Country Pages"
   | "Success Stories" | "Resources" | "Media Library" | "Testimonials"
-  | "Branches" | "Menus" | "Settings";
+  | "Branches" | "Settings";
 
 // ─── COMPONENTS ───
 
@@ -120,6 +118,9 @@ export default function TransitPortal() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const storyImageInputRef = useRef<HTMLInputElement>(null);
+  const [previewMedia, setPreviewMedia] = useState<any>(null);
 
   // ─── DATA STATE ───
   const [data, setData] = useState<any>({
@@ -132,69 +133,55 @@ export default function TransitPortal() {
     branches: [],
     testimonials: [],
     settings: {},
-    media: {},
-    menus: [
-      { label: "About Us", url: "/about", dropdown: false },
-      { label: "Study Abroad", url: "/destinations", dropdown: true },
-      { label: "Student Services", url: "/services", dropdown: true },
-      { label: "Take Courses", url: "/courses", dropdown: false },
-      { label: "Blogs", url: "/blog", dropdown: false },
-      { label: "Resources", url: "/resources", dropdown: true },
-      { label: "Locations", url: "/locations", dropdown: false },
-    ]
+    media: {}
   });
 
   const fetchData = async () => {
     setLoading(true);
     try {
+      console.log('Portal: Starting parallel fetch of all data...');
       const responses = await Promise.all([
-        fetch('/api/cms/students'),
-        fetch('/api/cms/blog'),
-        fetch('/api/cms/faqs'),
-        fetch('/api/cms/countries'),
-        fetch('/api/cms/success-stories'),
-        fetch('/api/cms/resources'),
-        fetch('/api/cms/branches'),
-        fetch('/api/cms/testimonials'),
-        fetch('/api/cms/settings'),
-        fetch('/api/cms/media')
+        (console.log('Fetching students...'), fetch('/api/cms/students')),
+        (console.log('Fetching blog...'), fetch('/api/cms/blog')),
+        (console.log('Fetching faqs...'), fetch('/api/cms/faqs')),
+        (console.log('Fetching countries...'), fetch('/api/cms/countries')),
+        (console.log('Fetching success-stories...'), fetch('/api/cms/success-stories')),
+        (console.log('Fetching resources...'), fetch('/api/cms/resources')),
+        (console.log('Fetching branches...'), fetch('/api/cms/branches')),
+        (console.log('Fetching testimonials...'), fetch('/api/cms/testimonials')),
+        (console.log('Fetching settings...'), fetch('/api/cms/settings')),
+        (console.log('Fetching media...'), fetch('/api/cms/media'))
       ]);
+      console.log('Portal: All responses received.');
 
-      const [students, posts, faqs, countries, stories, resources, branches, testimonials, settings, media] = await Promise.all(
-        responses.map(res => res.json())
+      const results = await Promise.all(
+        responses.map(async (res, index) => {
+          const endpoints = [
+            'students', 'blog', 'faqs', 'countries', 'success-stories', 
+            'resources', 'branches', 'testimonials', 'settings', 'media'
+          ];
+          if (!res.ok) {
+            const text = await res.text();
+            console.error(`Fetch failed for ${endpoints[index]}: ${res.status} ${res.statusText}`, text.slice(0, 200));
+            return null;
+          }
+          return res.json();
+        })
       );
+
+      const [students, posts, faqs, countries, stories, resources, branches, testimonials, settings, media] = results;
 
       setData((prev: any) => ({
         ...prev,
         students: Array.isArray(students) ? students : [],
         posts: Array.isArray(posts) ? posts : [],
         faqs: Array.isArray(faqs) ? faqs.map((f: any) => ({ ...f, page: f.page_path })) : [],
-        countries: Array.isArray(countries) ? countries.map((c: any) => ({
-          ...c,
-          heroTitle: c.hero_title,
-          whyStudy: c.why_study,
-          entryRequirements: c.entry_requirements,
-          visaProcess: c.visa_process,
-          intakes: c.intakes,
-          visaTime: c.visa_time,
-          tuition: c.tuition_range,
-          universities: Array.isArray(c.top_universities) ? c.top_universities.join(', ') : c.top_universities
-        })) : [],
+        countries: Array.isArray(countries) ? countries : [],
         successStories: Array.isArray(stories) ? stories : [],
         resources: Array.isArray(resources) ? resources : [],
         branches: Array.isArray(branches) ? branches : [],
         testimonials: Array.isArray(testimonials) ? testimonials : [],
-        settings: settings ? {
-          ...settings,
-          siteName: settings.site_name,
-          email: settings.email,
-          phone: settings.phone,
-          tagline: settings.tagline,
-          facebookUrl: settings.facebook_url,
-          instagramUrl: settings.instagram_url,
-          linkedinUrl: settings.linkedin_url,
-          whatsappNumber: settings.whatsapp_number
-        } : {},
+        settings: settings || {},
         media
       }));
     } catch (error) {
@@ -206,21 +193,32 @@ export default function TransitPortal() {
   };
 
   const fetchUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      router.push('/cms/login');
-      return;
-    }
-    setUser(user);
+    try {
+      console.log('Portal: Fetching user...');
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        console.warn('Portal: No user found, redirecting to login...');
+        router.push('/cms/login');
+        return;
+      }
+      setUser(user);
 
-    // Fetch profile for role
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-    
-    setProfile(profile);
+      console.log('Portal: Fetching profile for role...');
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (profileError) {
+        console.warn('Portal: Profile fetch error (may not exist):', profileError.message);
+      }
+      
+      setProfile(profile);
+      console.log('Portal: User and Profile ready.');
+    } catch (err) {
+      console.error('Portal: Unexpected error in fetchUser:', err);
+    }
   };
 
   useEffect(() => {
@@ -238,14 +236,16 @@ export default function TransitPortal() {
   // ─── HANDLERS ───
   const handleSave = async (section: string, item: any) => {
     setLoading(true);
+    console.log('[handleSave] section:', section, 'item.id:', item?.id, 'full item:', item);
     try {
-      const isEdit = !!item.id;
-      const apiPath = 
-        section === "Blog" ? "blog" : 
-        section === "Country Pages" ? "countries" : 
-        section === "FAQ" ? "faqs" : 
-        section.toLowerCase().replace(" ", "-");
-      const url = isEdit ? `/api/cms/${apiPath}/${item.id || item.code}` : `/api/cms/${apiPath}`;
+      const isSettings = section === 'settings';
+      const isEdit = isSettings || !!item.id;
+      const apiPath =
+        section === "Blog" ? "blog" :
+        section === "Country Pages" ? "countries" :
+        section === "FAQ" ? "faqs" :
+        section.toLowerCase().replace(/ /g, "-");
+      const url = isSettings ? '/api/cms/settings' : (isEdit ? `/api/cms/${apiPath}/${item.id || item.code}` : `/api/cms/${apiPath}`);
       const method = isEdit ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -268,14 +268,13 @@ export default function TransitPortal() {
   };
 
   const handleDelete = async (section: string, id: string) => {
-    if (!confirm("Are you sure you want to delete this?")) return;
     setLoading(true);
     try {
       const apiPath = section === "Blog" ? "blog" : section.toLowerCase().replace(" ", "-");
       const res = await fetch(`/api/cms/${apiPath}/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error("Delete failed");
       setToast("Deleted successfully!");
-      fetchData();
+      setTimeout(() => fetchData(), 800);
     } catch (error) {
       setToast("Error deleting item");
     } finally {
@@ -297,6 +296,45 @@ export default function TransitPortal() {
       fetchData();
     } catch (error) {
       setToast("Error deleting media");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUploadMedia = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/cms/media', { method: 'POST', body: form });
+      if (!res.ok) throw new Error("Upload failed");
+      setToast(`Uploaded: ${file.name}`);
+      fetchData();
+    } catch {
+      setToast("Error uploading file");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStoryImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/cms/media', { method: 'POST', body: form });
+      if (!res.ok) throw new Error("Upload failed");
+      const { path } = await res.json();
+      setEditingItem((prev: any) => ({ ...prev, approvalImage: path }));
+      setToast(`Uploaded: ${file.name}`);
+    } catch {
+      setToast("Error uploading file");
     } finally {
       setLoading(false);
     }
@@ -324,7 +362,6 @@ export default function TransitPortal() {
     ]},
     { label: "MANAGE", items: [
       { id: "Branches", icon: MapPin, badge: null },
-      { id: "Menus", icon: MenuIcon, badge: null },
       { id: "Settings", icon: Settings, badge: null },
     ]}
   ];
@@ -520,41 +557,240 @@ export default function TransitPortal() {
 
   const renderCountries = () => {
     if (editingItem && activeSection === "Country Pages") {
+      const ugReqs: string[] = editingItem.entryRequirements?.ug || [];
+      const pgReqs: string[] = editingItem.entryRequirements?.pg || [];
+      const visaSteps: { title: string; text: string }[] = Array.isArray(editingItem.visaProcess) ? editingItem.visaProcess : [];
+      const requiredDocs: string[] = Array.isArray(editingItem.requiredDocuments) ? editingItem.requiredDocuments : [];
+
+      const setER = (key: 'ug' | 'pg', items: string[]) =>
+        setEditingItem((p: any) => ({ ...p, entryRequirements: { ...(p.entryRequirements || {}), [key]: items } }));
+
+      const setVisa = (steps: { title: string; text: string }[]) =>
+        setEditingItem((p: any) => ({ ...p, visaProcess: steps }));
+
+      const setDocs = (docs: string[]) =>
+        setEditingItem((p: any) => ({ ...p, requiredDocuments: docs }));
+
+      const inputCls = "w-full px-3 py-2 border border-[#E0DADA] rounded-[8px] text-[12px] outline-none focus:border-[#A93226]";
+      const labelCls = "text-[10px] font-[700] text-[#999] uppercase tracking-wide";
+
       return (
-        <Card className="animate-in slide-in-from-right duration-300">
-          <div className="flex items-center gap-4 mb-8">
+        <div className="animate-in slide-in-from-right duration-300 space-y-5 max-w-4xl pb-10">
+          {/* Header */}
+          <div className="flex items-center gap-4 bg-white p-4 rounded-[12px] border border-[#EDE8E8] sticky top-0 z-10">
             <button onClick={() => setEditingItem(null)} className="p-1.5 hover:bg-[#FEF2F1] rounded-full text-[#A93226]"><ArrowLeft size={18} /></button>
-            <h2 className="text-[18px] font-[700] text-[#111]">Edit {editingItem.name} Content</h2>
+            <div>
+              <h2 className="text-[15px] font-[700] text-[#111]">Edit {editingItem.name}</h2>
+              <p className="text-[10px] text-[#BBB]">Changes saved to database and reflected live</p>
+            </div>
+            <div className="ml-auto flex gap-3">
+              <Button variant="secondary" onClick={() => setEditingItem(null)}>Cancel</Button>
+              <Button loading={loading} onClick={() => handleSave('Country Pages', editingItem)}><Save size={13} /> Save All</Button>
+            </div>
           </div>
-          <form className="space-y-[20px] max-w-4xl" onSubmit={(e) => { e.preventDefault(); handleSave('Country Pages', editingItem); }}>
-            <div className="grid grid-cols-2 gap-[14px]">
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Hero Title</label><input type="text" value={editingItem.heroTitle || ''} onChange={e => setEditingItem({...editingItem, heroTitle: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Major Intakes</label><input type="text" value={editingItem.intakes || ''} onChange={e => setEditingItem({...editingItem, intakes: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Visa Time</label><input type="text" value={editingItem.visaTime || ''} onChange={e => setEditingItem({...editingItem, visaTime: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Tuition Range</label><input type="text" value={editingItem.tuition || ''} onChange={e => setEditingItem({...editingItem, tuition: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+
+          {/* Basic Info */}
+          <Card>
+            <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest mb-4">Basic Info</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className={labelCls}>Hero Title</label>
+                <input type="text" value={editingItem.heroTitle || ''} onChange={e => setEditingItem({ ...editingItem, heroTitle: e.target.value })} className={inputCls} placeholder="Study in Canada" />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Status</label>
+                <select value={editingItem.status || 'DRAFT'} onChange={e => setEditingItem({ ...editingItem, status: e.target.value })} className={inputCls + " bg-white"}>
+                  <option value="LIVE">LIVE</option>
+                  <option value="DRAFT">DRAFT</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Major Intakes</label>
+                <input type="text" value={editingItem.intakes || ''} onChange={e => setEditingItem({ ...editingItem, intakes: e.target.value })} className={inputCls} placeholder="Feb, July, November" />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Visa Processing Time</label>
+                <input type="text" value={editingItem.visaTime || ''} onChange={e => setEditingItem({ ...editingItem, visaTime: e.target.value })} className={inputCls} placeholder="4–6 weeks" />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Tuition Range</label>
+                <input type="text" value={editingItem.tuition || ''} onChange={e => setEditingItem({ ...editingItem, tuition: e.target.value })} className={inputCls} placeholder="CAD 15,000–35,000/year" />
+              </div>
+              <div className="space-y-1">
+                <label className={labelCls}>Top Universities (comma-separated)</label>
+                <input type="text" value={editingItem.universities || ''} onChange={e => setEditingItem({ ...editingItem, universities: e.target.value })} className={inputCls} placeholder="University of Toronto, UBC..." />
+              </div>
             </div>
-            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Why Study Here</label><textarea rows={4} value={editingItem.whyStudy || ''} onChange={e => setEditingItem({...editingItem, whyStudy: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
-            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Entry Requirements</label><textarea rows={4} value={editingItem.entryRequirements || ''} onChange={e => setEditingItem({...editingItem, entryRequirements: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="Rich text or bullet points..."></textarea></div>
-            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Visa Process</label><textarea rows={4} value={editingItem.visaProcess || ''} onChange={e => setEditingItem({...editingItem, visaProcess: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="Rich text or bullet points..."></textarea></div>
-            <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Top Universities</label><textarea rows={2} value={editingItem.universities || ''} onChange={e => setEditingItem({...editingItem, universities: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
-            <div className="flex items-center gap-4 py-4">
-              <span className="text-[13px] font-[600]">Status:</span>
-              <select value={editingItem.status} onChange={e => setEditingItem({...editingItem, status: e.target.value})} className="border border-[#E0DADA] rounded-[8px] px-3 py-1 text-[13px] outline-none bg-white">
-                <option value="LIVE">LIVE</option>
-                <option value="DRAFT">DRAFT</option>
-              </select>
+            <div className="mt-4 space-y-1">
+              <label className={labelCls}>Why Study Here</label>
+              <textarea rows={3} value={editingItem.whyStudy || ''} onChange={e => setEditingItem({ ...editingItem, whyStudy: e.target.value })} className={inputCls + " resize-none"} />
             </div>
-            <div className="flex gap-3 pt-4 border-t"><Button type="submit" loading={loading}>Save Changes</Button><Button variant="secondary" onClick={() => setEditingItem(null)}>Cancel</Button></div>
-          </form>
-        </Card>
+            <div className="mt-4 space-y-1">
+              <label className={labelCls}>Major Intakes Description</label>
+              <textarea rows={2} value={editingItem.majorIntakesDescription || ''} onChange={e => setEditingItem({ ...editingItem, majorIntakesDescription: e.target.value })} className={inputCls + " resize-none"} placeholder="Describe the intake periods in detail..." />
+            </div>
+          </Card>
+
+          {/* Entry Requirements */}
+          <Card>
+            <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest mb-4">Entry Requirements</h3>
+            <div className="grid grid-cols-2 gap-6">
+              {/* UG */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-[11px] font-[700] text-[#A93226] uppercase">Undergraduate / Bachelors</h4>
+                  <button onClick={() => setER('ug', [...ugReqs, ''])} className="text-[10px] font-[700] text-[#A93226] flex items-center gap-1 hover:opacity-70"><Plus size={11} /> Add</button>
+                </div>
+                <div className="space-y-2">
+                  {ugReqs.map((req, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <div className="w-5 h-5 rounded-full bg-[#A93226] text-white flex items-center justify-center text-[9px] font-bold shrink-0">{i + 1}</div>
+                      <input
+                        type="text"
+                        value={req}
+                        onChange={e => { const u = [...ugReqs]; u[i] = e.target.value; setER('ug', u); }}
+                        className="flex-1 px-3 py-1.5 border border-[#E0DADA] rounded-[8px] text-[12px] outline-none focus:border-[#A93226]"
+                        placeholder="e.g. IELTS 6.0 or equivalent"
+                      />
+                      <button onClick={() => setER('ug', ugReqs.filter((_, idx) => idx !== i))} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[6px]"><Trash2 size={11} /></button>
+                    </div>
+                  ))}
+                  {ugReqs.length === 0 && <p className="text-[11px] text-[#BBB]">No requirements added.</p>}
+                </div>
+              </div>
+              {/* PG */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-[11px] font-[700] text-[#333] uppercase">Masters / Postgraduate</h4>
+                  <button onClick={() => setER('pg', [...pgReqs, ''])} className="text-[10px] font-[700] text-[#333] flex items-center gap-1 hover:opacity-70"><Plus size={11} /> Add</button>
+                </div>
+                <div className="space-y-2">
+                  {pgReqs.map((req, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <div className="w-5 h-5 rounded-full bg-[#333] text-white flex items-center justify-center text-[9px] font-bold shrink-0">{i + 1}</div>
+                      <input
+                        type="text"
+                        value={req}
+                        onChange={e => { const u = [...pgReqs]; u[i] = e.target.value; setER('pg', u); }}
+                        className="flex-1 px-3 py-1.5 border border-[#E0DADA] rounded-[8px] text-[12px] outline-none focus:border-[#333]"
+                        placeholder="e.g. Bachelors from recognized university"
+                      />
+                      <button onClick={() => setER('pg', pgReqs.filter((_, idx) => idx !== i))} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[6px]"><Trash2 size={11} /></button>
+                    </div>
+                  ))}
+                  {pgReqs.length === 0 && <p className="text-[11px] text-[#BBB]">No requirements added.</p>}
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Visa Process */}
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest">Visa Process Steps</h3>
+              <button
+                onClick={() => setVisa([...visaSteps, { title: '', text: '' }])}
+                className="text-[10px] font-[700] text-[#A93226] flex items-center gap-1 hover:opacity-70"
+              ><Plus size={11} /> Add Step</button>
+            </div>
+            <div className="space-y-3">
+              {visaSteps.map((step, i) => (
+                <div key={i} className="flex gap-3 p-4 bg-[#F9F4F4] rounded-[10px] border border-[#EDE8E8]">
+                  <div className="w-7 h-7 rounded-full bg-[#A93226] text-white flex items-center justify-center text-[11px] font-bold shrink-0 mt-1">{i + 1}</div>
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="text"
+                      value={step.title}
+                      onChange={e => { const u = [...visaSteps]; u[i] = { ...u[i], title: e.target.value }; setVisa(u); }}
+                      placeholder="Step title (e.g. Gather Documents)"
+                      className="w-full px-3 py-2 border border-[#E0DADA] rounded-[8px] text-[12px] font-[600] outline-none focus:border-[#A93226] bg-white"
+                    />
+                    <textarea
+                      rows={2}
+                      value={step.text}
+                      onChange={e => { const u = [...visaSteps]; u[i] = { ...u[i], text: e.target.value }; setVisa(u); }}
+                      placeholder="Brief description of this step..."
+                      className="w-full px-3 py-2 border border-[#E0DADA] rounded-[8px] text-[12px] outline-none focus:border-[#A93226] bg-white resize-none"
+                    />
+                  </div>
+                  <button onClick={() => setVisa(visaSteps.filter((_, idx) => idx !== i))} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[6px] self-start"><Trash2 size={12} /></button>
+                </div>
+              ))}
+              {visaSteps.length === 0 && <p className="text-[12px] text-[#BBB] text-center py-4">No steps yet. Click "Add Step" to begin.</p>}
+            </div>
+          </Card>
+
+          {/* Required Documents */}
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest">Required Documents</h3>
+              <button onClick={() => setDocs([...requiredDocs, ''])} className="text-[10px] font-[700] text-[#A93226] flex items-center gap-1 hover:opacity-70"><Plus size={11} /> Add</button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {requiredDocs.map((doc, i) => (
+                <div key={i} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={doc}
+                    onChange={e => { const u = [...requiredDocs]; u[i] = e.target.value; setDocs(u); }}
+                    className="flex-1 px-3 py-2 border border-[#E0DADA] rounded-[8px] text-[12px] outline-none focus:border-[#A93226]"
+                    placeholder="e.g. Passport Copy"
+                  />
+                  <button onClick={() => setDocs(requiredDocs.filter((_, idx) => idx !== i))} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[6px]"><Trash2 size={11} /></button>
+                </div>
+              ))}
+              {requiredDocs.length === 0 && <p className="col-span-2 text-[11px] text-[#BBB]">No documents listed.</p>}
+            </div>
+          </Card>
+
+          {/* SEO */}
+          <Card>
+            <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest mb-4">SEO Settings</h3>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <label className={labelCls}>Meta Title</label>
+                  <span className={`text-[10px] font-[600] ${(editingItem.metaTitle || '').length > 60 ? 'text-red-500' : 'text-[#BBB]'}`}>{(editingItem.metaTitle || '').length}/60</span>
+                </div>
+                <input type="text" value={editingItem.metaTitle || ''} onChange={e => setEditingItem({ ...editingItem, metaTitle: e.target.value })} className={inputCls} placeholder={`Study in ${editingItem.name} | Transit Education`} />
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <label className={labelCls}>Meta Description</label>
+                  <span className={`text-[10px] font-[600] ${(editingItem.metaDescription || '').length > 160 ? 'text-red-500' : 'text-[#BBB]'}`}>{(editingItem.metaDescription || '').length}/160</span>
+                </div>
+                <textarea rows={3} value={editingItem.metaDescription || ''} onChange={e => setEditingItem({ ...editingItem, metaDescription: e.target.value })} className={inputCls + " resize-none"} placeholder={`Complete guide to studying in ${editingItem.name} for Nepali students — visa, tuition, intakes.`} />
+              </div>
+            </div>
+          </Card>
+
+          {/* Bottom Save */}
+          <div className="flex gap-3">
+            <Button loading={loading} onClick={() => handleSave('Country Pages', editingItem)} className="px-8"><Save size={13} /> Save All Changes</Button>
+            <Button variant="secondary" onClick={() => setEditingItem(null)}>Cancel</Button>
+          </div>
+        </div>
       );
     }
+
     return (
       <div className="grid grid-cols-3 gap-[16px]">
         {data.countries.map((c: any, i: number) => (
-          <Card key={i} className="hover:border-[#A93226]/30 transition-all cursor-pointer" onClick={() => setEditingItem(c)}>
+          <Card key={i} className="hover:border-[#A93226]/30 transition-all cursor-pointer" onClick={() => {
+            setEditingItem({
+              ...c,
+              entryRequirements: (c.entryRequirements && typeof c.entryRequirements === 'object' && !Array.isArray(c.entryRequirements))
+                ? c.entryRequirements
+                : { ug: [], pg: [] },
+              visaProcess: Array.isArray(c.visaProcess) ? c.visaProcess : [],
+              requiredDocuments: Array.isArray(c.requiredDocuments) ? c.requiredDocuments : [],
+            });
+          }}>
             <div className="flex justify-between items-start mb-4"><div className="text-[32px]">{c.flag}</div><StatusBadge status={c.status} /></div>
-            <h3 className="text-[15px] font-[600] text-[#111] mb-1">{c.name}</h3><p className="text-[11px] text-[#BBB] mb-4">Edited {c.date}</p>
+            <h3 className="text-[15px] font-[600] text-[#111] mb-1">{c.name}</h3>
+            <p className="text-[11px] text-[#BBB] mb-4">
+              {c.visaProcess?.length > 0 ? `${c.visaProcess.length} visa steps` : 'No visa steps'} · {(c.entryRequirements?.ug?.length || 0) + (c.entryRequirements?.pg?.length || 0)} requirements
+            </p>
             <Button variant="ghost" className="w-full">Edit Content</Button>
           </Card>
         ))}
@@ -564,7 +800,7 @@ export default function TransitPortal() {
 
   const renderStories = () => (
     <div className="space-y-[20px]">
-      <div className="flex justify-between items-center"><h2 className="text-[18px] font-[700] text-[#111]">Success Stories</h2><Button onClick={() => { setEditingItem(null); setShowModal("Story"); }}><Plus size={14} /> Add Story</Button></div>
+      <div className="flex justify-between items-center"><h2 className="text-[18px] font-[700] text-[#111]">Success Stories</h2><Button onClick={() => { setEditingItem({ year: new Date().getFullYear().toString() }); setShowModal("Story"); }}><Plus size={14} /> Add Story</Button></div>
       <div className="grid grid-cols-3 gap-[16px]">
         {data.successStories.map((s: any, i: number) => (
           <Card key={i}>
@@ -590,7 +826,7 @@ export default function TransitPortal() {
   );
 
   const renderMediaLibrary = () => {
-    const allFiles = Object.values(data.media).flat() as any[];
+    const allFiles = (Object.values(data.media).flat() as any[]).sort((a, b) => (b.mtimeMs || 0) - (a.mtimeMs || 0));
     return (
       <div className="space-y-[20px]">
         <div className="flex justify-between items-center bg-white p-[20px] rounded-[12px] border border-[#EDE8E8]">
@@ -602,20 +838,21 @@ export default function TransitPortal() {
           </div>
           <div className="flex gap-3">
             <Button variant="secondary"><Filter size={14} /> Filter</Button>
-            <Button onClick={() => alert("Upload logic would go here")}><Plus size={14} /> Upload New</Button>
+            <input ref={fileInputRef} type="file" accept="image/*,application/pdf" className="hidden" onChange={handleUploadMedia} />
+            <Button onClick={() => fileInputRef.current?.click()}><Plus size={14} /> Upload New</Button>
           </div>
         </div>
         <div className="grid grid-cols-6 gap-[16px]">
           {allFiles.map((file: any, i: number) => (
-            <div key={i} className="group relative aspect-square bg-white border border-[#EDE8E8] rounded-[12px] overflow-hidden hover:border-[#A93226] transition-all cursor-pointer">
+            <div key={i} onClick={() => setPreviewMedia(file)} className="group relative aspect-square bg-white border border-[#EDE8E8] rounded-[12px] overflow-hidden hover:border-[#A93226] transition-all cursor-pointer">
               <img src={file.path} alt={file.name} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-center">
                 <p className="text-white text-[10px] font-bold truncate w-full">{file.name}</p>
                 <p className="text-white/70 text-[8px] mb-2">{file.size}</p>
                 <div className="flex gap-2">
-                  <button className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full text-white"><Eye size={12} /></button>
-                  <button 
-                    onClick={() => handleDeleteMedia(file.path)}
+                  <button onClick={e => { e.stopPropagation(); setPreviewMedia(file); }} className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full text-white"><Eye size={12} /></button>
+                  <button
+                    onClick={e => { e.stopPropagation(); handleDeleteMedia(file.path); }}
                     className="p-1.5 bg-white/20 hover:bg-red-500/40 rounded-full text-white"
                   >
                     <Trash2 size={12} />
@@ -756,35 +993,6 @@ export default function TransitPortal() {
     </div>
   );
 
-  const renderMenus = () => (
-    <div className="space-y-[20px]">
-      <div className="flex justify-between items-center">
-        <h2 className="text-[18px] font-[700] text-[#111]">Navigation Menus</h2>
-        <Button onClick={() => alert("Menu management ready")}><Plus size={14} /> Add Menu Item</Button>
-      </div>
-      <Card className="max-w-2xl">
-        <div className="space-y-3">
-          {data.menus.map((m: any, i: number) => (
-            <div key={i} className="flex items-center gap-4 p-3 bg-[#F9F7F7] rounded-[8px] border border-[#EDE8E8] group">
-              <div className="cursor-move text-[#CCC] group-hover:text-[#A93226] transition-colors"><GripVertical size={18} /></div>
-              <div className="flex-1">
-                <p className="text-[13px] font-[600] text-[#111]">{m.label}</p>
-                <p className="text-[11px] text-[#999]">{m.url}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                {m.dropdown && <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold">Has Dropdown</span>}
-                <Button variant="ghost" className="!p-1.5"><Edit size={14} /></Button>
-                <Button variant="destructive" className="!p-1.5"><X size={14} /></Button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-8 pt-6 border-t flex justify-end">
-          <Button variant="primary">Save Menu Order</Button>
-        </div>
-      </Card>
-    </div>
-  );
 
   const renderSettings = () => (
     <div className="space-y-[20px] max-w-4xl">
@@ -822,16 +1030,15 @@ export default function TransitPortal() {
 
       {/* SIDEBAR */}
       <aside className="w-[232px] bg-white border-r border-[#EDE8E8] flex flex-col h-full shrink-0">
-        <div className="p-[28px] border-b border-[#F0ECEC] bg-white">
-          <div className="flex flex-col gap-[12px]">
-            <img 
-              src="/media/2021/05/Logo-png_website.png" 
-              alt="Transit Education" 
-              className="h-10 w-auto"
-            />
-            <div className="text-[#A93226] text-[10px] font-[700] tracking-[0.08em] uppercase">
-              CMS PORTAL
-            </div>
+        <div className="px-5 py-4 border-b border-[#F0ECEC] bg-white">
+          <img
+            src="/media/2021/05/Logo-png_website.png"
+            alt="Transit Education"
+            className="w-full max-w-[152px] h-auto object-contain"
+          />
+          <div className="mt-2 inline-flex items-center gap-1 bg-[#FEF2F1] border border-[#F5C4BF] rounded-full px-[8px] py-[3px]">
+            <div className="w-[5px] h-[5px] rounded-full bg-[#A93226]" />
+            <span className="text-[#A93226] text-[9px] font-[700] tracking-[0.1em] uppercase">CMS Portal</span>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -853,11 +1060,11 @@ export default function TransitPortal() {
         <div className="p-[16px] border-t border-[#F0ECEC] bg-[#F9F4F4]">
           <div className="flex items-center gap-[10px]">
             <div className="w-[32px] h-[32px] bg-[#A93226] text-white rounded-full flex items-center justify-center font-[700] text-[12px] shadow-md shadow-red-900/20">
-              {profile?.email?.[0]?.toUpperCase() || 'U'}
+              {(profile?.full_name || user?.email || 'U')[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-[600] text-[#111] truncate">{profile?.email?.split('@')[0] || 'User'}</p>
-              <p className="text-[10px] text-[#A93226] font-[700] uppercase tracking-widest">{profile?.role || 'User'}</p>
+              <p className="text-[12px] font-[600] text-[#111] truncate">{profile?.full_name || user?.email?.split('@')[0] || 'User'}</p>
+              <p className="text-[10px] text-[#A93226] font-[700] uppercase tracking-widest">{profile?.role || 'USER'}</p>
             </div>
             <button onClick={handleLogout} className="text-[#BBB] hover:text-[#A93226] transition-colors"><LogOut size={16} /></button>
           </div>
@@ -868,7 +1075,7 @@ export default function TransitPortal() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-[56px] bg-white border-b border-[#EDE8E8] flex items-center justify-between px-[28px] shrink-0">
           <h1 className="text-[16px] font-[700] text-[#111] tracking-tight">{activeSection}</h1>
-          <div className="flex items-center gap-[16px]"><span className="text-[9px] font-[700] text-[#A93226] bg-[#FEF2F1] border border-[#F5C4BF] px-[12px] py-[4px] rounded-full uppercase tracking-[0.04em]">Super Admin</span><Button onClick={() => { setEditingItem(null); setShowModal("Student"); }}><Plus size={14} /> Add Student</Button><div className="w-[32px] h-[32px] rounded-full bg-[#A93226] text-white flex items-center justify-center font-[700] text-[11px] border border-white shadow-sm">KD</div></div>
+          <div className="flex items-center gap-[16px]"><span className="text-[9px] font-[700] text-[#A93226] bg-[#FEF2F1] border border-[#F5C4BF] px-[12px] py-[4px] rounded-full uppercase tracking-[0.04em]">{profile?.role || 'USER'}</span><Button onClick={() => { setEditingItem(null); setShowModal("Student"); }}><Plus size={14} /> Add Student</Button><div className="w-[32px] h-[32px] rounded-full bg-[#A93226] text-white flex items-center justify-center font-[700] text-[11px] border border-white shadow-sm">{(profile?.full_name || user?.email || 'U')[0].toUpperCase()}</div></div>
         </header>
         <main className="flex-1 overflow-y-auto p-[28px] pt-[24px]">
           {loading && !data.students.length && <div className="flex items-center justify-center py-20 text-[#A93226]"><Loader2 className="animate-spin" size={40} /></div>}
@@ -882,7 +1089,6 @@ export default function TransitPortal() {
           {activeSection === "Media Library" && renderMediaLibrary()}
           {activeSection === "Testimonials" && renderTestimonials()}
           {activeSection === "Branches" && renderBranches()}
-          {activeSection === "Menus" && renderMenus()}
           {activeSection === "Settings" && renderSettings()}
         </main>
       </div>
@@ -890,7 +1096,7 @@ export default function TransitPortal() {
       {/* MODAL SYSTEM */}
       {showModal && (
         <Modal 
-          title={editingItem ? `Edit ${showModal}` : `New ${showModal}`} 
+          title={editingItem?.id ? `Edit ${showModal}` : `New ${showModal}`}
           onClose={() => { setShowModal(null); setEditingItem(null); }} 
           onSave={() => {
             const sectionMap: Record<string, string> = {
@@ -915,7 +1121,10 @@ export default function TransitPortal() {
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Branch</label><select value={editingItem?.branch || ''} onChange={e => setEditingItem({...editingItem, branch: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="">Select Branch</option>{data.branches.map((b:any) => <option key={b.id}>{b.name}</option>)}</select></div>
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Country</label><select value={editingItem?.country || ''} onChange={e => setEditingItem({...editingItem, country: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="">Select Country</option>{data.countries.map((c:any) => <option key={c.id}>{c.name}</option>)}</select></div>
               </div>
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Counselor</label><input type="text" value={editingItem?.counselor || ''} onChange={e => setEditingItem({...editingItem, counselor: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Counselor</label><input type="text" value={editingItem?.counselor || ''} onChange={e => setEditingItem({...editingItem, counselor: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Status</label><select value={editingItem?.status || 'PENDING'} onChange={e => setEditingItem({...editingItem, status: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option value="PENDING">Pending</option><option value="IN PROGRESS">In Progress</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select></div>
+              </div>
             </>
           )}
           {showModal === "FAQ" && (
@@ -942,7 +1151,17 @@ export default function TransitPortal() {
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Year</label><input type="text" value={editingItem?.year || ''} onChange={e => setEditingItem({...editingItem, year: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
               </div>
                             <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Course</label><input type="text" value={editingItem?.course || ''} onChange={e => setEditingItem({...editingItem, course: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
-              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Approval Image URL</label><input type="text" value={editingItem?.approvalImage || ''} onChange={e => setEditingItem({...editingItem, approvalImage: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/filename.png" /></div>
+              <div className="space-y-[6px]">
+                <label className="text-[10px] font-[700] text-[#999] uppercase">Approval Image</label>
+                <div className="flex gap-2">
+                  <input type="text" value={editingItem?.approvalImage || ''} onChange={e => setEditingItem({...editingItem, approvalImage: e.target.value})} className="flex-1 px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/filename.png" />
+                  <input ref={storyImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleStoryImageUpload} />
+                  <button type="button" onClick={() => storyImageInputRef.current?.click()} className="px-3 py-2 bg-[#F7F3F3] border border-[#E0DADA] rounded-[8px] text-[11px] font-[700] text-[#A93226] hover:bg-[#FEF2F1] whitespace-nowrap">Upload</button>
+                </div>
+                {editingItem?.approvalImage && (
+                  <img src={editingItem.approvalImage} alt="preview" className="w-full h-32 object-cover rounded-[8px] border border-[#E0DADA]" />
+                )}
+              </div>
 
             </>
           )}
@@ -982,9 +1201,33 @@ export default function TransitPortal() {
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Phone</label><input type="text" value={editingItem?.phone || ''} onChange={e => setEditingItem({...editingItem, phone: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
                 <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Manager</label><input type="text" value={editingItem?.mgr || ''} onChange={e => setEditingItem({...editingItem, mgr: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
               </div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Working Hours</label><input type="text" value={editingItem?.hours || ''} onChange={e => setEditingItem({...editingItem, hours: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. Sun-Fri 9am-6pm" /></div>
             </>
           )}
         </Modal>
+      )}
+
+      {/* MEDIA PREVIEW LIGHTBOX */}
+      {previewMedia && (
+        <div onClick={() => setPreviewMedia(null)} className="fixed inset-0 z-[300] bg-black/80 flex items-center justify-center p-6">
+          <div onClick={e => e.stopPropagation()} className="bg-white rounded-[16px] overflow-hidden shadow-2xl max-w-2xl w-full flex flex-col">
+            <div className="relative">
+              <img src={previewMedia.path} alt={previewMedia.name} className="w-full max-h-[60vh] object-contain bg-[#F5F5F5]" />
+              <button onClick={() => setPreviewMedia(null)} className="absolute top-3 right-3 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white"><X size={14} /></button>
+            </div>
+            <div className="p-5 space-y-3">
+              <p className="text-[13px] font-[700] text-[#111] truncate">{previewMedia.name}</p>
+              <p className="text-[11px] text-[#999]">{previewMedia.size}</p>
+              <div className="flex items-center gap-2 bg-[#F5F5F5] rounded-[8px] px-3 py-2">
+                <code className="flex-1 text-[11px] text-[#555] truncate">{previewMedia.path}</code>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(previewMedia.path); setToast("URL copied!"); }}
+                  className="shrink-0 text-[11px] font-[700] text-[#A93226] hover:underline"
+                >Copy URL</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* TOAST */}

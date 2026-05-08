@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('countries')
       .select('*')
       .order('name', { ascending: true });
-    
+
     if (error) throw error;
 
-    // Transform for compatibility (hero_title -> heroTitle, etc.)
     const formattedData = data.map(c => ({
       id: c.id,
       code: c.code,
@@ -19,10 +23,18 @@ export async function GET() {
       status: c.status,
       heroTitle: c.hero_title,
       whyStudy: c.why_study,
+      entryRequirements: (c.entry_requirements && typeof c.entry_requirements === 'object' && !Array.isArray(c.entry_requirements))
+        ? c.entry_requirements
+        : { ug: [], pg: [] },
+      visaProcess: Array.isArray(c.visa_process) ? c.visa_process : [],
       intakes: c.intakes,
       visaTime: c.visa_time,
       tuition: c.tuition_range,
       universities: c.top_universities ? c.top_universities.join(', ') : '',
+      requiredDocuments: Array.isArray(c.required_documents) ? c.required_documents : [],
+      majorIntakesDescription: c.major_intakes_description || '',
+      metaTitle: c.meta_title || '',
+      metaDescription: c.meta_description || '',
       lastEdited: c.updated_at
     }));
 
@@ -36,10 +48,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { data: newItem, error } = await supabase
+    const { data: newItem, error } = await supabaseAdmin
       .from('countries')
       .insert({
-        id: body.id,
         code: body.code,
         flag: body.flag,
         name: body.name,
@@ -49,7 +60,13 @@ export async function POST(req: NextRequest) {
         intakes: body.intakes,
         visa_time: body.visaTime,
         tuition_range: body.tuition,
-        top_universities: body.universities ? body.universities.split(',').map((u: string) => u.trim()) : []
+        top_universities: body.universities ? body.universities.split(',').map((u: string) => u.trim()) : [],
+        entry_requirements: body.entryRequirements || { ug: [], pg: [] },
+        visa_process: body.visaProcess || [],
+        required_documents: body.requiredDocuments || [],
+        major_intakes_description: body.majorIntakesDescription,
+        meta_title: body.metaTitle,
+        meta_description: body.metaDescription
       })
       .select()
       .single();

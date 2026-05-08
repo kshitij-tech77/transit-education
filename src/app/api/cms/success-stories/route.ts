@@ -1,28 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('success_stories')
       .select(`
         *,
-        countries:country_id (name)
+        countries:country_id (name, code, flag)
       `)
       .order('created_at', { ascending: false });
-    
+
     if (error) throw error;
 
-    // Transform for compatibility
-    const formattedData = data.map(s => ({
-      id: s.id,
-      name: s.student_name,
-      country: (s as any).countries?.name || s.country_id,
-      university: s.university,
-      year: s.year,
-      course: s.course,
-      approvalImage: s.approval_image_url
-    }));
+    if (data.length > 0) console.log('[success-stories GET] first raw row keys:', Object.keys(data[0]), 'id value:', (data[0] as any).id);
+
+    const formattedData = data.map(s => {
+      const countryData = (s as any).countries;
+      const flag = countryData?.flag || '';
+      return {
+        id: s.id,
+        name: s.student_name,
+        country: countryData?.name || s.country_id,
+        flag,
+        university: s.university,
+        year: s.year,
+        course: s.course,
+        approvalImage: s.approval_image_url || ''
+      };
+    });
 
     return NextResponse.json(formattedData);
   } catch (err) {
@@ -33,6 +40,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient();
     const body = await req.json();
     const { data: newItem, error } = await supabase
       .from('success_stories')

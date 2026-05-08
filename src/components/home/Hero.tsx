@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, MapPin, ArrowUpRight, Globe2, Sparkles, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, ArrowUpRight, Globe2, Sparkles, Loader2, Check } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import useEmblaCarousel from 'embla-carousel-react';
 import "flag-icons/css/flag-icons.min.css";
@@ -30,14 +30,23 @@ export default function Hero() {
     return String.fromCodePoint(...codePoints);
   };
 
+  const [settings, setSettings] = useState<any>(null);
+  
   const fetchData = async () => {
     try {
-      const [storiesRes, countriesRes] = await Promise.all([
+      const [storiesRes, countriesRes, settingsRes] = await Promise.all([
         fetch('/api/cms/success-stories'),
-        fetch('/api/cms/countries')
+        fetch('/api/cms/countries'),
+        fetch('/api/cms/settings')
       ]);
-      const stories = await storiesRes.json();
-      const countries = await countriesRes.json();
+      
+      if (!storiesRes.ok) console.error('Failed to fetch stories');
+      if (!countriesRes.ok) console.error('Failed to fetch countries');
+      if (!settingsRes.ok) console.error('Failed to fetch settings');
+
+      const stories = storiesRes.ok ? await storiesRes.json() : [];
+      const countries = countriesRes.ok ? await countriesRes.json() : [];
+      const settingsData = settingsRes.ok ? await settingsRes.json() : null;
       
       const mappedCountries = countries.map((c: any) => {
         const flagCode = (c.flag || c.code || '').trim();
@@ -47,8 +56,9 @@ export default function Hero() {
         };
       });
 
-      setSuccessStories(stories.slice(0, 6)); // Latest 6
+      setSuccessStories(stories.slice(0, 6));
       setLiveCountries(mappedCountries.filter((c: any) => c.status === 'LIVE'));
+      setSettings(settingsData);
     } catch (error) {
       console.error("Failed to fetch hero data:", error);
     } finally {
@@ -129,7 +139,7 @@ export default function Hero() {
           </motion.h1>
           
           <motion.p className="text-gray-600 text-lg lg:text-xl max-w-[580px] mb-12 leading-relaxed">
-            Expert visa guidance for Canada, Australia, UK, USA & Europe. 4 branches across Nepal.
+            {settings?.tagline || "Expert visa guidance for Canada, Australia, UK, USA & Europe. 4 branches across Nepal."}
           </motion.p>
           
           <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto px-4 sm:px-0">
@@ -165,23 +175,36 @@ export default function Hero() {
                   <button onClick={next} className="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"><ChevronRight size={22} /></button>
                 </div>
               </div>
-              <div className="relative h-[360px] rounded-[30px] overflow-hidden shadow-2xl bg-black/10">
+              <div className="relative h-[480px] rounded-[35px] overflow-hidden shadow-2xl bg-gray-900 group">
                 <AnimatePresence mode="wait">
-                  <motion.div key={current} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
-                    {successStories[current].image_url ? (
-                      <Image src={successStories[current].image_url} alt={successStories[current].name} fill className="object-cover" />
+                  <motion.div 
+                    key={current} 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    exit={{ opacity: 0 }} 
+                    className="absolute inset-0"
+                  >
+                    {successStories[current].approvalImage ? (
+                      <>
+                        <Image
+                          src={successStories[current].approvalImage}
+                          alt={successStories[current].name}
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-6 py-5">
+                          <h4 className="text-white text-xl font-black">{successStories[current].name}</h4>
+                          <p className="text-white/70 text-sm">{successStories[current].university}</p>
+                        </div>
+                      </>
                     ) : (
-                      <div className="w-full h-full bg-[#A93226]/20 flex items-center justify-center text-white/20 text-6xl font-black">{successStories[current].flag}</div>
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-brand/20 text-white p-12 text-center">
+                        <span className="text-8xl mb-6">{successStories[current].flag}</span>
+                        <h4 className="text-3xl font-black">{successStories[current].name}</h4>
+                        <p className="opacity-60">{successStories[current].university}</p>
+                      </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
-                    <div className="absolute top-6 left-6 flex items-center gap-2">
-                       <span className="text-2xl">{successStories[current].flag}</span>
-                       <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full border border-white/10 uppercase tracking-widest">{successStories[current].country}</span>
-                    </div>
-                    <div className="absolute bottom-8 left-8 right-8 text-white">
-                      <h4 className="font-black text-3xl mb-1">{successStories[current].name}</h4>
-                      <p className="text-sm font-medium opacity-80 flex items-center gap-1.5">{successStories[current].university}</p>
-                    </div>
                   </motion.div>
                 </AnimatePresence>
               </div>

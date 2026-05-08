@@ -26,12 +26,30 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const handleWhatsApp = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleWhatsApp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.phone) return;
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/cms/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          country: formData.country || '',
+          notes: `Guide request from ${location.name} location page`,
+          status: 'PENDING',
+        }),
+      });
+    } catch (_) {}
     const msg = encodeURIComponent(
       `Hi Transit Education ${location.name}! I want the free 2025 Study Abroad Guide.\n\nName: ${formData.name}\nPhone: ${formData.phone}\nCountry: ${formData.country || 'Not selected'}\nBranch: ${location.name}`
     );
     window.open(`https://wa.me/977${location.whatsapp}?text=${msg}`, '_blank');
+    setIsSubmitting(false);
     setIsPopupOpen(false);
   };
 
@@ -216,11 +234,12 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
                   <option>Not sure yet</option>
                 </select>
               </div>
-              <button 
+              <button
                 onClick={handleWhatsApp}
-                className="w-full bg-[#A93226] text-white text-xs font-bold tracking-[0.08em] uppercase py-[17px] rounded-[10px] hover:bg-[#7E2219] transition-colors mt-[6px]"
+                disabled={isSubmitting}
+                className="w-full bg-[#A93226] text-white text-xs font-bold tracking-[0.08em] uppercase py-[17px] rounded-[10px] hover:bg-[#7E2219] transition-colors mt-[6px] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Get My Free Guide →
+                {isSubmitting ? 'Sending...' : 'Get My Free Guide →'}
               </button>
               <p className="text-[10px] text-[#9A9895] text-center mt-[10px]">We never share your number. WhatsApp only.</p>
             </div>

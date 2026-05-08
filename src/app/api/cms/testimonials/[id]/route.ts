@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function PUT(
   req: Request,
@@ -9,16 +14,16 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    const { data: updated, error } = await supabase
+    const { data: updated, error } = await supabaseAdmin
       .from('testimonials')
       .update({
-        name: body.name,
-        country: body.country,
+        student_name: body.name,
         course: body.course,
         university: body.university,
+        country_id: body.country?.toLowerCase().replace(/\s+/g, '-'),
         body: body.body,
         rating: body.rating,
-        image_url: body.photo
+        photo_url: body.photo
       })
       .eq('id', id)
       .select()
@@ -38,7 +43,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('testimonials')
       .delete()
       .eq('id', id);

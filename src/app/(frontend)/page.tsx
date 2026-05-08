@@ -11,11 +11,12 @@ import TeamTeaser from "@/components/home/TeamTeaser";
 import Testimonials from "@/components/home/Testimonials";
 import LatestBlog from "@/components/home/LatestBlog";
 import ContactCTA from "@/components/home/ContactCTA";
-import BranchesStrip from "@/components/home/BranchesStrip";
 import SectionLabel from "@/components/shared/SectionLabel";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Transit Education | Your Transit to Global Destinations",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, branchesRes, settingsRes, unisRes] = await Promise.all([
+  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, unisRes] = await Promise.all([
     supabase
       .from('faqs')
       .select('*')
@@ -56,17 +57,10 @@ export default async function Home() {
       .order('year', { ascending: false })
       .limit(8),
     supabase
-      .from('branches')
-      .select('*')
-      .order('name', { ascending: true }),
-    supabase
       .from('site_settings')
       .select('*')
       .single(),
-    supabase
-      .from('universities')
-      .select('*')
-      .eq('is_featured', true)
+    Promise.resolve({ data: [] })
   ]);
 
   const getFlagEmoji = (countryCode: string) => {
@@ -86,7 +80,7 @@ export default async function Home() {
 
   const teamMembers = teamRes.data?.map(m => ({
     ...m,
-    role: m.position,
+    role: m.role,
     photo: m.photo_url,
     branch: (m as any).branches?.name || 'N/A'
   })) || [];
@@ -113,14 +107,9 @@ export default async function Home() {
       ...s,
       name: s.student_name,
       flag: flagCode.length === 2 ? getFlagEmoji(flagCode) : flagCode,
-      approvalImage: s.image_url
+      approvalImage: s.approval_image_url
     };
   }) || [];
-
-  const branches = branchesRes.data?.map(b => ({
-    ...b,
-    slug: b.location_slug || b.id
-  })) || [];
 
   // FAQ Schema for Homepage
   const faqSchema = featuredFaqs.length > 0 ? {
@@ -176,7 +165,6 @@ export default async function Home() {
 
       <LatestBlog posts={blogPosts} />
       <ContactCTA />
-      <BranchesStrip branches={branches} />
     </>
   );
 }

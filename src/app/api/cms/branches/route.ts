@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('branches')
       .select('*')
       .order('name', { ascending: true });
-    
+
     if (error) throw error;
 
-    // Transform for compatibility (addr -> address, mgr -> manager_name, etc.)
     const formattedData = data.map(b => ({
       id: b.id,
       name: b.name,
@@ -31,7 +35,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { data: newItem, error } = await supabase
+    const { data: newItem, error } = await supabaseAdmin
       .from('branches')
       .insert({
         name: body.name,

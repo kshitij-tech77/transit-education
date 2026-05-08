@@ -31,7 +31,8 @@ export async function GET() {
                 size: (fileStat.size / 1024 / 1024).toFixed(2) + ' MB',
                 path: `/media/${year}/${month}/${file}`,
                 year,
-                month
+                month,
+                mtimeMs: fileStat.mtimeMs
               });
             }
           }
@@ -46,8 +47,32 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  // In a real Next.js route handler, we'd use req.formData()
-  return NextResponse.json({ message: "Upload endpoint ready" });
+  try {
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
+
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const dir = path.join(process.cwd(), 'public', 'media', year, month);
+
+    await fs.mkdir(dir, { recursive: true });
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+    const dest = path.join(dir, safeName);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await fs.writeFile(dest, buffer);
+
+    return NextResponse.json({
+      path: `/media/${year}/${month}/${safeName}`,
+      name: safeName,
+      size: (buffer.length / 1024 / 1024).toFixed(2) + ' MB'
+    }, { status: 201 });
+  } catch (error) {
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest) {

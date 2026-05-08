@@ -52,14 +52,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const [postRes, relatedRes] = await Promise.all([
     supabase
       .from('blog_posts')
-      .select(`
-        *,
-        authors (
-          name,
-          credential,
-          bio
-        )
-      `)
+      .select('*, authors (name, credential, bio)')
       .eq('slug', slug)
       .single(),
     supabase

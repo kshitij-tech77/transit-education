@@ -1,24 +1,24 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = await createClient();
     const { id } = await params;
     const body = await req.json();
 
     const { data: updated, error } = await supabase
       .from('success_stories')
       .update({
-        name: body.name,
-        country: body.country,
-        flag: body.flag,
+        student_name: body.name,
+        country_id: body.country?.toLowerCase().replace(/\s+/g, '-'),
         university: body.university,
         course: body.course,
         year: body.year,
-        image_url: body.approvalImage
+        approval_image_url: body.approvalImage
       })
       .eq('id', id)
       .select()
@@ -37,6 +37,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = await createClient();
     const { id } = await params;
     const { error } = await supabase
       .from('success_stories')

@@ -2,9 +2,14 @@ import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, FileText } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -17,8 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!country) return {};
 
-  const title = country.metaTitle || `Study in ${country.name} | Transit Education`;
-  const description = country.metaDescription || `Everything you need to know about studying in ${country.name}. Visa requirements, tuition, and intakes.`;
+  const title = country.meta_title || `Study in ${country.name} | Transit Education`;
+  const description = country.meta_description || `Everything you need to know about studying in ${country.name}. Visa requirements, tuition, and intakes.`;
   const image = "/media/2021/05/Logo-png_website.png";
 
   return {
@@ -208,7 +213,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
               <h2 className="text-3xl font-bold text-black mt-4">The Step-by-Step Journey</h2>
             </div>
             
-            <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-300 before:to-transparent">
+            <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-gray-300 before:to-transparent">
               {formattedCountry.visa_process.map((step: any, i: number) => (
                 <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-[#A93226] text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">

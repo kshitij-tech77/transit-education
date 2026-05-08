@@ -14,7 +14,7 @@ export default async function TeamPage() {
 
   const teamData = teamRaw?.map(m => ({
     ...m,
-    role: m.position,
+    role: m.role,
     photo: m.photo_url,
     branch: (m as any).branches?.name || 'N/A'
   })) || [];
