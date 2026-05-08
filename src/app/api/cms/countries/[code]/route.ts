@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase-server';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Validates that the code/id param contains only safe characters.
+// Blocks all PostgREST special chars (commas, dots, parens, percent) that
+// would allow injection into the .or() filter string.
+function isValidCode(code: string): boolean {
+  return /^[a-zA-Z0-9_-]{1,100}$/.test(code);
+}
 
 export async function GET(
   _req: Request,
@@ -12,19 +14,25 @@ export async function GET(
 ) {
   try {
     const { code } = await params;
-    const { data, error } = await supabaseAdmin
+
+    if (!isValidCode(code)) {
+      return NextResponse.json({ error: 'Invalid country code' }, { status: 400 });
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
       .from('countries')
       .select('*')
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`)
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) return NextResponse.json({ error: "Country not found" }, { status: 404 });
+    if (!data) return NextResponse.json({ error: 'Country not found' }, { status: 404 });
 
     return NextResponse.json(data);
   } catch (error) {
     console.error('GET /api/cms/countries/[code] error:', error);
-    return NextResponse.json({ error: "Failed to load" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to load' }, { status: 500 });
   }
 }
 
@@ -34,9 +42,15 @@ export async function PUT(
 ) {
   try {
     const { code } = await params;
+
+    if (!isValidCode(code)) {
+      return NextResponse.json({ error: 'Invalid country code' }, { status: 400 });
+    }
+
+    const supabase = await createClient();
     const body = await req.json();
 
-    const { data: updated, error } = await supabaseAdmin
+    const { data: updated, error } = await supabase
       .from('countries')
       .update({
         name: body.name,
@@ -66,7 +80,7 @@ export async function PUT(
     return NextResponse.json(updated);
   } catch (error) {
     console.error('PUT /api/cms/countries/[code] error:', error);
-    return NextResponse.json({ error: "Update failed" }, { status: 400 });
+    return NextResponse.json({ error: 'Update failed' }, { status: 400 });
   }
 }
 
@@ -76,7 +90,13 @@ export async function DELETE(
 ) {
   try {
     const { code } = await params;
-    const { error } = await supabaseAdmin
+
+    if (!isValidCode(code)) {
+      return NextResponse.json({ error: 'Invalid country code' }, { status: 400 });
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
       .from('countries')
       .delete()
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`);
@@ -85,6 +105,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('DELETE /api/cms/countries/[code] error:', error);
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
   }
 }

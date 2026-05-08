@@ -274,7 +274,7 @@ export default function TransitPortal() {
       const res = await fetch(`/api/cms/${apiPath}/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error("Delete failed");
       setToast("Deleted successfully!");
-      setTimeout(() => fetchData(), 800);
+      await fetchData();
     } catch (error) {
       setToast("Error deleting item");
     } finally {

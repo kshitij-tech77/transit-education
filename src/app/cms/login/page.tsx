@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { createBrowserClient } from '@supabase/ssr'
+import { useRouter } from 'next/navigation'
 import { ArrowUpRight, Loader2, Lock, Mail } from "lucide-react";
 
 export default function CmsLogin() {
@@ -9,6 +10,7 @@ export default function CmsLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,42 +23,19 @@ export default function CmsLogin() {
     setError("");
 
     try {
-      console.log('--- LOGIN START ---');
-      console.log('Attempting login for:', email);
-      
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+      const { error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (loginError) {
-        console.error('LOGIN ERROR:', loginError);
         setError(loginError.message);
         return;
       }
 
-      console.log('LOGIN SUCCESS! User:', data.user?.email);
-      
-      // Get and log session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error('SESSION FETCH ERROR:', sessionError);
-      } else {
-        console.log('FULL SESSION OBJECT:', session);
-        console.log('Access Token exists:', !!session?.access_token);
-        console.log('Refresh Token exists:', !!session?.refresh_token);
-      }
-
-      console.log('Waiting 500ms before redirect...');
-      setTimeout(() => {
-        console.log('--- REDIRECTING TO /cms ---');
-        window.location.href = '/cms';
-      }, 500);
-      
+      router.push('/cms');
     } catch (err) {
-      console.error("UNEXPECTED ERROR DURING LOGIN:", err);
-      setError("Login failed. Check console for details.");
+      setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -91,12 +70,12 @@ export default function CmsLogin() {
             <label className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} />
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all" 
+                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all"
                 placeholder="admin@transiteducation.com"
               />
             </div>
@@ -106,19 +85,19 @@ export default function CmsLogin() {
             <label className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Password</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} />
-              <input 
-                type="password" 
+              <input
+                type="password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all" 
+                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all"
                 placeholder="••••••••"
               />
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-[#A93226] text-white py-3.5 rounded-[12px] text-[14px] font-[700] hover:bg-[#7E2219] shadow-xl transition-all flex items-center justify-center gap-2 mt-4"
           >

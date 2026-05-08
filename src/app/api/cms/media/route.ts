@@ -3,6 +3,37 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const MEDIA_DIR = path.join(process.cwd(), 'public/media');
+const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+
+const ALLOWED_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/svg+xml',
+  'application/pdf',
+]);
+
+const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'pdf']);
+
+function buildSafeName(originalName: string): string | null {
+  const lastDot = originalName.lastIndexOf('.');
+  if (lastDot < 0) return null;
+
+  const ext = originalName.slice(lastDot + 1).toLowerCase();
+  if (!ALLOWED_EXTENSIONS.has(ext)) return null;
+
+  // Sanitize base: alphanumeric, hyphens, underscores only — collapses dots so
+  // "shell.php.jpg" becomes "shell-php.jpg" rather than keeping the fake extension.
+  const safeBase = originalName
+    .slice(0, lastDot)
+    .replace(/[^a-zA-Z0-9_-]/g, '-')
+    .replace(/-{2,}/g, '-')
+    .slice(0, 100)
+    .replace(/^-+|-+$/g, '') || 'file';
+
+  return `${safeBase}.${ext}`;
+}
 
 export async function GET() {
   try {
@@ -12,15 +43,15 @@ export async function GET() {
     for (const year of years) {
       const yearPath = path.join(MEDIA_DIR, year);
       const stat = await fs.stat(yearPath);
-      
+
       if (stat.isDirectory()) {
         const months = await fs.readdir(yearPath);
         mediaFiles[year] = [];
-        
+
         for (const month of months) {
           const monthPath = path.join(yearPath, month);
           const monthStat = await fs.stat(monthPath);
-          
+
           if (monthStat.isDirectory()) {
             const files = await fs.readdir(monthPath);
             for (const file of files) {
@@ -52,6 +83,22 @@ export async function POST(req: NextRequest) {
     const file = formData.get('file') as File;
     if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
+    // Size check before reading into memory
+    if (file.size > MAX_SIZE_BYTES) {
+      return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 400 });
+    }
+
+    // MIME type check
+    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+      return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+    }
+
+    // Extension whitelist + double-extension sanitization
+    const safeName = buildSafeName(file.name);
+    if (!safeName) {
+      return NextResponse.json({ error: "Invalid file name or extension" }, { status: 400 });
+    }
+
     const now = new Date();
     const year = now.getFullYear().toString();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -59,7 +106,6 @@ export async function POST(req: NextRequest) {
 
     await fs.mkdir(dir, { recursive: true });
 
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
     const dest = path.join(dir, safeName);
     const buffer = Buffer.from(await file.arrayBuffer());
     await fs.writeFile(dest, buffer);

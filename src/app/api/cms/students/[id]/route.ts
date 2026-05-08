@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function PUT(
   req: Request,
@@ -7,6 +7,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    const supabase = await createClient();
     const body = await req.json();
 
     // Handle branch lookup if name provided
@@ -50,6 +51,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const supabase = await createClient();
     const { error } = await supabase
       .from('students')
       .delete()
