@@ -28,7 +28,7 @@ export default function TestPrepCoursePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="/media/2021/03/student-library-books-3500990.jpg"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
             alt="Test Preparation Courses"
             fill
             className="object-cover"
@@ -137,7 +137,7 @@ export default function TestPrepCoursePage() {
 
             <div className="relative h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
               <Image
-                src="/media/2021/03/annie-spratt-pbrQvuKJQf8-unsplash-scaled.jpg"
+                src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/annie-spratt-pbrQvuKJQf8-unsplash-scaled.jpg"
                 alt="Transit Academy"
                 fill
                 className="object-cover"

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
-const MEDIA_DIR = path.join(process.cwd(), 'public/media');
+const BUCKET = 'media';
 const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 const ALLOWED_MIME_TYPES = new Set([
@@ -16,6 +15,13 @@ const ALLOWED_MIME_TYPES = new Set([
 
 const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'pdf']);
 
+function serviceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
 function buildSafeName(originalName: string): string | null {
   const lastDot = originalName.lastIndexOf('.');
   if (lastDot < 0) return null;
@@ -23,8 +29,6 @@ function buildSafeName(originalName: string): string | null {
   const ext = originalName.slice(lastDot + 1).toLowerCase();
   if (!ALLOWED_EXTENSIONS.has(ext)) return null;
 
-  // Sanitize base: alphanumeric, hyphens, underscores only — collapses dots so
-  // "shell.php.jpg" becomes "shell-php.jpg" rather than keeping the fake extension.
   const safeBase = originalName
     .slice(0, lastDot)
     .replace(/[^a-zA-Z0-9_-]/g, '-')
@@ -35,45 +39,75 @@ function buildSafeName(originalName: string): string | null {
   return `${safeBase}.${ext}`;
 }
 
+// Extract storage path (e.g. "2025/02/image.png") from either:
+//   - old format:  /media/2025/02/image.png
+//   - new format:  https://*.supabase.co/storage/v1/object/public/media/2025/02/image.png
+function toStoragePath(filePath: string): string | null {
+  if (filePath.startsWith('/media/')) {
+    return filePath.slice('/media/'.length);
+  }
+  const marker = `/object/public/${BUCKET}/`;
+  const idx = filePath.indexOf(marker);
+  if (idx !== -1) {
+    return filePath.slice(idx + marker.length);
+  }
+  return null;
+}
+
 export async function GET() {
   try {
-    const years = await fs.readdir(MEDIA_DIR);
-    const mediaFiles: any = {};
+    const supabase = serviceClient();
 
-    for (const year of years) {
-      const yearPath = path.join(MEDIA_DIR, year);
-      const stat = await fs.stat(yearPath);
+    const { data: topLevel, error: topError } = await supabase.storage
+      .from(BUCKET)
+      .list('', { limit: 100 });
 
-      if (stat.isDirectory()) {
-        const months = await fs.readdir(yearPath);
-        mediaFiles[year] = [];
+    if (topError) throw topError;
 
-        for (const month of months) {
-          const monthPath = path.join(yearPath, month);
-          const monthStat = await fs.stat(monthPath);
+    const mediaFiles: Record<string, any[]> = {};
 
-          if (monthStat.isDirectory()) {
-            const files = await fs.readdir(monthPath);
-            for (const file of files) {
-              const filePath = path.join(monthPath, file);
-              const fileStat = await fs.stat(filePath);
-              mediaFiles[year].push({
-                name: file,
-                size: (fileStat.size / 1024 / 1024).toFixed(2) + ' MB',
-                path: `/media/${year}/${month}/${file}`,
-                year,
-                month,
-                mtimeMs: fileStat.mtimeMs
-              });
-            }
-          }
+    for (const yearEntry of topLevel ?? []) {
+      if (yearEntry.id !== null) continue; // skip files at root, only folders
+      const year = yearEntry.name;
+      mediaFiles[year] = [];
+
+      const { data: monthLevel } = await supabase.storage
+        .from(BUCKET)
+        .list(year, { limit: 100 });
+
+      for (const monthEntry of monthLevel ?? []) {
+        if (monthEntry.id !== null) continue;
+        const month = monthEntry.name;
+
+        const { data: files } = await supabase.storage
+          .from(BUCKET)
+          .list(`${year}/${month}`, { limit: 1000 });
+
+        for (const file of files ?? []) {
+          if (file.id === null) continue; // skip sub-folders
+
+          const { data: urlData } = supabase.storage
+            .from(BUCKET)
+            .getPublicUrl(`${year}/${month}/${file.name}`);
+
+          mediaFiles[year].push({
+            name: file.name,
+            size: file.metadata?.size
+              ? (file.metadata.size / 1024 / 1024).toFixed(2) + ' MB'
+              : 'unknown',
+            path: urlData.publicUrl,
+            year,
+            month,
+            mtimeMs: file.updated_at ? new Date(file.updated_at).getTime() : 0,
+          });
         }
       }
     }
 
     return NextResponse.json(mediaFiles);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to read media directory" }, { status: 500 });
+    console.error('Media list error:', error);
+    return NextResponse.json({ error: 'Failed to read media' }, { status: 500 });
   }
 }
 
@@ -81,63 +115,72 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
 
-    // Size check before reading into memory
     if (file.size > MAX_SIZE_BYTES) {
-      return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 400 });
+      return NextResponse.json({ error: 'File too large (max 20 MB)' }, { status: 400 });
     }
 
-    // MIME type check
     if (!ALLOWED_MIME_TYPES.has(file.type)) {
-      return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+      return NextResponse.json({ error: 'File type not allowed' }, { status: 400 });
     }
 
-    // Extension whitelist + double-extension sanitization
     const safeName = buildSafeName(file.name);
     if (!safeName) {
-      return NextResponse.json({ error: "Invalid file name or extension" }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid file name or extension' }, { status: 400 });
     }
 
     const now = new Date();
     const year = now.getFullYear().toString();
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    const dir = path.join(process.cwd(), 'public', 'media', year, month);
+    const storagePath = `${year}/${month}/${safeName}`;
 
-    await fs.mkdir(dir, { recursive: true });
-
-    const dest = path.join(dir, safeName);
     const buffer = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(dest, buffer);
+    const supabase = serviceClient();
+
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath, buffer, { contentType: file.type, upsert: false });
+
+    if (uploadError) {
+      console.error('Storage upload error:', uploadError);
+      return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
 
     return NextResponse.json({
-      path: `/media/${year}/${month}/${safeName}`,
+      path: urlData.publicUrl,
       name: safeName,
-      size: (buffer.length / 1024 / 1024).toFixed(2) + ' MB'
+      size: (buffer.length / 1024 / 1024).toFixed(2) + ' MB',
     }, { status: 201 });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+    console.error('Upload error:', error);
+    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
     const { filePath } = await req.json();
-    if (!filePath) return NextResponse.json({ error: "No file path provided" }, { status: 400 });
+    if (!filePath) return NextResponse.json({ error: 'No file path provided' }, { status: 400 });
 
-    // Security check: ensure path is within public/media
-    const absolutePath = path.join(process.cwd(), 'public', filePath);
-    const mediaRoot = path.join(process.cwd(), 'public/media');
-
-    if (!absolutePath.startsWith(mediaRoot)) {
-      return NextResponse.json({ error: "Unauthorized path" }, { status: 403 });
+    const storagePath = toStoragePath(filePath);
+    if (!storagePath) {
+      return NextResponse.json({ error: 'Invalid file path' }, { status: 400 });
     }
 
-    await fs.unlink(absolutePath);
+    const supabase = serviceClient();
+    const { error } = await supabase.storage.from(BUCKET).remove([storagePath]);
+
+    if (error) {
+      console.error('Storage delete error:', error);
+      return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Delete media error:", error);
-    return NextResponse.json({ error: "Failed to delete file" }, { status: 500 });
+    console.error('Delete media error:', error);
+    return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
   }
 }

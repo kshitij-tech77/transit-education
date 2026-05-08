@@ -47,7 +47,7 @@ export default async function USAPage() {
         title={country.hero_title || "Study in USA"}
         subtitle="Study Abroad"
         description={country.why_study || "The USA host the largest number of international students in the world. It is the top destination for higher education due to its academic excellence and varied choices."}
-        image="/media/2021/05/Web-banner-USA.png"
+        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Web-banner-USA.png"
       />
 
       <section className="py-24 bg-off-white">

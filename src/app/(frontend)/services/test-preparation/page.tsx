@@ -36,7 +36,7 @@ export default function TestPreparationPage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="/media/2021/03/clay-banks-GX8KBbVmC6c-unsplash-scaled.jpg"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/clay-banks-GX8KBbVmC6c-unsplash-scaled.jpg"
             alt="Test Preparation"
             fill
             className="object-cover"
@@ -94,7 +94,7 @@ export default function TestPreparationPage() {
       <section className="py-24 bg-black text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
           <Image
-            src="/media/2021/05/Logo-png_website.png"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
             alt="Pattern"
             width={400}
             height={400}
@@ -106,7 +106,7 @@ export default function TestPreparationPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative h-[500px] rounded-[3rem] overflow-hidden">
               <Image
-                src="/media/2021/03/student-library-books-3500990.jpg"
+                src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
                 alt="State of the art classroom"
                 fill
                 className="object-cover"

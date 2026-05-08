@@ -2,6 +2,7 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { notFound } from "next/navigation";
 import { Calendar, User, Tag, ArrowLeft, Clock, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Metadata } from "next";
@@ -142,7 +143,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="absolute inset-0 opacity-40">
           {formattedPost.featuredImage && (
             <Image
-              src={formattedPost.featuredImage}
+              src={resolveMediaUrl(formattedPost.featuredImage)}
               alt={formattedPost.title}
               fill
               className="object-cover"
@@ -260,7 +261,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <div className="relative h-48 w-full overflow-hidden">
                   {relatedPost.featuredImage && (
                     <Image
-                      src={relatedPost.featuredImage}
+                      src={resolveMediaUrl(relatedPost.featuredImage)}
                       alt={relatedPost.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"

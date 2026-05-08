@@ -66,7 +66,7 @@ export default async function AustraliaPage() {
         title={country.hero_title || "Study in Australia"}
         subtitle="Study Abroad"
         description={country.why_study || "Australia is home to nearly 700,000 international students. It is the third most preferred destination due to its excellent education system and safe environment."}
-        image="/media/2021/05/Wwb-banner-Australia.png"
+        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Wwb-banner-Australia.png"
       />
 
       <section className="py-24 bg-off-white">

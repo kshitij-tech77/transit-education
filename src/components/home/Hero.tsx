@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, MapPin, ArrowUpRight, Globe2, Sparkles, Loader2, Check } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -187,7 +188,7 @@ export default function Hero() {
                     {successStories[current].approvalImage ? (
                       <>
                         <Image
-                          src={successStories[current].approvalImage}
+                          src={resolveMediaUrl(successStories[current].approvalImage)}
                           alt={successStories[current].name}
                           fill
                           className="object-contain"

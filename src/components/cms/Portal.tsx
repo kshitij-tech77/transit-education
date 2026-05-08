@@ -1032,7 +1032,7 @@ export default function TransitPortal() {
       <aside className="w-[232px] bg-white border-r border-[#EDE8E8] flex flex-col h-full shrink-0">
         <div className="px-5 py-4 border-b border-[#F0ECEC] bg-white">
           <img
-            src="/media/2021/05/Logo-png_website.png"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
             alt="Transit Education"
             className="w-full max-w-[152px] h-auto object-contain"
           />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, Phone, MapPin, Clock, MessageSquare, ChevronRight, Check } from "lucide-react";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 interface LocationClientProps {
   location: any;
@@ -17,7 +18,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
   const slides = [
     location.heroImage,
     ...location.gallery
-  ];
+  ].map(resolveMediaUrl);
 
   useEffect(() => {
     const timer = setInterval(() => {

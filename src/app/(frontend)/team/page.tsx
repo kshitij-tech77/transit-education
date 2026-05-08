@@ -1,6 +1,7 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export default async function TeamPage() {
@@ -31,7 +32,7 @@ export default async function TeamPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
             alt="Transit Education Team"
             fill
             className="object-cover"
@@ -61,7 +62,7 @@ export default async function TeamPage() {
               <div key={index} className="group">
                 <div className="relative h-[450px] w-full rounded-[2.5rem] overflow-hidden mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                   <Image
-                    src={member.photo}
+                    src={resolveMediaUrl(member.photo)}
                     alt={member.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -103,7 +104,7 @@ export default async function TeamPage() {
               <div key={index} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
                 <div className="relative h-64 w-full rounded-2xl overflow-hidden mb-6">
                   <Image
-                    src={member.photo}
+                    src={resolveMediaUrl(member.photo)}
                     alt={member.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"

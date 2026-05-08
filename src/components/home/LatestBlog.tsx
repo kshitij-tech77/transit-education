@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { Calendar, User } from "lucide-react";
 
 export default function LatestBlog({ posts }: { posts: any[] }) {
@@ -43,8 +44,8 @@ export default function LatestBlog({ posts }: { posts: any[] }) {
               className="group cursor-pointer flex flex-col h-full"
             >
               <div className="aspect-video bg-gray-100 rounded-2xl mb-6 overflow-hidden relative border border-gray-100 shadow-sm">
-                <img 
-                  src={post.featuredImage} 
+                <img
+                  src={resolveMediaUrl(post.featuredImage)}
                   alt={post.title} 
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />

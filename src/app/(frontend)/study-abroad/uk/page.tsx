@@ -47,7 +47,7 @@ export default async function UKPage() {
         title={country.hero_title || "Study in UK"}
         subtitle="Study Abroad"
         description={country.why_study || "The UK is one of the world's most popular destinations to study higher education, with more than 500,000 international students enrolling each year."}
-        image="/media/2021/05/web-banner-UK.png"
+        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/web-banner-UK.png"
       />
 
       <section className="py-24 bg-off-white">

@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const tagline = settings?.tagline || "Global Education";
   const defaultTitle = `${siteName} | ${tagline}`;
   const defaultDescription = settings?.seo_description || "Expert study abroad consultancy in Nepal.";
-  const defaultOgImage = "/media/2021/05/Logo-png_website.png";
+  const defaultOgImage = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
 
   return {
     title: {
@@ -59,12 +59,12 @@ export default async function RootLayout({
     .single();
 
   const siteName = settings?.site_name || "Transit Education";
-  const defaultOgImage = "/media/2021/05/Logo-png_website.png";
+  const defaultOgImage = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
 
   const orgSchema = {
     name: siteName,
     url: "https://transiteducation.com.np",
-    logo: "https://transiteducation.com.np" + defaultOgImage,
+    logo: defaultOgImage,
     contactPoint: {
       "@type": "ContactPoint",
       telephone: settings?.phone || "01-5906277",

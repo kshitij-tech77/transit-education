@@ -2,6 +2,7 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import NewsletterForm from "@/components/layout/NewsletterForm";
@@ -49,7 +50,7 @@ export default async function BlogPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Transit Education Blog"
             fill
             className="object-cover"
@@ -77,7 +78,7 @@ export default async function BlogPage() {
                   <Link href={`/blog/${post.slug}`} className="block relative h-[400px] rounded-[2.5rem] overflow-hidden mb-8 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                     {post.featuredImage && (
                       <Image
-                        src={post.featuredImage}
+                        src={resolveMediaUrl(post.featuredImage)}
                         alt={post.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"

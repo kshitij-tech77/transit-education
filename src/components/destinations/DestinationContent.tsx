@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { buttonVariants } from "@/components/ui/button";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 interface DestinationHeroProps {
   title: string;
@@ -31,7 +32,7 @@ export function DestinationHero({ title, subtitle, description, image }: Destina
           </div>
           <div className="relative">
             <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl rotate-2">
-              <img src={image} alt={title} className="w-full h-full object-cover" />
+              <img src={resolveMediaUrl(image)} alt={title} className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-100 max-w-[240px] -rotate-3">
               <p className="text-sm font-medium text-gray-800 leading-relaxed">

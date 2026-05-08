@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 export default function Testimonials({ testimonials }: { testimonials: any[] }) {
   const testimonialsData = testimonials || [];
@@ -46,8 +47,8 @@ export default function Testimonials({ testimonials }: { testimonials: any[] }) 
               </p>
               <div className="border-t border-gray-100 pt-6 flex items-center gap-4 mt-auto">
                 {t.photo ? (
-                  <img 
-                    src={t.photo} 
+                  <img
+                    src={resolveMediaUrl(t.photo)}
                     alt={t.name || "Student"} 
                     className="w-10 h-10 rounded-full object-cover shrink-0"
                   />

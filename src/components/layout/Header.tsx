@@ -73,7 +73,7 @@ export default function Header({
       <div className="container h-[80px] flex items-center justify-between">
         <Link href="/" className="flex items-center group">
           <img 
-            src="/media/2021/05/Logo-png_website.png" 
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png" 
             alt="Transit Education" 
             className="h-12 w-auto transition-transform group-hover:scale-105"
           />

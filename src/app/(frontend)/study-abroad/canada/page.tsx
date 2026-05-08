@@ -47,7 +47,7 @@ export default async function CanadaPage() {
         title={country.hero_title || "Study in Canada"}
         subtitle="Study Abroad"
         description={country.why_study || "Canada offers an overabundance of opportunities for international students. It is home to some of the top 100 universities in the world."}
-        image="/media/2021/05/Web-banner-Canada.png"
+        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Web-banner-Canada.png"
       />
 
       <section className="py-24 bg-off-white">
