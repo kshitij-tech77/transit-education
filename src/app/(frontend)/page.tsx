@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, unisRes] = await Promise.all([
+  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes] = await Promise.all([
     supabase
       .from('faqs')
       .select('*')
@@ -60,7 +60,6 @@ export default async function Home() {
       .from('site_settings')
       .select('*')
       .single(),
-    Promise.resolve({ data: [] })
   ]);
 
   const getFlagEmoji = (countryCode: string) => {
@@ -134,7 +133,7 @@ export default async function Home() {
         />
       )}
       <Hero />
-      <UniversityLogos universities={unisRes.data || []} />
+      <UniversityLogos />
       <Destinations />
       <WelcomeAbout />
       <Services />
