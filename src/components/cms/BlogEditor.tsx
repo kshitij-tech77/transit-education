@@ -2,18 +2,20 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  Save, 
-  Send, 
-  Info, 
-  Globe, 
-  User, 
-  Clock, 
-  Plus, 
-  Trash2, 
+import {
+  ArrowLeft,
+  Send,
+  Info,
+  Globe,
+  User,
+  Clock,
+  Plus,
+  Trash2,
   CheckCircle2,
-  AlertCircle
+  ShieldCheck,
+  Zap,
+  BookOpen,
+  AlertTriangle
 } from "lucide-react";
 import TiptapEditor from "@/components/cms/TiptapEditor";
 import { cn } from "@/lib/utils";
@@ -218,69 +220,78 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             />
           </div>
 
-          {/* AEO CARD */}
+          {/* GEO & AEO CARD */}
           <div className="bg-white rounded-[20px] p-8 shadow-sm border border-[#EDE8E8]">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                <Info size={18} />
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center">
+                <Zap size={18} />
               </div>
-              <h3 className="text-[16px] font-[700] text-[#111]">AEO & FAQ (Answer Engine Optimization)</h3>
+              <div>
+                <h3 className="text-[15px] font-[700] text-[#111]">GEO & AEO Signals</h3>
+                <p className="text-[10px] text-[#BBB]">Optimizes for AI Overviews, ChatGPT, Perplexity & featured snippets</p>
+              </div>
             </div>
-            
-            <div className="space-y-6">
+
+            <div className="space-y-5 mt-6">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Primary Question post answers</label>
-                <input 
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Primary Question This Post Answers</label>
+                <input
                   type="text"
                   placeholder="e.g. How do I apply for a Canada student visa from Nepal?"
                   value={formData.primaryQuestion}
                   onChange={(e) => handleChange("primaryQuestion", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-violet-300"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Answer Summary (2-3 sentences)</label>
-                <textarea 
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Answer Summary <span className="text-violet-400 normal-case">— shown as callout on page</span></label>
+                <textarea
                   rows={3}
+                  placeholder="2-3 sentence direct answer. AI systems surface this as a featured snippet."
                   value={formData.answerSummary}
                   onChange={(e) => handleChange("answerSummary", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none resize-none"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none resize-none focus:border-violet-300"
                 />
               </div>
 
-              <div className="pt-4 border-t border-[#EDE8E8]">
+              <div className="pt-5 border-t border-[#EDE8E8]">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-[13px] font-[700] text-[#111]">FAQ Schema Items</h4>
+                  <div>
+                    <h4 className="text-[13px] font-[700] text-[#111]">FAQ Schema Items</h4>
+                    <p className="text-[10px] text-[#BBB] mt-0.5">Injects FAQPage JSON-LD — boosts People Also Ask ranking</p>
+                  </div>
                   <button onClick={addFAQ} className="text-[#A93226] text-[11px] font-[700] flex items-center gap-1 hover:underline">
-                    <Plus size={14} /> Add Item
+                    <Plus size={14} /> Add
                   </button>
                 </div>
-                
                 <div className="space-y-4">
                   {formData.faqItems?.map((faq, i) => (
-                    <div key={i} className="p-4 bg-gray-50 rounded-[12px] relative group">
-                      <button 
+                    <div key={i} className="p-4 bg-violet-50/40 border border-violet-100 rounded-[12px] relative group">
+                      <button
                         onClick={() => removeFAQ(i)}
                         className="absolute -right-2 -top-2 w-6 h-6 bg-white border border-red-100 text-red-500 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <Trash2 size={12} />
                       </button>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder="Question..."
                         value={faq.question}
                         onChange={(e) => updateFAQ(i, "question", e.target.value)}
-                        className="w-full bg-transparent font-[600] text-[13px] outline-none mb-2"
+                        className="w-full bg-transparent font-[600] text-[13px] outline-none mb-2 text-[#111]"
                       />
-                      <textarea 
+                      <textarea
                         placeholder="Answer..."
                         rows={2}
                         value={faq.answer}
                         onChange={(e) => updateFAQ(i, "answer", e.target.value)}
-                        className="w-full bg-transparent text-[13px] outline-none resize-none"
+                        className="w-full bg-transparent text-[13px] outline-none resize-none text-gray-600"
                       />
                     </div>
                   ))}
+                  {(!formData.faqItems || formData.faqItems.length === 0) && (
+                    <p className="text-[11px] text-[#CCC] italic text-center py-2">No FAQ items yet. Add 3-5 for best results.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -289,6 +300,68 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
 
         {/* RIGHT COLUMN - PANELS */}
         <div className="col-span-4 space-y-6">
+
+          {/* E-E-A-T SIGNALS — first, most important */}
+          <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={16} className="text-[#A93226]" />
+                <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">E-E-A-T Signals</h3>
+              </div>
+              {/* Completeness badge */}
+              {(() => {
+                const score = [formData.authorName, formData.authorCredential, formData.authorBio, formData.lastReviewed, formData.sources?.[0]].filter(Boolean).length;
+                const pct = Math.round((score / 5) * 100);
+                const color = pct >= 80 ? "text-green-600 bg-green-50" : pct >= 40 ? "text-amber-600 bg-amber-50" : "text-red-500 bg-red-50";
+                return (
+                  <span className={`text-[10px] font-[700] px-2 py-0.5 rounded-full ${color}`}>{pct}% complete</span>
+                );
+              })()}
+            </div>
+            <p className="text-[10px] text-[#BBB] mb-5">Google's E-E-A-T framework — Experience, Expertise, Authoritativeness, Trust.</p>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Credential <span className="text-[#CCC] normal-case">— shown as verified badge</span></label>
+                <input
+                  type="text"
+                  placeholder="e.g. Certified Visa Consultant, 8+ years"
+                  value={formData.authorCredential}
+                  onChange={(e) => handleChange("authorCredential", e.target.value)}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Bio</label>
+                <textarea
+                  rows={2}
+                  placeholder="Short bio highlighting expertise relevant to this article..."
+                  value={formData.authorBio}
+                  onChange={(e) => handleChange("authorBio", e.target.value)}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Last Reviewed Date <span className="text-[#CCC] normal-case">— displays trust banner</span></label>
+                <input
+                  type="date"
+                  value={formData.lastReviewed}
+                  onChange={(e) => handleChange("lastReviewed", e.target.value)}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Sources / References <span className="text-[#CCC] normal-case">— one URL per line</span></label>
+                <textarea
+                  rows={3}
+                  placeholder={"https://immi.homeaffairs.gov.au/...\nhttps://studyaustralia.gov.au/..."}
+                  value={(formData.sources || []).join("\n")}
+                  onChange={(e) => handleChange("sources", e.target.value.split("\n").map(s => s.trim()).filter(Boolean))}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226] font-mono"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* SEO SETTINGS */}
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
@@ -299,76 +372,41 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-[10px] font-[700] uppercase tracking-widest text-[#999]">
                   <label>Meta Title</label>
-                  <span className={cn(formData.metaTitle?.length && formData.metaTitle.length > 60 && "text-red-500")}>
+                  <span className={cn(formData.metaTitle?.length && formData.metaTitle.length > 60 ? "text-red-500" : "")}>
                     {formData.metaTitle?.length || 0}/60
                   </span>
                 </div>
-                <input 
+                <input
                   type="text"
                   maxLength={60}
                   value={formData.metaTitle}
                   onChange={(e) => handleChange("metaTitle", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
                 />
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-[10px] font-[700] uppercase tracking-widest text-[#999]">
                   <label>Meta Description</label>
-                  <span>{formData.metaDescription?.length || 0}/160</span>
+                  <span className={cn(formData.metaDescription?.length && formData.metaDescription.length > 155 ? "text-amber-500" : "")}>
+                    {formData.metaDescription?.length || 0}/160
+                  </span>
                 </div>
-                <textarea 
+                <textarea
                   rows={3}
                   maxLength={160}
                   value={formData.metaDescription}
                   onChange={(e) => handleChange("metaDescription", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
                 />
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Focus Keyword</label>
-                <input 
+                <input
                   type="text"
+                  placeholder="e.g. Australia student visa Nepal"
                   value={formData.focusKeyword}
                   onChange={(e) => handleChange("focusKeyword", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* EEAT SIGNALS */}
-          <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
-            <div className="flex items-center gap-2 mb-4">
-              <User size={16} className="text-[#A93226]" />
-              <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">EEAT Signals</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Credential</label>
-                <input 
-                  type="text"
-                  placeholder="e.g. Certified Visa Consultant"
-                  value={formData.authorCredential}
-                  onChange={(e) => handleChange("authorCredential", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Last Reviewed Date</label>
-                <input 
-                  type="date"
-                  value={formData.lastReviewed}
-                  onChange={(e) => handleChange("lastReviewed", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Bio</label>
-                <textarea 
-                  rows={2}
-                  value={formData.authorBio}
-                  onChange={(e) => handleChange("authorBio", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
                 />
               </div>
             </div>
@@ -377,7 +415,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           {/* PUBLISH SETTINGS */}
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
-              <Plus size={16} className="text-[#A93226]" />
+              <BookOpen size={16} className="text-[#A93226]" />
               <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">Publish Settings</h3>
             </div>
             <div className="space-y-4">

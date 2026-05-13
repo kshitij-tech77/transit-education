@@ -4,7 +4,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { notFound } from "next/navigation";
-import { Calendar, User, Tag, ArrowLeft, Clock, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Calendar, User, Tag, ArrowLeft, Clock, ShieldCheck, CheckCircle2, ExternalLink, MessageSquareQuote } from "lucide-react";
 import { Metadata } from "next";
 import BlogContent from "@/components/blog/BlogContent";
 
@@ -76,12 +76,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     ...post,
     publishDate: post.publish_date,
     featuredImage: post.featured_image,
-    authorName: (post as any).authors?.name || "Transit Editorial Team",
+    authorName: (post as any).authors?.name || "Transit Education",
     authorCredential: (post as any).authors?.credential,
     authorBio: (post as any).authors?.bio,
     lastReviewed: post.last_reviewed_at,
-    faqItems: post.faq_schema || [],
-    readingTime: post.reading_time
+    faqItems: (post as any).faq_schema || [],
+    readingTime: post.reading_time,
+    answerSummary: (post as any).answer_summary || "",
+    sources: (post as any).sources || [],
   };
 
   const blogPosts = relatedRaw?.map(p => ({
@@ -188,10 +190,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <section className="py-24 bg-white">
         <div className="container">
           <div className="max-w-4xl mx-auto">
+            {/* Trust banner */}
             {formattedPost.lastReviewed && (
-              <div className="mb-12 flex items-center gap-3 bg-green-50 text-green-700 px-6 py-3 rounded-2xl border border-green-100 text-sm font-medium">
-                <ShieldCheck className="w-5 h-5" />
-                <span>Fact-checked and last reviewed on {new Date(formattedPost.lastReviewed).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              <div className="mb-8 flex items-center gap-3 bg-green-50 text-green-700 px-6 py-3 rounded-2xl border border-green-100 text-sm font-medium">
+                <ShieldCheck className="w-5 h-5 shrink-0" />
+                <span>Fact-checked and reviewed by <strong>{formattedPost.authorCredential || "Transit Education experts"}</strong> · {new Date(formattedPost.lastReviewed).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+            )}
+
+            {/* GEO callout — answerSummary surfaces as AI snippet */}
+            {formattedPost.answerSummary && (
+              <div className="mb-10 p-6 bg-brand/5 border-l-4 border-brand rounded-r-2xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquareQuote className="w-4 h-4 text-brand" />
+                  <span className="text-xs font-bold text-brand uppercase tracking-widest">Quick Answer</span>
+                </div>
+                <p className="text-gray-700 leading-relaxed font-medium">{formattedPost.answerSummary}</p>
               </div>
             )}
 
@@ -222,10 +236,32 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </div>
             </div>
 
-            {/* Author Box */}
+            {/* Sources */}
+            {formattedPost.sources && formattedPost.sources.length > 0 && (
+              <div className="mt-12 pt-8 border-t border-gray-100">
+                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Sources & References</h4>
+                <ul className="space-y-1.5">
+                  {formattedPost.sources.map((src: string, i: number) => (
+                    <li key={i}>
+                      <a href={src} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-brand hover:underline break-all">
+                        <ExternalLink className="w-3.5 h-3.5 shrink-0" /> {src}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Author Box — E-E-A-T */}
             <div className="mt-16 p-10 bg-off-white rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8">
-              <div className="w-24 h-24 rounded-full bg-brand/10 flex items-center justify-center text-brand shrink-0">
-                <User className="w-12 h-12" />
+              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center shrink-0 p-2 shadow-sm">
+                <Image
+                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/Untitled-design-14.png"
+                  alt="Transit Education"
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                />
               </div>
               <div className="text-center md:text-left">
                 <div className="flex flex-col md:flex-row items-center md:items-baseline gap-2 mb-2">

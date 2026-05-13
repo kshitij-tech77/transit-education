@@ -77,7 +77,9 @@ export async function POST(req: Request) {
         primary_question: data.primaryQuestion || '',
         answer_summary: data.answerSummary || '',
         faq_schema: data.faqItems || [],
-        reading_time: data.readingTime || '1 min read'
+        reading_time: data.readingTime || '1 min read',
+        sources: data.sources || [],
+        last_reviewed_at: data.lastReviewed || null
       })
       .select()
       .single();

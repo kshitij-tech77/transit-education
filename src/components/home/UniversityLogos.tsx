@@ -2,69 +2,71 @@
 
 import React from "react";
 
-const universities = [
-  { name: "University of British Columbia", domain: "ubc.ca" },
-  { name: "University of Sydney", domain: "sydney.edu.au" },
-  { name: "McGill University", domain: "mcgill.ca" },
-  { name: "Monash University", domain: "monash.edu" },
-  { name: "University of Toronto", domain: "utoronto.ca" },
-  { name: "University of Melbourne", domain: "unimelb.edu.au" },
-  { name: "University of Auckland", domain: "auckland.ac.nz" },
-  { name: "Trinity College Dublin", domain: "tcd.ie" },
-  { name: "University of Edinburgh", domain: "ed.ac.uk" },
-  { name: "Seoul National University", domain: "snu.ac.kr" },
-  { name: "TU Berlin", domain: "tu.berlin" },
+const BASE = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media";
+
+const logos = [
+  { src: `${BASE}/2023/05/Untitled-design-6.png`,  alt: "Partner Logo" },
+  { src: `${BASE}/2023/05/Untitled-design-8.png`,  alt: "Partner Logo" },
+  { src: `${BASE}/2023/05/Untitled-design-14.png`, alt: "Transit Education" },
+  { src: `${BASE}/2023/05/Untitled-design-16.png`, alt: "Partner Logo" },
+  { src: `${BASE}/2021/07/images-1.png`,            alt: "Partner Logo" },
+  { src: `${BASE}/2021/07/images-1.jpg`,            alt: "Partner Logo" },
 ];
 
 export default function UniversityLogos() {
-  // Triple the list for a seamless marquee effect
-  const displayLogos = [...universities, ...universities, ...universities];
+  const displayLogos = [...logos, ...logos, ...logos];
 
   return (
-    <section className="py-20 bg-white overflow-hidden border-y border-slate-100">
-      <div className="container mb-12 text-center">
+    <section className="hidden md:block py-16 bg-slate-50 overflow-hidden border-y border-slate-100">
+      <div className="container mb-10 text-center">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
           Empowering Students at Global Institutions
         </p>
       </div>
 
-      <div className="group relative flex w-full overflow-hidden">
-        {/* Marquee Track */}
-        <div className="flex animate-marquee whitespace-nowrap py-4 group-hover:[animation-play-state:paused]">
-          {displayLogos.map((u, i) => (
-            <div 
-              key={i} 
-              className="mx-6 md:mx-12 shrink-0 flex items-center justify-center grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-            >
-              <img 
-                src={`https://logo.clearbit.com/${u.domain}`} 
-                alt={u.name} 
-                className="h-10 w-auto object-contain max-w-[160px]"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          ))}
-        </div>
+      {/* Fade edges */}
+      <div className="relative">
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-linear-to-r from-slate-50 to-transparent" />
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-linear-to-l from-slate-50 to-transparent" />
 
-        {/* Duplicate Track for Seamlessness */}
-        <div className="absolute top-0 flex animate-marquee2 whitespace-nowrap py-4 group-hover:[animation-play-state:paused]">
-          {displayLogos.map((u, i) => (
-            <div 
-              key={`${i}-clone`} 
-              className="mx-6 md:mx-12 shrink-0 flex items-center justify-center grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-            >
-              <img 
-                src={`https://logo.clearbit.com/${u.domain}`} 
-                alt={u.name} 
-                className="h-10 w-auto object-contain max-w-[160px]"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          ))}
+        <div className="group flex w-full overflow-hidden">
+          {/* Marquee Track */}
+          <div className="flex animate-marquee whitespace-nowrap py-3 group-hover:paused">
+            {displayLogos.map((logo, i) => (
+              <div
+                key={i}
+                className="mx-8 shrink-0 flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-500"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  className="h-14 w-auto object-contain max-w-45 rounded-lg"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Duplicate Track for seamless loop */}
+          <div className="absolute top-0 flex animate-marquee2 whitespace-nowrap py-3 group-hover:paused">
+            {displayLogos.map((logo, i) => (
+              <div
+                key={`clone-${i}`}
+                className="mx-8 shrink-0 flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-500"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  className="h-14 w-auto object-contain max-w-45 rounded-lg"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

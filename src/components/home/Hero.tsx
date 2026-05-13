@@ -123,7 +123,7 @@ export default function Hero() {
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-gray-100 text-[11px] font-bold mb-10 uppercase tracking-[0.15em] shadow-sm text-gray-500"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-gray-100 text-[11px] font-bold mt-6 lg:mt-0 mb-10 uppercase tracking-[0.15em] shadow-sm text-gray-500"
           >
             <Sparkles size={12} className="text-[#A93226]" />
             ICEF Accredited Agency · Est. 2015

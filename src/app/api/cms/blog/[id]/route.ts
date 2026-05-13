@@ -83,7 +83,9 @@ export async function PUT(
         primary_question: data.primaryQuestion,
         answer_summary: data.answerSummary,
         faq_schema: data.faqItems,
-        reading_time: data.readingTime
+        reading_time: data.readingTime,
+        sources: data.sources ?? [],
+        last_reviewed_at: data.lastReviewed || null
       })
       .eq('id', id)
       .select()
