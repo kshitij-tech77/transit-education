@@ -118,6 +118,7 @@ export default function TransitPortal() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const storyImageInputRef = useRef<HTMLInputElement>(null);
   const [previewMedia, setPreviewMedia] = useState<any>(null);
@@ -182,7 +183,7 @@ export default function TransitPortal() {
         branches: Array.isArray(branches) ? branches : [],
         testimonials: Array.isArray(testimonials) ? testimonials : [],
         settings: settings || {},
-        media
+        media: (media && typeof media === 'object' && !Array.isArray(media)) ? media : {}
       }));
     } catch (error) {
       console.error("Failed to fetch CMS data:", error);
@@ -826,7 +827,7 @@ export default function TransitPortal() {
   );
 
   const renderMediaLibrary = () => {
-    const allFiles = (Object.values(data.media).flat() as any[]).sort((a, b) => (b.mtimeMs || 0) - (a.mtimeMs || 0));
+    const allFiles = (Object.values(data.media ?? {}).flat() as any[]).sort((a, b) => (b.mtimeMs || 0) - (a.mtimeMs || 0));
     return (
       <div className="space-y-[20px]">
         <div className="flex justify-between items-center bg-white p-[20px] rounded-[12px] border border-[#EDE8E8]">
@@ -1021,7 +1022,7 @@ export default function TransitPortal() {
   // ─── MAIN ───
 
   return (
-    <div className="flex h-screen bg-[#F7F3F3] text-[#555] overflow-hidden">
+    <div className="flex h-screen bg-[#F7F3F3] text-[#555] overflow-hidden" onClick={() => showProfileMenu && setShowProfileMenu(false)}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Poppins', sans-serif !important; }
@@ -1075,7 +1076,33 @@ export default function TransitPortal() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-[56px] bg-white border-b border-[#EDE8E8] flex items-center justify-between px-[28px] shrink-0">
           <h1 className="text-[16px] font-[700] text-[#111] tracking-tight">{activeSection}</h1>
-          <div className="flex items-center gap-[16px]"><span className="text-[9px] font-[700] text-[#A93226] bg-[#FEF2F1] border border-[#F5C4BF] px-[12px] py-[4px] rounded-full uppercase tracking-[0.04em]">{profile?.role || 'USER'}</span><Button onClick={() => { setEditingItem(null); setShowModal("Student"); }}><Plus size={14} /> Add Student</Button><div className="w-[32px] h-[32px] rounded-full bg-[#A93226] text-white flex items-center justify-center font-[700] text-[11px] border border-white shadow-sm">{(profile?.full_name || user?.email || 'U')[0].toUpperCase()}</div></div>
+          <div className="flex items-center gap-[16px]">
+            <span className="text-[9px] font-[700] text-[#A93226] bg-[#FEF2F1] border border-[#F5C4BF] px-[12px] py-[4px] rounded-full uppercase tracking-[0.04em]">{profile?.role || 'USER'}</span>
+            <Button onClick={() => { setEditingItem(null); setShowModal("Student"); }}><Plus size={14} /> Add Student</Button>
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileMenu(v => !v)}
+                className="w-[32px] h-[32px] rounded-full bg-[#A93226] text-white flex items-center justify-center font-[700] text-[11px] border border-white shadow-sm hover:bg-[#7E2219] transition-colors"
+              >
+                {(profile?.full_name || user?.email || 'U')[0].toUpperCase()}
+              </button>
+              {showProfileMenu && (
+                <div className="absolute right-0 top-[40px] w-[220px] bg-white border border-[#EDE8E8] rounded-[12px] shadow-xl z-[200] overflow-hidden">
+                  <div className="px-[16px] py-[14px] border-b border-[#F0ECEC]">
+                    <p className="text-[13px] font-[700] text-[#111] truncate">{profile?.full_name || 'User'}</p>
+                    <p className="text-[11px] text-[#888] truncate mt-[1px]">{user?.email}</p>
+                    <span className="inline-block mt-[6px] text-[9px] font-[700] text-[#A93226] bg-[#FEF2F1] border border-[#F5C4BF] px-[8px] py-[2px] rounded-full uppercase tracking-widest">{profile?.role || 'user'}</span>
+                  </div>
+                  <button
+                    onClick={() => { setShowProfileMenu(false); handleLogout(); }}
+                    className="w-full flex items-center gap-[10px] px-[16px] py-[12px] text-[12px] font-[600] text-[#B91C1C] hover:bg-[#FEF2F1] transition-colors"
+                  >
+                    <LogOut size={14} /> Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-[28px] pt-[24px]">
           {loading && !data.students.length && <div className="flex items-center justify-center py-20 text-[#A93226]"><Loader2 className="animate-spin" size={40} /></div>}
