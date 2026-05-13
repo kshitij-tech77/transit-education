@@ -1,9 +1,24 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json()
+  const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'unknown';
+  if (!rateLimit(`login:${ip}`, 10, 15 * 60 * 1000)) {
+    return NextResponse.json({ error: 'Too many attempts. Try again in 15 minutes.' }, { status: 429 });
+  }
+
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body.email !== 'string' || typeof body.password !== 'string') {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+  }
+  const email = body.email.trim().toLowerCase();
+  const { password } = body;
+  if (!email.includes('@') || password.length < 6) {
+    return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
+  }
+
   const cookieStore = await cookies()
 
   const supabase = createServerClient(

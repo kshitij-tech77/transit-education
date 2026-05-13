@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 
 export async function GET(
   _req: Request,
@@ -7,6 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const supabase = await createClient();
     const { data: post, error } = await supabase
       .from('blog_posts')
       .select(`
@@ -62,6 +63,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const data = await req.json();
+    const supabase = await createClient();
 
     const { data: updated, error } = await supabase
       .from('blog_posts')
@@ -101,6 +103,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const supabase = await createClient();
     const { error } = await supabase
       .from('blog_posts')
       .delete()
