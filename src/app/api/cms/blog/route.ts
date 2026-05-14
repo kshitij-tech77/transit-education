@@ -53,11 +53,8 @@ export async function POST(req: Request) {
     const data = await req.json();
 
     const title = data.title || 'Untitled';
-    const slug =
-      data.slug ||
-      (data.title
-        ? data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-        : crypto.randomUUID());
+    const rawSlug = data.slug || data.title || crypto.randomUUID();
+    const slug = rawSlug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
     const { data: newPost, error } = await supabase
       .from('blog_posts')

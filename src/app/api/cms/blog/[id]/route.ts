@@ -65,11 +65,15 @@ export async function PUT(
     const data = await req.json();
     const supabase = await createClient();
 
+    const slug = data.slug
+      ? data.slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      : data.slug;
+
     const { data: updated, error } = await supabase
       .from('blog_posts')
       .update({
         title: data.title,
-        slug: data.slug,
+        slug,
         body: data.body,
         category: data.category,
         tags: data.tags,

@@ -77,6 +77,9 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
 
   // ─── HANDLERS ───
   const handleChange = (field: keyof BlogPost, value: any) => {
+    if (field === 'slug' && typeof value === 'string') {
+      value = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
     setFormData(prev => ({ ...prev, [field]: value }));
     setIsSaved(false);
   };
