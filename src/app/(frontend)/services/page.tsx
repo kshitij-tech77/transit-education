@@ -3,6 +3,19 @@ import Link from "next/link";
 import { GraduationCap, ShieldCheck, BookOpen, ScrollText, Languages, ArrowRight } from "lucide-react";
 import ProcessSteps from "@/components/shared/ProcessSteps";
 import { buttonVariants } from "@/components/ui/button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Study Abroad Services | Transit Education Nepal",
+  description: "Expert admission counselling, student visa processing, IELTS/PTE preparation, and scholarship assistance for Nepali students going abroad.",
+  alternates: { canonical: "https://transiteducation.com.np/services" },
+  openGraph: {
+    title: "Study Abroad Services | Transit Education Nepal",
+    description: "Admission counselling, student visa service, scholarship assistance, and test preparation — all under one roof in Nepal.",
+    url: "https://transiteducation.com.np/services",
+    type: "website",
+  },
+};
 
 export default function ServicesPage() {
   const services = [

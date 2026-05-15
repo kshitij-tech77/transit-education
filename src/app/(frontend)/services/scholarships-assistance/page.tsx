@@ -1,6 +1,19 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import { GraduationCap, Award, Landmark, TrendingUp, CheckCircle2, HeartHandshake } from "lucide-react";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Scholarships Assistance for Nepali Students | Transit Education",
+  description: "Find and apply for merit-based and need-based scholarships at top universities in Canada, Australia, UK, and USA. Expert guidance from Transit Education Nepal.",
+  alternates: { canonical: "https://transiteducation.com.np/services/scholarships-assistance" },
+  openGraph: {
+    title: "Scholarships Assistance | Transit Education Nepal",
+    description: "We identify scholarship opportunities at 50+ partner institutions and help Nepali students submit strong applications.",
+    url: "https://transiteducation.com.np/services/scholarships-assistance",
+    type: "website",
+  },
+};
 
 export default function ScholarshipsAssistancePage() {
   const types = [

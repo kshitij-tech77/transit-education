@@ -1,5 +1,18 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import ContactPageClient from "@/components/contact/ContactPageClient";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Transit Education | 4 Branches Across Nepal",
+  description: "Visit or call any of our 4 branches — Kathmandu, Itahari, Damak, Damauli. Free counselling for study abroad in Canada, Australia, UK, USA & more.",
+  alternates: { canonical: "https://transiteducation.com.np/contact" },
+  openGraph: {
+    title: "Contact Transit Education | 4 Branches Across Nepal",
+    description: "Free counselling at Kathmandu (Bagbazar), Itahari, Damak, and Damauli. Expert guidance for student visas and university admissions.",
+    url: "https://transiteducation.com.np/contact",
+    type: "website",
+  },
+};
 
 export default function ContactPage() {
   return (

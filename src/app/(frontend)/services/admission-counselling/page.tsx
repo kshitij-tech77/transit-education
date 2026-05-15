@@ -1,6 +1,19 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import { CheckCircle2, GraduationCap, ClipboardCheck, Search, Users2, FileText } from "lucide-react";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Admission Counselling | University Application Help — Transit Education",
+  description: "Expert university admission counselling for Nepali students. SOP writing, LOR guidance, and applications to 50+ partner institutions in Canada, Australia, UK, USA & more.",
+  alternates: { canonical: "https://transiteducation.com.np/services/admission-counselling" },
+  openGraph: {
+    title: "Admission Counselling | Transit Education Nepal",
+    description: "We shortlist the right university for your profile, write compelling SOPs, and manage your entire application — free consultation available.",
+    url: "https://transiteducation.com.np/services/admission-counselling",
+    type: "website",
+  },
+};
 
 export default function AdmissionCounsellingPage() {
   const processSteps = [

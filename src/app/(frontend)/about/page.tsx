@@ -5,6 +5,20 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { buttonVariants } from "@/components/ui/button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Transit Education | Nepal's Trusted Study Abroad Consultancy",
+  description: "10+ years of expert study abroad consulting in Nepal. Learn about our mission, values, and the team behind 2,000+ successful student visas to Canada, Australia, UK, USA & more.",
+  alternates: { canonical: "https://transiteducation.com.np/about" },
+  openGraph: {
+    title: "About Transit Education | Nepal's Trusted Study Abroad Consultancy",
+    description: "10+ years of expert study abroad consulting in Nepal. 2,000+ successful students, 50+ partner institutions worldwide.",
+    url: "https://transiteducation.com.np/about",
+    type: "website",
+    images: [{ url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png", width: 1200, height: 630 }],
+  },
+};
 
 export default async function AboutPage() {
   const { data: faqs } = await supabase

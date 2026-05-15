@@ -1,7 +1,7 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { notFound } from "next/navigation";
 import {
@@ -12,6 +12,8 @@ import { Metadata } from "next";
 import BlogContent from "@/components/blog/BlogContent";
 import TableOfContents, { type TOCItem } from "@/components/blog/TableOfContents";
 import ShareButtons from "@/components/blog/ShareButtons";
+
+export const dynamic = 'force-dynamic';
 
 const TRANSIT_LOGO =
   "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
@@ -53,6 +55,7 @@ export async function generateMetadata({
     .from("blog_posts")
     .select("*")
     .eq("slug", slug)
+    .eq("status", "published")
     .single();
 
   if (!post) return {};
@@ -68,7 +71,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: post.meta_title || post.title,
-      description: post.meta_description,
+      description: (post as any).og_description || post.meta_description,
       url: `https://transiteducation.com.np/blog/${post.slug}`,
       type: "article",
       images: [
@@ -100,8 +103,9 @@ export default async function BlogPostPage({
   const [postRes, relatedRes] = await Promise.all([
     supabase
       .from("blog_posts")
-      .select("*, authors (name, credential, bio, avatar_url)")
+      .select("*, authors (name, credential, bio)")
       .eq("slug", slug)
+      .eq("status", "published")
       .single(),
     supabase
       .from("blog_posts")
@@ -122,13 +126,15 @@ export default async function BlogPostPage({
     authorName: author?.name || "Transit Education",
     authorCredential: author?.credential || "",
     authorBio: author?.bio || "",
-    authorAvatar: author?.avatar_url || null,
+    authorAvatar: (post as any).author_avatar_url || null,
     lastReviewed: post.last_reviewed_at,
     faqItems: (post as any).faq_schema || [],
     readingTime: post.reading_time,
     answerSummary: (post as any).answer_summary || "",
     sources: (post as any).sources || [],
     tags: post.tags || [],
+    ogDescription: (post as any).og_description || "",
+    secondaryKeywords: (post as any).secondary_keywords || [],
   };
 
   const { html: processedBody, toc } = processBody(formattedPost.body || "");
@@ -155,7 +161,7 @@ export default async function BlogPostPage({
     datePublished: formattedPost.publishDate,
     dateModified: formattedPost.lastReviewed || formattedPost.publishDate,
     wordCount,
-    keywords: formattedPost.tags.join(", "),
+    keywords: [...formattedPost.tags, ...formattedPost.secondaryKeywords].join(", "),
     publisher: {
       "@type": "Organization",
       name: "Transit Education",

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import LocationClient from "@/components/locations/LocationClient";
 import GuideLeadForm from "@/components/locations/GuideLeadForm";
 import LocationFAQ from "@/components/locations/LocationFAQ";
+import { Metadata } from "next";
 
 const locationsData = {
   "kathmandu": {
@@ -111,6 +112,26 @@ const locationsData = {
   },
 };
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const location = locationsData[slug as keyof typeof locationsData];
+  if (!location) return {};
+  const title = `Study Abroad Consultancy in ${location.name} | Transit Education`;
+  const description = `Visit Transit Education at ${location.address}. Free counselling for student visas to Canada, Australia, UK, USA & more. ${location.phone}.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `https://transiteducation.com.np/locations/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `https://transiteducation.com.np/locations/${slug}`,
+      type: "website",
+      images: [{ url: location.heroImage, width: 1200, height: 630, alt: location.name }],
+    },
+  };
+}
+
 export default async function LocationPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const location = locationsData[slug as keyof typeof locationsData];
@@ -119,8 +140,27 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: `Transit Education — ${location.name}`,
+    image: location.heroImage,
+    url: `https://transiteducation.com.np/locations/${slug}`,
+    telephone: location.phone,
+    email: location.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: location.address,
+      addressCountry: "NP",
+    },
+    openingHours: "Su-Fr 09:00-18:00",
+    priceRange: "Free consultation",
+    sameAs: ["https://transiteducation.com.np"],
+  };
+
   return (
     <main className="pt-20 bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <LocationClient location={location} slug={slug} />
 
       {/* ─── BRANCH DETAIL ─── */}

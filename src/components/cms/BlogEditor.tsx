@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Send,
-  Info,
   Globe,
   User,
   Clock,
@@ -15,7 +14,8 @@ import {
   ShieldCheck,
   Zap,
   BookOpen,
-  AlertTriangle
+  TrendingUp,
+  Link2,
 } from "lucide-react";
 import TiptapEditor from "@/components/cms/TiptapEditor";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
   const [tagsInput, setTagsInput] = useState((initialData?.tags || []).join(", "));
+  const [secondaryKwInput, setSecondaryKwInput] = useState((initialData?.secondaryKeywords || []).join(", "));
   const featuredImageInputRef = React.useRef<HTMLInputElement>(null);
 
   // ─── STATE ───
@@ -55,6 +56,8 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       lastReviewed: "",
       authorBio: "",
       featuredImage: "",
+      secondaryKeywords: [],
+      ogDescription: "",
     }
   );
 
@@ -70,10 +73,39 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
 
   // ─── READING TIME ───
   const readingTime = useMemo(() => {
-    const words = formData.body?.replace(/<[^>]*>/g, '').split(/\s+/).length || 0;
+    const words = formData.body?.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length || 0;
     const time = Math.ceil(words / 200);
     return `${time} min read`;
   }, [formData.body]);
+
+  // ─── INTERNAL LINKS ───
+  const internalLinks = useMemo(() => {
+    const body = formData.body || '';
+    const matches = [...body.matchAll(/href="(\/[^"]*|https?:\/\/(?:www\.)?transiteducation\.com\.np[^"]*)"/gi)];
+    return matches.map(m => m[1]);
+  }, [formData.body]);
+
+  // ─── SEO SCORE ───
+  const seoScore = useMemo(() => {
+    const kw = (formData.focusKeyword || '').toLowerCase();
+    const checks: { label: string; pts: number; pass: boolean }[] = [
+      { label: "Meta title 50–60 chars", pts: 10, pass: (formData.metaTitle?.length || 0) >= 50 && (formData.metaTitle?.length || 0) <= 60 },
+      { label: "Meta description 120–160 chars", pts: 10, pass: (formData.metaDescription?.length || 0) >= 120 && (formData.metaDescription?.length || 0) <= 160 },
+      { label: "Focus keyword set", pts: 10, pass: !!kw },
+      { label: "Keyword in title", pts: 10, pass: !!(kw && formData.title?.toLowerCase().includes(kw)) },
+      { label: "Keyword in meta description", pts: 5, pass: !!(kw && formData.metaDescription?.toLowerCase().includes(kw)) },
+      { label: "3+ tags", pts: 5, pass: (formData.tags?.length || 0) >= 3 },
+      { label: "Quick answer filled", pts: 10, pass: !!formData.answerSummary },
+      { label: "3+ FAQ items", pts: 10, pass: (formData.faqItems?.length || 0) >= 3 },
+      { label: "Sources referenced", pts: 5, pass: (formData.sources?.length || 0) >= 1 },
+      { label: "Author credential", pts: 5, pass: !!formData.authorCredential },
+      { label: "Review date set", pts: 5, pass: !!formData.lastReviewed },
+      { label: "Secondary keywords", pts: 5, pass: (formData.secondaryKeywords?.length || 0) >= 1 },
+      { label: "Internal links in body", pts: 10, pass: internalLinks.length > 0 },
+    ];
+    const score = checks.reduce((acc, c) => acc + (c.pass ? c.pts : 0), 0);
+    return { checks, score };
+  }, [formData, internalLinks]);
 
   // ─── HANDLERS ───
   const handleChange = (field: keyof BlogPost, value: any) => {
@@ -109,7 +141,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
     try {
       const url = isEdit ? `/api/cms/blog/${formData.id}` : "/api/cms/blog";
       const method = isEdit ? "PUT" : "POST";
-      
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -144,12 +176,15 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
     handleChange("faqItems", items);
   };
 
+  const scoreColor = seoScore.score >= 80 ? "text-green-700 bg-green-50" : seoScore.score >= 50 ? "text-amber-600 bg-amber-50" : "text-red-600 bg-red-50";
+  const barColor = seoScore.score >= 80 ? "bg-green-500" : seoScore.score >= 50 ? "bg-amber-400" : "bg-red-400";
+
   return (
     <div className="min-h-screen bg-[#F7F3F3] pb-24">
       {/* Top Header */}
       <header className="h-[64px] bg-white border-b border-[#EDE8E8] sticky top-0 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={() => router.back()}
             className="p-2 hover:bg-[#FEF2F1] rounded-full text-[#A93226] transition-colors"
           >
@@ -175,8 +210,8 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
         {/* LEFT COLUMN - WRITING AREA */}
         <div className="col-span-8 space-y-6">
           <div className="bg-white rounded-[20px] p-10 shadow-sm border border-[#EDE8E8]">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Post Title..."
               value={formData.title}
               onChange={(e) => handleChange("title", e.target.value)}
@@ -184,7 +219,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             />
             <div className="flex items-center gap-2 mb-8 group">
               <span className="text-[13px] text-[#BBB]">Slug:</span>
-              <input 
+              <input
                 type="text"
                 value={formData.slug}
                 onChange={(e) => handleChange("slug", e.target.value)}
@@ -195,7 +230,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <div className="grid grid-cols-2 gap-6 mb-8">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Category</label>
-                <select 
+                <select
                   value={formData.category}
                   onChange={(e) => handleChange("category", e.target.value)}
                   className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226]"
@@ -208,7 +243,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Name</label>
-                <input 
+                <input
                   type="text"
                   value={formData.authorName}
                   onChange={(e) => handleChange("authorName", e.target.value)}
@@ -217,10 +252,35 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               </div>
             </div>
 
-            <TiptapEditor 
-              value={formData.body || ""} 
-              onChange={(html) => handleChange("body", html)} 
+            <TiptapEditor
+              value={formData.body || ""}
+              onChange={(html) => handleChange("body", html)}
             />
+
+            {/* Internal Links Checker */}
+            <div className="mt-6 p-4 bg-[#F9F4F4] rounded-[12px] border border-[#EDE8E8]">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Link2 size={13} className="text-[#A93226]" />
+                  <span className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Internal Links</span>
+                </div>
+                <span className={cn(
+                  "text-[11px] font-[700] px-2 py-0.5 rounded-full",
+                  internalLinks.length > 0 ? "text-green-700 bg-green-50" : "text-red-500 bg-red-50"
+                )}>
+                  {internalLinks.length} found
+                </span>
+              </div>
+              {internalLinks.length > 0 ? (
+                <div className="space-y-0.5 max-h-20 overflow-y-auto">
+                  {internalLinks.map((href, i) => (
+                    <p key={i} className="text-[10px] text-[#A93226] truncate font-mono">{href}</p>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[10px] text-[#CCC] italic">Add internal links (e.g. /blog/... or /study-abroad/...) to improve crawl depth and SEO score.</p>
+              )}
+            </div>
           </div>
 
           {/* GEO & AEO CARD */}
@@ -304,14 +364,44 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
         {/* RIGHT COLUMN - PANELS */}
         <div className="col-span-4 space-y-6">
 
-          {/* E-E-A-T SIGNALS — first, most important */}
+          {/* SEO SCORE — live computed */}
+          <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <TrendingUp size={16} className="text-[#A93226]" />
+                <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">SEO Score</h3>
+              </div>
+              <span className={cn("text-[15px] font-[800] px-3 py-1 rounded-full", scoreColor)}>
+                {seoScore.score}/100
+              </span>
+            </div>
+            <p className="text-[10px] text-[#BBB] mb-3">Updates live as you write.</p>
+            <div className="h-1.5 bg-gray-100 rounded-full mb-4">
+              <div
+                className={cn("h-full rounded-full transition-all duration-500", barColor)}
+                style={{ width: `${seoScore.score}%` }}
+              />
+            </div>
+            <div className="space-y-1">
+              {seoScore.checks.map((c, i) => (
+                <div key={i} className="flex items-center gap-2 py-0.5">
+                  <span className={cn("text-[11px] font-[700] w-3 shrink-0", c.pass ? "text-green-500" : "text-[#DDD]")}>
+                    {c.pass ? "✓" : "✗"}
+                  </span>
+                  <span className={cn("flex-1 text-[11px]", c.pass ? "text-[#555]" : "text-[#BBB]")}>{c.label}</span>
+                  <span className={cn("text-[10px] font-[700] tabular-nums shrink-0", c.pass ? "text-green-600" : "text-[#DDD]")}>+{c.pts}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* E-E-A-T SIGNALS */}
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <ShieldCheck size={16} className="text-[#A93226]" />
                 <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">E-E-A-T Signals</h3>
               </div>
-              {/* Completeness badge */}
               {(() => {
                 const score = [formData.authorName, formData.authorCredential, formData.authorBio, formData.lastReviewed, formData.sources?.[0]].filter(Boolean).length;
                 const pct = Math.round((score / 5) * 100);
@@ -403,12 +493,34 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                 />
               </div>
               <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">OG Description <span className="text-[#CCC] normal-case">— social card override</span></label>
+                <textarea
+                  rows={2}
+                  maxLength={200}
+                  placeholder="Leave blank to use meta description. Custom text for Facebook / X cards."
+                  value={formData.ogDescription || ''}
+                  onChange={(e) => handleChange("ogDescription", e.target.value)}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
+                />
+              </div>
+              <div className="space-y-1">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Focus Keyword</label>
                 <input
                   type="text"
                   placeholder="e.g. Australia student visa Nepal"
                   value={formData.focusKeyword}
                   onChange={(e) => handleChange("focusKeyword", e.target.value)}
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Secondary Keywords <span className="text-[#CCC] normal-case">— comma separated</span></label>
+                <input
+                  type="text"
+                  placeholder="study abroad Nepal, visa consultant Kathmandu"
+                  value={secondaryKwInput}
+                  onChange={(e) => setSecondaryKwInput(e.target.value)}
+                  onBlur={() => handleChange("secondaryKeywords", secondaryKwInput.split(",").map((s: string) => s.trim()).filter(Boolean))}
                   className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
                 />
               </div>
@@ -450,8 +562,8 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
                 />
               </div>
-              <div className="pt-2 flex justify-between items-center">
-                <span className="text-[11px] text-[#BBB]">Reading Time:</span>
+              <div className="pt-2 border-t border-[#EDE8E8] flex items-center justify-between">
+                <span className="text-[11px] text-[#BBB] flex items-center gap-1.5"><Clock size={11} /> Reading Time</span>
                 <span className="text-[11px] font-[700] text-[#A93226]">{readingTime}</span>
               </div>
             </div>
@@ -470,28 +582,24 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             {isSaved ? "All changes saved" : "Unsaved changes"}
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => handleSave("draft")}
             className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#555] font-[600] text-[13px] hover:bg-gray-50 transition-all"
           >
             Save as Draft
           </button>
-          <button 
+          <button
             onClick={() => handleSave("published")}
             disabled={loading}
             className="px-10 py-2.5 rounded-[10px] bg-[#A93226] text-white font-[600] text-[13px] hover:bg-[#7E2219] shadow-lg shadow-red-900/10 transition-all flex items-center gap-2"
           >
-            {loading ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+            {loading ? <Clock className="animate-spin" size={16} /> : <Send size={16} />}
             {formData.status === "published" ? "Update Post" : "Publish Post"}
           </button>
         </div>
       </div>
     </div>
   );
-}
-
-function Loader2({ className, size }: { className?: string, size?: number }) {
-  return <Clock className={cn("animate-spin", className)} size={size} />;
 }

@@ -6,7 +6,19 @@ import { resolveMediaUrl } from "@/lib/media-url";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import NewsletterForm from "@/components/layout/NewsletterForm";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Study Abroad Blog | Visa Tips, University Guides — Transit Education",
+  description: "Expert articles on student visas, IELTS preparation, university admissions, and life abroad. Written by Transit Education's certified counsellors in Nepal.",
+  alternates: { canonical: "https://transiteducation.com.np/blog" },
+  openGraph: {
+    title: "Study Abroad Blog | Transit Education Nepal",
+    description: "Visa tips, scholarship news, IELTS guides, and destination insights from Nepal's most trusted study abroad consultancy.",
+    url: "https://transiteducation.com.np/blog",
+    type: "website",
+  },
+};
 
 export const dynamic = 'force-dynamic';
 

@@ -52,8 +52,9 @@ export async function middleware(request: NextRequest) {
       ['/api/cms/success-stories', '/api/cms/countries', '/api/cms/settings'].includes(pathname)
 
     const isPublicLeadPost = isCmsApiRoute && pathname === '/api/cms/students' && request.method === 'POST'
+    const isLoginRoute = pathname === '/api/cms/auth/login' && request.method === 'POST'
 
-    if (!isPublicGet && !isPublicLeadPost) {
+    if (!isPublicGet && !isPublicLeadPost && !isLoginRoute) {
       if (isCmsApiRoute) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }

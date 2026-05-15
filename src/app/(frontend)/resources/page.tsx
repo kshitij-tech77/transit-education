@@ -2,6 +2,19 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import { FileDown, Globe2, BookOpen, ClipboardList, Info, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Free Study Abroad Resources for Nepali Students | Transit Education",
+  description: "Download free guides, checklists, and visa requirement sheets for studying in Canada, Australia, UK, USA, and more. Resources by Transit Education Nepal.",
+  alternates: { canonical: "https://transiteducation.com.np/resources" },
+  openGraph: {
+    title: "Free Study Abroad Resources | Transit Education Nepal",
+    description: "Checklists, visa guides, SOP templates, and scholarship lists — free downloads for Nepali students planning to study abroad.",
+    url: "https://transiteducation.com.np/resources",
+    type: "website",
+  },
+};
 
 export default async function ResourcesPage() {
   const { data: resources } = await supabase

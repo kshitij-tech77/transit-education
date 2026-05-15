@@ -1,6 +1,19 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import { CheckCircle2, ShieldCheck, FileSearch, Send, MessageSquare, Landmark } from "lucide-react";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Student Visa Service Nepal | 98% Success Rate — Transit Education",
+  description: "Complete student visa processing for Canada, Australia, UK, USA, and Europe. File preparation, interview coaching, and IRCC guidance by expert counsellors in Nepal.",
+  alternates: { canonical: "https://transiteducation.com.np/services/student-visa-service" },
+  openGraph: {
+    title: "Student Visa Service Nepal | Transit Education",
+    description: "98% student visa success rate. Full file preparation, bank guidance, SOP review, and interview prep for all major destinations.",
+    url: "https://transiteducation.com.np/services/student-visa-service",
+    type: "website",
+  },
+};
 
 export default function StudentVisaServicePage() {
   const features = [

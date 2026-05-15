@@ -3,6 +3,19 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Team | Expert Study Abroad Counsellors — Transit Education Nepal",
+  description: "Meet the certified counsellors and visa experts at Transit Education who have helped 2,000+ Nepali students study in Canada, Australia, UK, USA, and Europe.",
+  alternates: { canonical: "https://transiteducation.com.np/team" },
+  openGraph: {
+    title: "Our Team | Transit Education Nepal",
+    description: "Dedicated professionals with years of experience in international education consulting across 4 branches in Nepal.",
+    url: "https://transiteducation.com.np/team",
+    type: "website",
+  },
+};
 
 export default async function TeamPage() {
   const { data: teamRaw } = await supabase

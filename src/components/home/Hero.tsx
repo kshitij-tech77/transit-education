@@ -114,7 +114,7 @@ export default function Hero() {
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           className="absolute top-[-10%] -right-20 lg:right-[-5%] w-[500px] lg:w-[800px] h-[500px] lg:h-[800px] bg-[#A93226] rounded-full blur-[100px] lg:blur-[150px] pointer-events-none opacity-10" 
         />
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('/noise.svg')]" />
       </div>
 
       <div className="container px-4 relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center overflow-x-hidden">

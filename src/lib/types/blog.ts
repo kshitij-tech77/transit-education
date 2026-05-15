@@ -34,4 +34,8 @@ export interface BlogPost {
 
   // Analytics
   readingTime?: string;
+
+  // Extended SEO
+  secondaryKeywords?: string[];
+  ogDescription?: string;
 }

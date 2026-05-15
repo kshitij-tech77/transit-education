@@ -25,11 +25,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
+    alternates: { canonical: `https://transiteducation.com.np/study-abroad/${slug}` },
     openGraph: {
       title,
       description,
       url: `https://transiteducation.com.np/study-abroad/${slug}`,
-      images: [{ url: image }],
+      images: [{ url: image, width: 1200, height: 630, alt: `Study in ${country.name}` }],
     },
     twitter: {
       card: "summary_large_image",
@@ -91,6 +92,16 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
     universities: country.top_universities?.join(', ')
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://transiteducation.com.np" },
+      { "@type": "ListItem", position: 2, name: "Study Abroad", item: "https://transiteducation.com.np/study-abroad" },
+      { "@type": "ListItem", position: 3, name: `Study in ${country.name}`, item: `https://transiteducation.com.np/study-abroad/${slug}` },
+    ],
+  };
+
   // FAQ Schema
   const faqSchema = faqs.length > 0 ? {
     "@context": "https://schema.org",
@@ -107,6 +118,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {faqSchema && (
         <script
           type="application/ld+json"

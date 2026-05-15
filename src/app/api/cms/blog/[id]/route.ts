@@ -46,7 +46,9 @@ export async function GET(
       primaryQuestion: post.primary_question,
       answerSummary: post.answer_summary,
       faqItems: post.faq_schema,
-      readingTime: post.reading_time
+      readingTime: post.reading_time,
+      secondaryKeywords: post.secondary_keywords || [],
+      ogDescription: post.og_description || '',
     };
 
     return NextResponse.json(formattedPost);
@@ -89,7 +91,9 @@ export async function PUT(
         faq_schema: data.faqItems,
         reading_time: data.readingTime,
         sources: data.sources ?? [],
-        last_reviewed_at: data.lastReviewed || null
+        last_reviewed_at: data.lastReviewed || null,
+        secondary_keywords: data.secondaryKeywords ?? [],
+        og_description: data.ogDescription || null
       })
       .eq('id', id)
       .select()
