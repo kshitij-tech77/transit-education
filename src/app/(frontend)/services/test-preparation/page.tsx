@@ -39,6 +39,7 @@ export default function TestPreparationPage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/clay-banks-GX8KBbVmC6c-unsplash-scaled.jpg"
             alt="Test Preparation"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -109,6 +110,7 @@ export default function TestPreparationPage() {
                 src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
                 alt="State of the art classroom"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>

@@ -37,6 +37,7 @@ export default async function ResourcesPage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/04/lets-plan.png"
             alt="Student Resources"
             fill
+            sizes="100vw"
             className="object-cover"
           />
         </div>

@@ -68,6 +68,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
                 src={slide}
                 alt={`${location.name} Slide ${index + 1}`}
                 fill
+                sizes="100vw"
                 className="object-cover brightness-[0.40] object-top"
                 priority={index === 0}
               />

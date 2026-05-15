@@ -46,6 +46,7 @@ export default async function AboutPage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
             alt="About Transit Education"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -75,6 +76,7 @@ export default async function AboutPage() {
                   src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/04/lets-plan.png"
                   alt="Our Mission"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>

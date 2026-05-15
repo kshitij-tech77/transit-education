@@ -267,7 +267,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
               { name: "Japan", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80", tag: "Low Cost • High Quality" }
             ].map((dest, idx) => (
               <div key={idx} className={`relative h-[380px] group overflow-hidden cursor-pointer bg-[#1c1c1c] ${dest.span || ''}`}>
-                <Image src={dest.img} alt={dest.name} fill className="object-cover opacity-[0.38] group-hover:opacity-[0.65] group-hover:scale-[1.06] transition-all duration-500" />
+                <Image src={dest.img} alt={dest.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover opacity-[0.38] group-hover:opacity-[0.65] group-hover:scale-[1.06] transition-all duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 pt-10 group-hover:pb-7 transition-all">
                   <span className="text-base font-bold text-white block">{dest.name}</span>

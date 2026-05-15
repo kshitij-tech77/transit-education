@@ -53,6 +53,7 @@ export default async function BlogPage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Transit Education Blog"
             fill
+            sizes="100vw"
             className="object-cover"
           />
         </div>
@@ -81,6 +82,7 @@ export default async function BlogPage() {
                         src={resolveMediaUrl(post.featuredImage)}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 1024px) 100vw, 66vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                     )}

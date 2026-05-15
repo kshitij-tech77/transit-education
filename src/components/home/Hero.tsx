@@ -191,6 +191,7 @@ export default function Hero() {
                           src={resolveMediaUrl(successStories[current].approvalImage)}
                           alt={successStories[current].name}
                           fill
+                          sizes="(max-width: 1024px) 100vw, 42vw"
                           className="object-contain"
                           priority
                         />

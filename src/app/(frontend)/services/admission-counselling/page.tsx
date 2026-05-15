@@ -35,6 +35,7 @@ export default function AdmissionCounsellingPage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/neonbrand-y_6rqStQBYQ-unsplash-scaled.jpg"
             alt="Admission Counselling"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -90,6 +91,7 @@ export default function AdmissionCounsellingPage() {
                   src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/paper-business-finance-3309829.jpg"
                   alt="Documentation"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>

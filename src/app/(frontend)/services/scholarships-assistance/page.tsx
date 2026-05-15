@@ -35,6 +35,7 @@ export default function ScholarshipsAssistancePage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Scholarships Assistance"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -63,6 +64,7 @@ export default function ScholarshipsAssistancePage() {
                 src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/young-student-woman-looking-her-world-globe-sitting-cloud-scaled.jpg"
                 alt="Scholarship Opportunities"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

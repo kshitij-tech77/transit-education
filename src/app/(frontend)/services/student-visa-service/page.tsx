@@ -35,6 +35,7 @@ export default function StudentVisaServicePage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/happy-young-teenage-lady-holds-her-passport-documents-with-ticket-her-hands-isolated-green-studio-wall-scaled.jpg"
             alt="Student Visa Service"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -86,6 +87,7 @@ export default function StudentVisaServicePage() {
                   src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
                   alt="Visa Guidance"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>

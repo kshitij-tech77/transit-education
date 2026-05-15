@@ -148,6 +148,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               src={resolveMediaUrl(formattedPost.featuredImage)}
               alt={formattedPost.title}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
             />
@@ -297,6 +298,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       src={resolveMediaUrl(relatedPost.featuredImage)}
                       alt={relatedPost.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   )}

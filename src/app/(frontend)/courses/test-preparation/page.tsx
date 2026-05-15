@@ -31,6 +31,7 @@ export default function TestPrepCoursePage() {
             src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
             alt="Test Preparation Courses"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -140,6 +141,7 @@ export default function TestPrepCoursePage() {
                 src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/annie-spratt-pbrQvuKJQf8-unsplash-scaled.jpg"
                 alt="Transit Academy"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
