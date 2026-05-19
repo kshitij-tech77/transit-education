@@ -10,13 +10,20 @@ import { buttonVariants } from "@/components/ui/button";
 import useEmblaCarousel from 'embla-carousel-react';
 import "flag-icons/css/flag-icons.min.css";
 
-export default function Hero() {
-  const [current, setCurrent] = useState(0);
-  const [successStories, setSuccessStories] = useState<any[]>([]);
-  const [liveCountries, setLiveCountries] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface HeroProps {
+  initialSuccessStories?: any[];
+  initialCountries?: any[];
+  initialSettings?: any;
+}
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+export default function Hero({ initialSuccessStories, initialCountries, initialSettings }: HeroProps = {}) {
+  const [current, setCurrent] = useState(0);
+  const [successStories, setSuccessStories] = useState<any[]>(initialSuccessStories ?? []);
+  const [liveCountries, setLiveCountries] = useState<any[]>(initialCountries ?? []);
+  const [settings, setSettings] = useState<any>(initialSettings ?? null);
+  const [loading, setLoading] = useState(!initialSuccessStories);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
     dragFree: true
@@ -31,8 +38,6 @@ export default function Hero() {
     return String.fromCodePoint(...codePoints);
   };
 
-  const [settings, setSettings] = useState<any>(null);
-  
   const fetchData = async () => {
     try {
       const [storiesRes, countriesRes, settingsRes] = await Promise.all([
@@ -40,15 +45,11 @@ export default function Hero() {
         fetch('/api/cms/countries'),
         fetch('/api/cms/settings')
       ]);
-      
-      if (!storiesRes.ok) console.error('Failed to fetch stories');
-      if (!countriesRes.ok) console.error('Failed to fetch countries');
-      if (!settingsRes.ok) console.error('Failed to fetch settings');
 
       const stories = storiesRes.ok ? await storiesRes.json() : [];
       const countries = countriesRes.ok ? await countriesRes.json() : [];
       const settingsData = settingsRes.ok ? await settingsRes.json() : null;
-      
+
       const mappedCountries = countries.map((c: any) => {
         const flagCode = (c.flag || c.code || '').trim();
         return {
@@ -68,7 +69,9 @@ export default function Hero() {
   };
 
   useEffect(() => {
+    if (initialSuccessStories) return;
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

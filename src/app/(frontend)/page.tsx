@@ -21,10 +21,31 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: "Transit Education | Your Transit to Global Destinations",
   description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
+  alternates: { canonical: "https://transiteducation.com.np" },
+  openGraph: {
+    title: "Transit Education | Your Transit to Global Destinations",
+    description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
+    url: "https://transiteducation.com.np",
+    type: "website",
+    images: [
+      {
+        url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/Nepals-leading-study-abroad-consultants.png",
+        width: 1200,
+        height: 630,
+        alt: "Transit Education — Nepal's Most Trusted Study Abroad Consultancy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Transit Education | Your Transit to Global Destinations",
+    description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
+    images: ["https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/Nepals-leading-study-abroad-consultants.png"],
+  },
 };
 
 export default async function Home() {
-  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes] = await Promise.all([
+  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, countriesRes] = await Promise.all([
     supabase
       .from('faqs')
       .select('*')
@@ -60,6 +81,11 @@ export default async function Home() {
       .from('site_settings')
       .select('*')
       .single(),
+    supabase
+      .from('countries')
+      .select('id, code, flag, name, status')
+      .eq('status', 'LIVE')
+      .order('name', { ascending: true }),
   ]);
 
   const getFlagEmoji = (countryCode: string) => {
@@ -110,6 +136,14 @@ export default async function Home() {
     };
   }) || [];
 
+  const heroCountries = (countriesRes.data || []).map(c => {
+    const flagCode = (c.flag || c.code || '').trim();
+    return {
+      ...c,
+      flag: flagCode.length === 2 ? getFlagEmoji(flagCode) : flagCode,
+    };
+  });
+
   // FAQ Schema for Homepage
   const faqSchema = featuredFaqs.length > 0 ? {
     "@context": "https://schema.org",
@@ -132,7 +166,11 @@ export default async function Home() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
-      <Hero />
+      <Hero
+        initialSuccessStories={successStories.slice(0, 6)}
+        initialCountries={heroCountries}
+        initialSettings={settingsRes.data}
+      />
       <UniversityLogos />
       <Destinations />
       <WelcomeAbout />

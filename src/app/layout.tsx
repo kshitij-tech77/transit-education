@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { supabase } from "@/lib/supabase";
+import Script from "next/script";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { data: settings } = await supabase
@@ -79,9 +80,25 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://vlrhwdcqzpfqpbqeaqyr.supabase.co" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <Schema type="Organization" data={orgSchema} />
       </head>
-      <body className="min-h-screen flex flex-col font-sans" suppressHydrationWarning>{children}</body>
+      <body className="min-h-screen flex flex-col font-sans" suppressHydrationWarning>
+        {children}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-M9MYFR0ZYD"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-M9MYFR0ZYD');
+          `}
+        </Script>
+      </body>
     </html>
   );
 }
