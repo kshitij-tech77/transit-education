@@ -29,18 +29,18 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/Nepals-leading-study-abroad-consultants.png",
-        width: 1200,
-        height: 630,
-        alt: "Transit Education — Nepal's Most Trusted Study Abroad Consultancy",
+        url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png",
+        width: 512,
+        height: 512,
+        alt: "Transit Education",
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Transit Education | Your Transit to Global Destinations",
     description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
-    images: ["https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/Nepals-leading-study-abroad-consultants.png"],
+    images: ["https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"],
   },
 };
 
