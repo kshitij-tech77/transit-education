@@ -37,14 +37,17 @@ import {
   Phone,
   ArrowUpRight,
   Loader2,
-  HelpCircle
+  HelpCircle,
+  CalendarDays,
+  Briefcase,
+  Handshake
 } from "lucide-react";
 
 // ─── TYPES ───
 type Section =
   | "Dashboard" | "Students" | "Blog Posts" | "FAQ Manager" | "Country Pages"
   | "Success Stories" | "Resources" | "Media Library" | "Testimonials"
-  | "Branches" | "Settings";
+  | "Branches" | "Settings" | "Events" | "Careers" | "Franchise Inquiries";
 
 // ─── COMPONENTS ───
 
@@ -121,6 +124,7 @@ export default function TransitPortal() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const storyImageInputRef = useRef<HTMLInputElement>(null);
+  const eventImageInputRef = useRef<HTMLInputElement>(null);
   const [previewMedia, setPreviewMedia] = useState<any>(null);
 
   // ─── DATA STATE ───
@@ -134,7 +138,11 @@ export default function TransitPortal() {
     branches: [],
     testimonials: [],
     settings: {},
-    media: {}
+    media: {},
+    events: [],
+    jobOpenings: [],
+    jobApplications: [],
+    franchiseInquiries: [],
   });
 
   const fetchData = async () => {
@@ -151,15 +159,20 @@ export default function TransitPortal() {
         (console.log('Fetching branches...'), fetch('/api/cms/branches')),
         (console.log('Fetching testimonials...'), fetch('/api/cms/testimonials')),
         (console.log('Fetching settings...'), fetch('/api/cms/settings')),
-        (console.log('Fetching media...'), fetch('/api/cms/media'))
+        (console.log('Fetching media...'), fetch('/api/cms/media')),
+        fetch('/api/cms/events'),
+        fetch('/api/cms/job-openings'),
+        fetch('/api/cms/job-applications'),
+        fetch('/api/cms/franchise-inquiries'),
       ]);
       console.log('Portal: All responses received.');
 
       const results = await Promise.all(
         responses.map(async (res, index) => {
           const endpoints = [
-            'students', 'blog', 'faqs', 'countries', 'success-stories', 
-            'resources', 'branches', 'testimonials', 'settings', 'media'
+            'students', 'blog', 'faqs', 'countries', 'success-stories',
+            'resources', 'branches', 'testimonials', 'settings', 'media',
+            'events', 'job-openings', 'job-applications', 'franchise-inquiries'
           ];
           if (!res.ok) {
             const text = await res.text();
@@ -170,7 +183,7 @@ export default function TransitPortal() {
         })
       );
 
-      const [students, posts, faqs, countries, stories, resources, branches, testimonials, settings, media] = results;
+      const [students, posts, faqs, countries, stories, resources, branches, testimonials, settings, media, events, jobOpenings, jobApplications, franchiseInquiries] = results;
 
       setData((prev: any) => ({
         ...prev,
@@ -183,7 +196,11 @@ export default function TransitPortal() {
         branches: Array.isArray(branches) ? branches : [],
         testimonials: Array.isArray(testimonials) ? testimonials : [],
         settings: settings || {},
-        media: (media && typeof media === 'object' && !Array.isArray(media)) ? media : {}
+        media: (media && typeof media === 'object' && !Array.isArray(media)) ? media : {},
+        events: Array.isArray(events) ? events : [],
+        jobOpenings: Array.isArray(jobOpenings) ? jobOpenings : [],
+        jobApplications: Array.isArray(jobApplications) ? jobApplications : [],
+        franchiseInquiries: Array.isArray(franchiseInquiries) ? franchiseInquiries : [],
       }));
     } catch (error) {
       console.error("Failed to fetch CMS data:", error);
@@ -245,6 +262,10 @@ export default function TransitPortal() {
         section === "Blog" ? "blog" :
         section === "Country Pages" ? "countries" :
         section === "FAQ" ? "faqs" :
+        section === "Event" ? "events" :
+        section === "JobOpening" ? "job-openings" :
+        section === "JobApplication" ? "job-applications" :
+        section === "FranchiseInquiry" ? "franchise-inquiries" :
         section.toLowerCase().replace(/ /g, "-");
       const url = isSettings ? '/api/cms/settings' : (isEdit ? `/api/cms/${apiPath}/${item.id || item.code}` : `/api/cms/${apiPath}`);
       const method = isEdit ? 'PUT' : 'POST';
@@ -271,7 +292,13 @@ export default function TransitPortal() {
   const handleDelete = async (section: string, id: string) => {
     setLoading(true);
     try {
-      const apiPath = section === "Blog" ? "blog" : section.toLowerCase().replace(" ", "-");
+      const apiPath =
+        section === "Blog" ? "blog" :
+        section === "Event" ? "events" :
+        section === "JobOpening" ? "job-openings" :
+        section === "JobApplication" ? "job-applications" :
+        section === "FranchiseInquiry" ? "franchise-inquiries" :
+        section.toLowerCase().replace(" ", "-");
       const res = await fetch(`/api/cms/${apiPath}/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error("Delete failed");
       setToast("Deleted successfully!");
@@ -341,6 +368,26 @@ export default function TransitPortal() {
     }
   };
 
+  const handleEventImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/cms/media', { method: 'POST', body: form });
+      if (!res.ok) throw new Error("Upload failed");
+      const { path } = await res.json();
+      setEditingItem((prev: any) => ({ ...prev, banner_image: path }));
+      setToast(`Uploaded: ${file.name}`);
+    } catch {
+      setToast("Error uploading file");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/cms/login');
@@ -360,8 +407,11 @@ export default function TransitPortal() {
       { id: "Resources", icon: FileDown, badge: data.resources.length },
       { id: "Media Library", icon: ImageIcon, badge: null },
       { id: "Testimonials", icon: MessageSquare, badge: null },
+      { id: "Events", icon: CalendarDays, badge: data.events.length },
     ]},
     { label: "MANAGE", items: [
+      { id: "Careers", icon: Briefcase, badge: data.jobApplications.length },
+      { id: "Franchise Inquiries", icon: Handshake, badge: data.franchiseInquiries.length },
       { id: "Branches", icon: MapPin, badge: null },
       { id: "Settings", icon: Settings, badge: null },
     ]}
@@ -959,6 +1009,151 @@ export default function TransitPortal() {
     </div>
   );
 
+  const renderEvents = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Events & Webinars</h2>
+        <Button onClick={() => { setEditingItem({ is_published: false, location: 'Online' }); setShowModal("Event"); }}><Plus size={14} /> Add Event</Button>
+      </div>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Title</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Location</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.events.map((ev: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4 font-[600] text-[#111] max-w-xs">{ev.title}</td>
+                <td className="px-6 py-4 text-[#555]">{new Date(ev.event_date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                <td className="px-6 py-4">{ev.location}</td>
+                <td className="px-6 py-4"><StatusBadge status={ev.is_published ? 'PUBLISHED' : 'DRAFT'} /></td>
+                <td className="px-6 py-4 flex gap-2">
+                  <Button variant="ghost" onClick={() => { setEditingItem(ev); setShowModal("Event"); }}><Edit size={14} /></Button>
+                  <Button variant="destructive" onClick={() => handleDelete('Event', ev.id)}><Trash2 size={14} /></Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+
+  const renderCareers = () => (
+    <div className="space-y-[20px]">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-[700] text-[#111]">Careers</h2>
+        <Button onClick={() => { setEditingItem({ is_active: true, type: 'Full-time', location: 'Kathmandu' }); setShowModal("JobOpening"); }}><Plus size={14} /> Add Opening</Button>
+      </div>
+
+      {/* Job Openings */}
+      <h3 className="text-[13px] font-[700] text-[#555] uppercase tracking-widest mt-4">Job Openings</h3>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Title</th><th className="px-6 py-4">Dept</th><th className="px-6 py-4">Location</th><th className="px-6 py-4">Type</th><th className="px-6 py-4">Active</th><th className="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.jobOpenings.length === 0 && (
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-[#BBB] text-[13px]">No job openings yet. Add one above.</td></tr>
+            )}
+            {data.jobOpenings.map((job: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4 font-[600] text-[#111]">{job.title}</td>
+                <td className="px-6 py-4">{job.department || '—'}</td>
+                <td className="px-6 py-4">{job.location}</td>
+                <td className="px-6 py-4">{job.type}</td>
+                <td className="px-6 py-4"><StatusBadge status={job.is_active ? 'LIVE' : 'DRAFT'} /></td>
+                <td className="px-6 py-4 flex gap-2">
+                  <Button variant="ghost" onClick={() => { setEditingItem(job); setShowModal("JobOpening"); }}><Edit size={14} /></Button>
+                  <Button variant="destructive" onClick={() => handleDelete('JobOpening', job.id)}><Trash2 size={14} /></Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+
+      {/* Applications */}
+      <h3 className="text-[13px] font-[700] text-[#555] uppercase tracking-widest mt-6">Applications Received</h3>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Name</th><th className="px-6 py-4">Email</th><th className="px-6 py-4">Phone</th><th className="px-6 py-4">Position</th><th className="px-6 py-4">CV</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.jobApplications.length === 0 && (
+              <tr><td colSpan={7} className="px-6 py-8 text-center text-[#BBB] text-[13px]">No applications yet.</td></tr>
+            )}
+            {data.jobApplications.map((app: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4 font-[600] text-[#111]">{app.full_name}</td>
+                <td className="px-6 py-4">{app.email}</td>
+                <td className="px-6 py-4">{app.phone}</td>
+                <td className="px-6 py-4">{app.position}</td>
+                <td className="px-6 py-4">
+                  {app.cv_url ? <a href={app.cv_url} target="_blank" rel="noopener noreferrer" className="text-[#A93226] font-[600] hover:underline text-[11px]">View CV</a> : <span className="text-[#BBB]">—</span>}
+                </td>
+                <td className="px-6 py-4"><StatusBadge status={app.status?.toUpperCase() || 'NEW'} /></td>
+                <td className="px-6 py-4 text-[#BBB]">{new Date(app.created_at).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+
+  const renderFranchise = () => (
+    <div className="space-y-[20px]">
+      <h2 className="text-[18px] font-[700] text-[#111]">Franchise Inquiries</h2>
+      <Card className="!p-0 overflow-hidden">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-[10px] font-[700] text-[#BBB] uppercase tracking-[0.08em] border-b">
+              <th className="px-6 py-4">Name</th><th className="px-6 py-4">Email</th><th className="px-6 py-4">Phone</th><th className="px-6 py-4">City</th><th className="px-6 py-4">Status</th><th className="px-6 py-4">Date</th><th className="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F7F3F3]">
+            {data.franchiseInquiries.length === 0 && (
+              <tr><td colSpan={7} className="px-6 py-8 text-center text-[#BBB] text-[13px]">No franchise inquiries yet.</td></tr>
+            )}
+            {data.franchiseInquiries.map((inq: any, i: number) => (
+              <tr key={i} className="text-[13px] hover:bg-[#FDFBFB]">
+                <td className="px-6 py-4 font-[600] text-[#111]">{inq.full_name}</td>
+                <td className="px-6 py-4">{inq.email}</td>
+                <td className="px-6 py-4">{inq.phone}</td>
+                <td className="px-6 py-4">{inq.city}</td>
+                <td className="px-6 py-4">
+                  <select
+                    value={inq.status}
+                    onChange={e => handleSave('FranchiseInquiry', { id: inq.id, status: e.target.value })}
+                    className="border border-[#E0DADA] rounded-[6px] px-2 py-1 text-[11px] outline-none bg-white"
+                  >
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </td>
+                <td className="px-6 py-4 text-[#BBB]">{new Date(inq.created_at).toLocaleDateString()}</td>
+                <td className="px-6 py-4">
+                  <Button variant="destructive" onClick={() => handleDelete('FranchiseInquiry', inq.id)}><Trash2 size={14} /></Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+
   const renderBranches = () => (
     <div className="space-y-[20px]">
       <div className="flex justify-between items-center">
@@ -1014,6 +1209,15 @@ export default function TransitPortal() {
           </div>
         </div>
 
+      </Card>
+      <Card>
+        <h3 className="text-[15px] font-[700] text-[#111] mb-6">CEO Message Section</h3>
+        <div className="grid grid-cols-2 gap-[14px]">
+          <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">CEO Name</label><input type="text" value={data.settings.ceo_name || ''} onChange={e => setData({...data, settings: {...data.settings, ceo_name: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. Bidhan Khadka" /></div>
+          <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">CEO Title</label><input type="text" value={data.settings.ceo_title || ''} onChange={e => setData({...data, settings: {...data.settings, ceo_title: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. CEO & Founder" /></div>
+          <div className="space-y-[6px] col-span-2"><label className="text-[10px] font-[700] text-[#999] uppercase">CEO Photo URL</label><input type="text" value={data.settings.ceo_photo_url || ''} onChange={e => setData({...data, settings: {...data.settings, ceo_photo_url: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/ceo.jpg" /></div>
+          <div className="space-y-[6px] col-span-2"><label className="text-[10px] font-[700] text-[#999] uppercase">CEO Message</label><textarea rows={5} value={data.settings.ceo_message || ''} onChange={e => setData({...data, settings: {...data.settings, ceo_message: e.target.value}})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none resize-none" placeholder="CEO message text..." /></div>
+        </div>
       </Card>
       <Button className="px-10 py-3 text-[14px]" loading={loading} onClick={() => handleSave('settings', data.settings)}>Save All Settings</Button>
     </div>
@@ -1115,6 +1319,9 @@ export default function TransitPortal() {
           {activeSection === "Resources" && renderResources()}
           {activeSection === "Media Library" && renderMediaLibrary()}
           {activeSection === "Testimonials" && renderTestimonials()}
+          {activeSection === "Events" && renderEvents()}
+          {activeSection === "Careers" && renderCareers()}
+          {activeSection === "Franchise Inquiries" && renderFranchise()}
           {activeSection === "Branches" && renderBranches()}
           {activeSection === "Settings" && renderSettings()}
         </main>
@@ -1133,7 +1340,9 @@ export default function TransitPortal() {
               "FAQ": "faqs",
               "Testimonial": "testimonials",
               "Branch": "branches",
-              "Resource": "resources"
+              "Resource": "resources",
+              "Event": "Event",
+              "JobOpening": "JobOpening",
             };
             handleSave(sectionMap[showModal] || showModal.toLowerCase(), editingItem);
           }}
@@ -1218,6 +1427,72 @@ export default function TransitPortal() {
                             <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Testimonial Body</label><textarea rows={4} value={editingItem?.body || ''} onChange={e => setEditingItem({...editingItem, body: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"></textarea></div>
               <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Photo URL</label><input type="text" value={editingItem?.photo || ''} onChange={e => setEditingItem({...editingItem, photo: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="/media/year/month/filename.png" /></div>
 
+            </>
+          )}
+          {showModal === "Event" && (
+            <>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Event Title</label><input type="text" value={editingItem?.title || ''} onChange={e => setEditingItem({...editingItem, title: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Date & Time</label><input type="datetime-local" value={editingItem?.event_date ? editingItem.event_date.slice(0,16) : ''} onChange={e => setEditingItem({...editingItem, event_date: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Location</label><input type="text" value={editingItem?.location || 'Online'} onChange={e => setEditingItem({...editingItem, location: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              </div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Description</label><textarea rows={3} value={editingItem?.description || ''} onChange={e => setEditingItem({...editingItem, description: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none resize-none" /></div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Registration Link</label><input type="text" value={editingItem?.registration_link || ''} onChange={e => setEditingItem({...editingItem, registration_link: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="https://..." /></div>
+              <div className="space-y-[6px]">
+                <label className="text-[10px] font-[700] text-[#999] uppercase">Banner / Flyer Image</label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={editingItem?.banner_image || ''}
+                    onChange={e => setEditingItem({...editingItem, banner_image: e.target.value})}
+                    className="flex-1 px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none"
+                    placeholder="/media/year/month/filename.jpg"
+                  />
+                  <input ref={eventImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleEventImageUpload} />
+                  <Button variant="secondary" onClick={() => eventImageInputRef.current?.click()} loading={loading}><ImageIcon size={13} /> Upload</Button>
+                </div>
+                {editingItem?.banner_image && (
+                  <img src={editingItem.banner_image} alt="banner preview" className="mt-2 w-full h-28 object-cover rounded-[8px] border border-[#E0DADA]" />
+                )}
+              </div>
+              <div className="flex items-center gap-2"><input type="checkbox" checked={editingItem?.is_published || false} onChange={e => setEditingItem({...editingItem, is_published: e.target.checked})} className="accent-[#A93226]" /><label className="text-[12px] font-[700] text-[#111]">Published (visible on homepage)</label></div>
+            </>
+          )}
+          {showModal === "JobOpening" && (
+            <>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Job Title</label><input type="text" value={editingItem?.title || ''} onChange={e => setEditingItem({...editingItem, title: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" /></div>
+              <div className="grid grid-cols-2 gap-[14px]">
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Department</label><input type="text" value={editingItem?.department || ''} onChange={e => setEditingItem({...editingItem, department: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. Counselling" /></div>
+                <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Type</label><select value={editingItem?.type || 'Full-time'} onChange={e => setEditingItem({...editingItem, type: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none bg-white"><option>Full-time</option><option>Part-time</option><option>Internship</option><option>Contract</option></select></div>
+              </div>
+              <div className="space-y-[6px]">
+                <label className="text-[10px] font-[700] text-[#999] uppercase">Locations</label>
+                <div className="grid grid-cols-2 gap-2 p-3 border border-[#E0DADA] rounded-[8px] bg-[#FAFAFA]">
+                  {data.branches.length > 0 ? data.branches.map((b: any) => {
+                    const selected: string[] = editingItem?.location ? editingItem.location.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+                    const checked = selected.includes(b.name);
+                    return (
+                      <label key={b.id} className="flex items-center gap-2 cursor-pointer text-[12px] font-[600] text-[#333]">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          className="accent-[#A93226]"
+                          onChange={() => {
+                            const next = checked ? selected.filter(s => s !== b.name) : [...selected, b.name];
+                            setEditingItem({...editingItem, location: next.join(', ')});
+                          }}
+                        />
+                        {b.name}
+                      </label>
+                    );
+                  }) : (
+                    <input type="text" value={editingItem?.location || ''} onChange={e => setEditingItem({...editingItem, location: e.target.value})} className="col-span-2 px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none" placeholder="e.g. Kathmandu" />
+                  )}
+                </div>
+                {editingItem?.location && <p className="text-[10px] text-[#999]">Selected: {editingItem.location}</p>}
+              </div>
+              <div className="space-y-[6px]"><label className="text-[10px] font-[700] text-[#999] uppercase">Description</label><textarea rows={3} value={editingItem?.description || ''} onChange={e => setEditingItem({...editingItem, description: e.target.value})} className="w-full px-4 py-2 border border-[#E0DADA] rounded-[8px] text-[13px] outline-none resize-none" /></div>
+              <div className="flex items-center gap-2"><input type="checkbox" checked={editingItem?.is_active ?? true} onChange={e => setEditingItem({...editingItem, is_active: e.target.checked})} className="accent-[#A93226]" /><label className="text-[12px] font-[700] text-[#111]">Active (visible on careers page)</label></div>
             </>
           )}
           {showModal === "Branch" && (

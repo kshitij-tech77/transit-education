@@ -59,7 +59,7 @@ export default function LatestBlog({ posts }: { posts: any[] }) {
                 </h3>
               </Link>
               <p className="text-gray-600 text-sm mb-6 line-clamp-3 flex-1">
-                {post.body?.replace(/<[^>]*>?/gm, '').slice(0, 120)}...
+                {post.body?.replace(/<[^>]*>?/gm, '').replace(/#{1,6}\s+/g, '').replace(/[*_`~]/g, '').slice(0, 120)}...
               </p>
               <div className="flex items-center gap-4 text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
                 <span className="flex items-center gap-1.5"><User size={14} /> {post.authorName || 'Admin'}</span>

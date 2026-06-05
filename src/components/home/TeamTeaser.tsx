@@ -6,7 +6,8 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import { resolveMediaUrl } from "@/lib/media-url";
 
 export default function TeamTeaser({ members }: { members: any[] }) {
-  const teamData = members || [];
+  // TODO: uncomment Kshitij Dhamala when ready
+  const teamData = (members || []).filter(m => m.name !== 'Kshitij Dhamala');
   return (
     <section className="py-20 bg-white">
       <div className="container">
@@ -49,7 +50,7 @@ export default function TeamTeaser({ members }: { members: any[] }) {
                   className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                   <p className="text-white text-sm font-medium">Expert Advisor</p>
+                   <p className="text-white text-sm font-medium">{member.role}</p>
                 </div>
               </div>
               

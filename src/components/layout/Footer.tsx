@@ -26,8 +26,8 @@ export default function Footer({ settings }: { settings?: any }) {
           <div className="space-y-4 text-sm">
             <div>
               <strong className="text-white block mb-1">Kathmandu (HQ)</strong>
-              <p>Putalisadak, Kathmandu</p>
-              <p>{settings?.phone || "(+977) 9851315991"}</p>
+              <p>Purple House, Level 2, Bagbazar, Kathmandu</p>
+              <p>{settings?.phone || "01-5906277"}</p>
               <p>{settings?.email || "info@transiteducation.com.np"}</p>
             </div>
             <div>
@@ -53,6 +53,8 @@ export default function Footer({ settings }: { settings?: any }) {
         <div>
           <h4 className="text-white font-bold mb-6">Quick Links</h4>
           <ul className="space-y-3 text-sm flex flex-col">
+            <Link href="/careers" className="hover:text-brand transition-colors">Careers</Link>
+            <Link href="/franchise" className="hover:text-brand transition-colors">Become a Partner</Link>
             <a href="https://www.xe.com/currencyconverter/" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Currency Converter</a>
             <a href="https://www.timeanddate.com/date/duration.html" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Date Converter</a>
             <a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-practice-tests" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Free IELTS Mock Test</a>

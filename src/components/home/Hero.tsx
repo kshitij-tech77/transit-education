@@ -154,9 +154,15 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
 
           <div className="mt-16 flex flex-col sm:flex-row items-center lg:items-start gap-8">
             <div className="flex -space-x-4">
-              {[10, 20, 32, 45].map(id => (
-                <div key={id} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
-                   <Image src={`https://i.pravatar.cc/100?u=${id}`} alt="Student" fill sizes="56px" className="object-cover" />
+              {[
+                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/testimonial4-free-img.jpg",
+                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/testimonial3-free-img.jpg",
+                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/Suraj-Photo.jpeg",
+                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/Photo-Nayesha.jpg",
+                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/311017882_1626736731054537_2485975926200975415_n-1.jpg",
+              ].map((src, i) => (
+                <div key={i} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
+                   <Image src={src} alt="Student" fill sizes="56px" className="object-cover" />
                 </div>
               ))}
               <div className="w-14 h-14 rounded-full border-[3px] border-white bg-[#A93226] flex items-center justify-center text-[13px] font-black text-white shadow-lg z-10">+2k</div>
@@ -173,10 +179,10 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
           {successStories.length > 0 && (
             <motion.div className="bg-[#A93226]/95 backdrop-blur-md border border-white/10 rounded-[2rem] lg:rounded-[40px] p-6 lg:p-8 relative overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center mb-6 relative z-10">
-                <div><h3 className="text-white font-black text-2xl tracking-tight">Visa Success</h3><p className="text-white/50 text-[11px] font-bold uppercase tracking-[0.2em]">Latest Approvals</p></div>
+                <div><p className="text-white font-black text-2xl tracking-tight">Visa Success</p><p className="text-white/75 text-[11px] font-bold uppercase tracking-[0.2em]">Latest Approvals</p></div>
                 <div className="flex gap-3">
-                  <button onClick={prev} className="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"><ChevronLeft size={22} /></button>
-                  <button onClick={next} className="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"><ChevronRight size={22} /></button>
+                  <button onClick={prev} aria-label="Previous story" className="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"><ChevronLeft size={22} /></button>
+                  <button onClick={next} aria-label="Next story" className="w-11 h-11 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"><ChevronRight size={22} /></button>
                 </div>
               </div>
               <div className="relative h-[480px] rounded-[35px] overflow-hidden shadow-2xl bg-gray-900 group">
@@ -199,7 +205,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
                           priority
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-6 py-5">
-                          <h4 className="text-white text-xl font-black">{successStories[current].name}</h4>
+                          <p className="text-white text-xl font-black">{successStories[current].name}</p>
                           <p className="text-white/70 text-sm">{successStories[current].university}</p>
                         </div>
                       </>
@@ -221,8 +227,8 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
             <div className="flex justify-between items-center mb-5 px-3">
                <h4 className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.25em] flex items-center gap-2"><Globe2 size={14} /> Live Countries</h4>
                <div className="flex gap-2">
-                 <button onClick={scrollPrev} className="text-gray-300 hover:text-[#A93226] p-1"><ChevronLeft size={20} /></button>
-                 <button onClick={scrollNext} className="text-gray-300 hover:text-[#A93226] p-1"><ChevronRight size={20} /></button>
+                 <button onClick={scrollPrev} aria-label="Previous destination" className="text-gray-300 hover:text-[#A93226] p-1"><ChevronLeft size={20} /></button>
+                 <button onClick={scrollNext} aria-label="Next destination" className="text-gray-300 hover:text-[#A93226] p-1"><ChevronRight size={20} /></button>
                </div>
             </div>
             <div className="overflow-hidden" ref={emblaRef}>
@@ -240,9 +246,9 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-black text-xl text-black group-hover:text-[#A93226] transition-colors mb-1">
+                          <p className="font-black text-xl text-black group-hover:text-[#A93226] transition-colors mb-1">
                             {c.name}
-                          </h4>
+                          </p>
                           <span className="text-[10px] text-[#A93226] font-bold uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
                             View Details
                           </span>

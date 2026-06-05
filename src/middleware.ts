@@ -49,9 +49,21 @@ export async function middleware(request: NextRequest) {
     // Allow public access to specific frontend API routes
     const isPublicGet = isCmsApiRoute &&
       request.method === 'GET' &&
-      ['/api/cms/success-stories', '/api/cms/countries', '/api/cms/settings'].includes(pathname)
+      [
+        '/api/cms/success-stories',
+        '/api/cms/countries',
+        '/api/cms/settings',
+        '/api/cms/events',
+        '/api/cms/job-openings',
+      ].includes(pathname)
 
-    const isPublicLeadPost = isCmsApiRoute && pathname === '/api/cms/students' && request.method === 'POST'
+    const isPublicPost = isCmsApiRoute && request.method === 'POST' && [
+      '/api/cms/students',
+      '/api/cms/job-applications',
+      '/api/cms/franchise-inquiries',
+    ].includes(pathname)
+
+    const isPublicLeadPost = isPublicPost
     const isLoginRoute = pathname === '/api/cms/auth/login' && request.method === 'POST'
 
     if (!isPublicGet && !isPublicLeadPost && !isLoginRoute) {

@@ -8,7 +8,10 @@ import StatsSection from "@/components/home/StatsSection";
 import ProcessSteps from "@/components/shared/ProcessSteps";
 import SuccessStories from "@/components/home/SuccessStories";
 import TeamTeaser from "@/components/home/TeamTeaser";
+import CEOMessage from "@/components/home/CEOMessage";
 import Testimonials from "@/components/home/Testimonials";
+import UpcomingEvents from "@/components/home/UpcomingEvents";
+import EventsPopup from "@/components/home/EventsPopup";
 import LatestBlog from "@/components/home/LatestBlog";
 import ContactCTA from "@/components/home/ContactCTA";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, countriesRes] = await Promise.all([
+  const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, countriesRes, eventsRes] = await Promise.all([
     supabase
       .from('faqs')
       .select('*')
@@ -71,7 +74,7 @@ export default async function Home() {
       .from('testimonials')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(3),
+      .limit(12),
     supabase
       .from('success_stories')
       .select('*')
@@ -86,6 +89,13 @@ export default async function Home() {
       .select('id, code, flag, name, status')
       .eq('status', 'LIVE')
       .order('name', { ascending: true }),
+    supabase
+      .from('events')
+      .select('*')
+      .eq('is_published', true)
+      .gte('event_date', new Date().toISOString())
+      .order('event_date', { ascending: true })
+      .limit(3),
   ]);
 
   const getFlagEmoji = (countryCode: string) => {
@@ -136,6 +146,15 @@ export default async function Home() {
     };
   }) || [];
 
+  const upcomingEvents = eventsRes.data || [];
+
+  const ceo = {
+    name: settingsRes.data?.ceo_name,
+    title: settingsRes.data?.ceo_title,
+    photoUrl: settingsRes.data?.ceo_photo_url,
+    message: settingsRes.data?.ceo_message,
+  };
+
   const heroCountries = (countriesRes.data || []).map(c => {
     const flagCode = (c.flag || c.code || '').trim();
     return {
@@ -180,7 +199,10 @@ export default async function Home() {
       <ProcessSteps />
       <SuccessStories stories={successStories} />
       <TeamTeaser members={teamMembers} />
+      <CEOMessage {...ceo} />
       <Testimonials testimonials={testimonials} />
+      <EventsPopup events={upcomingEvents} />
+      <UpcomingEvents events={upcomingEvents} />
       
       {/* FAQ Section */}
       <section className="py-24 bg-[#F7F3F3]">

@@ -91,9 +91,9 @@ const locationsData = {
   },
   "damauli": {
     name: "Damauli Branch",
-    address: "Vyas-02, Damauli, Tanahun, Nepal",
-    phone: "065-560789",
-    whatsapp: "9851160433",
+    address: "Main Road, Damauli, Tanahun, Nepal",
+    phone: "065-590110",
+    whatsapp: "9863685864",
     email: "damauli@transiteducation.com.np",
     hours: "Sunday – Friday • 10:00 AM – 5:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3515.8!2d84.2721!3d27.9821!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39ef4f1d1d1d1d1d%3A0x1a1a1a1a1a1a1a1a!2sDamauli%2C+Tanahun!5e0!3m2!1sen!2snp!4v1000000000002",

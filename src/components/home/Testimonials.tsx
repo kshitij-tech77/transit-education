@@ -59,7 +59,7 @@ export default function Testimonials({ testimonials }: { testimonials: any[] }) 
                 )}
                 <div>
                   <h4 className="font-bold text-sm text-black">{t.name || "Transit Student"}</h4>
-                  <p className="text-xs text-gray-500">{t.course || "International Student"}, {t.university || "University"}</p>
+                  {(t.course || t.university) && <p className="text-xs text-gray-500">{[t.course, t.university].filter(Boolean).join(", ")}</p>}
                 </div>
               </div>
             </motion.div>

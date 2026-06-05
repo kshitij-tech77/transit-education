@@ -35,9 +35,9 @@ const BRANCHES = [
     slug: "damauli",
     label: "Damauli",
     sub: "Tanahun",
-    address: "Vyas-02, Damauli, Tanahun, Nepal",
-    phone: "065-560789",
-    whatsapp: "9851160433",
+    address: "Main Road, Damauli, Tanahun, Nepal",
+    phone: "065-590110",
+    whatsapp: "9863685864",
     hours: "Sun – Fri • 10:00 AM – 5:00 PM",
   },
 ];

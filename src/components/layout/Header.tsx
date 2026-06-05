@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Phone, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import UtilityBar from "./UtilityBar";
 import MobileMenu from "./MobileMenu";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
@@ -72,9 +73,12 @@ export default function Header({
       <UtilityBar />
       <div className="container h-[80px] flex items-center justify-between">
         <Link href="/" className="flex items-center group">
-          <img 
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png" 
-            alt="Transit Education" 
+          <Image
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+            alt="Transit Education"
+            width={180}
+            height={48}
+            priority
             className="h-12 w-auto transition-transform group-hover:scale-105"
           />
         </Link>
@@ -96,6 +100,16 @@ export default function Header({
                     <li>
                       <NavigationMenuLink render={<Link href="/team" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
                         Our Team
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink render={<Link href="/careers" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                        Careers
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink render={<Link href="/franchise" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" />}>
+                        Become a Partner
                       </NavigationMenuLink>
                     </li>
                   </ul>
