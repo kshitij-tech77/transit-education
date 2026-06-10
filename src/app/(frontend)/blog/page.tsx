@@ -22,13 +22,19 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function BlogPage() {
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const { category: activeCategory } = await searchParams;
+
+  const postsQuery = supabase
+    .from('blog_posts')
+    .select('*, authors (name)')
+    .eq('status', 'published')
+    .order('publish_date', { ascending: false });
+
+  if (activeCategory) postsQuery.eq('category', activeCategory);
+
   const [{ data: posts }, { data: categoriesRaw }, { data: faqs }] = await Promise.all([
-    supabase
-      .from('blog_posts')
-      .select('*, authors (name)')
-      .eq('status', 'published')
-      .order('publish_date', { ascending: false }),
+    postsQuery,
     supabase
       .from('blog_posts')
       .select('category')
@@ -86,6 +92,13 @@ export default async function BlogPage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-16">
+              {activeCategory && (
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-500 text-sm">Showing:</span>
+                  <span className="bg-brand text-white text-xs font-bold px-4 py-1.5 rounded-full">{activeCategory}</span>
+                  <Link href="/blog" className="text-xs text-gray-400 hover:text-brand underline underline-offset-2">Clear filter</Link>
+                </div>
+              )}
               {blogPosts.length > 0 ? blogPosts.map((post) => (
                 <article key={post.id} className="group">
                   <Link href={`/blog/${post.slug}`} className="block relative h-[400px] rounded-[2.5rem] overflow-hidden mb-8 shadow-lg group-hover:shadow-2xl transition-all duration-500">
@@ -160,10 +173,22 @@ export default async function BlogPage() {
               <div className="bg-off-white p-8 rounded-[2rem] border border-gray-100">
                 <h3 className="text-xl font-bold text-black mb-6">Categories</h3>
                 <ul className="space-y-4">
+                  <li>
+                    <Link href="/blog" className={`flex items-center justify-between font-medium transition-colors ${!activeCategory ? 'text-brand' : 'text-gray-600 hover:text-brand'}`}>
+                      All Posts
+                      <span className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-400 border border-gray-100">
+                        {categories.reduce((s, c) => s + c.count, 0)}
+                      </span>
+                    </Link>
+                  </li>
                   {categories.map((cat) => (
                     <li key={cat.name}>
-                      <Link href={`/blog?category=${cat.name}`} className="flex items-center justify-between text-gray-600 hover:text-brand font-medium transition-colors">
-                        {cat.name} <span className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-400 border border-gray-100">{cat.count}</span>
+                      <Link
+                        href={`/blog?category=${encodeURIComponent(cat.name)}`}
+                        className={`flex items-center justify-between font-medium transition-colors ${activeCategory === cat.name ? 'text-brand' : 'text-gray-600 hover:text-brand'}`}
+                      >
+                        {cat.name}
+                        <span className="bg-white px-2 py-1 rounded-md text-[10px] text-gray-400 border border-gray-100">{cat.count}</span>
                       </Link>
                     </li>
                   ))}

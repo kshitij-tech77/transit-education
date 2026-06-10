@@ -28,6 +28,7 @@ const DEFAULT_STUDY_ABROAD = [
   { title: "UK", href: "/study-abroad/uk" },
   { title: "USA", href: "/study-abroad/usa" },
   { title: "New Zealand", href: "/study-abroad/new-zealand" },
+  { title: "Germany", href: "/study-abroad/germany" },
   { title: "South Korea", href: "/study-abroad/south-korea" },
   { title: "Ireland", href: "/study-abroad/ireland" },
   { title: "Italy", href: "/study-abroad/italy" },
@@ -38,6 +39,7 @@ const DEFAULT_SERVICES = [
   { title: "Student Visa Service", href: "/services/student-visa-service" },
   { title: "Test Preparation", href: "/services/test-preparation" },
   { title: "Scholarships Assistance", href: "/services/scholarships-assistance" },
+  { title: "SOP Writing Support", href: "/services/sop-writing" },
 ];
 
 const DEFAULT_COURSES = [

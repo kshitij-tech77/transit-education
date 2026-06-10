@@ -815,6 +815,33 @@ export default function TransitPortal() {
             </div>
           </Card>
 
+          {/* Sub-Page JSON Content */}
+          <Card>
+            <h3 className="text-[11px] font-[700] text-[#999] uppercase tracking-widest mb-1">Sub-Page Content (JSON)</h3>
+            <p className="text-[11px] text-[#BBB] mb-4">Powers /visa, /scholarships, /cost, /universities sub-pages. Paste valid JSON or leave blank to use built-in static content.</p>
+            <div className="space-y-5">
+              {[
+                { key: 'costOfLiving', label: 'Cost of Living', placeholder: '{"currency":"CAD","cities":[{"name":"Toronto","total_estimate":"CA$1,500–$2,500/month"}]}' },
+                { key: 'scholarshipData', label: 'Scholarship Data', placeholder: '{"scholarships":[{"name":"Vanier","amount":"CA$50,000/yr","level":"PhD","deadline":"November"}]}' },
+                { key: 'cityGuides', label: 'City Guides', placeholder: '{"cities":[{"name":"Toronto","description":"Canada\'s largest city","pros":["Transit","Jobs"]}]}' },
+                { key: 'universityList', label: 'University List', placeholder: '{"universities":[{"name":"U of Toronto","rank":25,"programs":["Engineering","CS"],"tuition":"CA$45,000/yr"}]}' },
+                { key: 'visaExtended', label: 'Visa Extended Content', placeholder: '{"steps":[{"title":"Apply","text":"Submit online"}],"tips":["Apply early"],"docs":["Passport"]}' },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key} className="space-y-1">
+                  <label className={labelCls}>{label}</label>
+                  <textarea
+                    rows={6}
+                    value={(editingItem as any)[key] || ''}
+                    onChange={e => setEditingItem({ ...editingItem, [key]: e.target.value })}
+                    className={inputCls + " resize-y font-mono text-[11px]"}
+                    placeholder={placeholder}
+                    spellCheck={false}
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
           {/* Bottom Save */}
           <div className="flex gap-3">
             <Button loading={loading} onClick={() => handleSave('Country Pages', editingItem)} className="px-8"><Save size={13} /> Save All Changes</Button>
@@ -835,6 +862,11 @@ export default function TransitPortal() {
                 : { ug: [], pg: [] },
               visaProcess: Array.isArray(c.visaProcess) ? c.visaProcess : [],
               requiredDocuments: Array.isArray(c.requiredDocuments) ? c.requiredDocuments : [],
+              costOfLiving: c.costOfLiving ? JSON.stringify(c.costOfLiving, null, 2) : '',
+              scholarshipData: c.scholarshipData ? JSON.stringify(c.scholarshipData, null, 2) : '',
+              cityGuides: c.cityGuides ? JSON.stringify(c.cityGuides, null, 2) : '',
+              universityList: c.universityList ? JSON.stringify(c.universityList, null, 2) : '',
+              visaExtended: c.visaExtended ? JSON.stringify(c.visaExtended, null, 2) : '',
             });
           }}>
             <div className="flex justify-between items-start mb-4"><div className="text-[32px]">{c.flag}</div><StatusBadge status={c.status} /></div>

@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BranchesStrip from "@/components/home/BranchesStrip";
 import WhatsAppButton from "@/components/shared/WhatsAppButton";
+import StickyCtaBar from "@/components/shared/StickyCtaBar";
 import CookieConsent from "@/components/shared/CookieConsent";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/lib/supabase";
@@ -50,6 +51,7 @@ export default async function FrontendLayout({
       <BranchesStrip branches={branchCards} />
       <Footer settings={settings} />
       <WhatsAppButton phoneNumber={settings?.whatsapp_number} />
+      <StickyCtaBar phone={settings?.phone} whatsapp={settings?.whatsapp_number} />
       <CookieConsent />
       <Toaster />
     </>

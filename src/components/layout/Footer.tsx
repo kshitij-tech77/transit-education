@@ -7,6 +7,7 @@ export default function Footer({ settings }: { settings?: any }) {
     facebook: settings?.facebook_url || "https://facebook.com/transiteducation",
     instagram: settings?.instagram_url || "https://instagram.com/transiteducation",
     linkedin: settings?.linkedin_url || "https://linkedin.com/company/transiteducation",
+    tiktok: settings?.tiktok_url || "",
     whatsapp: settings?.whatsapp_number ? `https://wa.me/${settings.whatsapp_number}` : "https://wa.me/9779851315991"
   };
 
@@ -45,6 +46,7 @@ export default function Footer({ settings }: { settings?: any }) {
             <Link href="/services/student-visa-service" className="hover:text-brand transition-colors">Student Visa Service</Link>
             <Link href="/services/test-preparation" className="hover:text-brand transition-colors">Test Preparation</Link>
             <Link href="/services/scholarships-assistance" className="hover:text-brand transition-colors">Scholarships Assistance</Link>
+            <Link href="/services/sop-writing" className="hover:text-brand transition-colors">SOP Writing Support</Link>
             <Link href="/courses/language-training" className="hover:text-brand transition-colors">Language Training</Link>
           </ul>
         </div>
@@ -55,6 +57,7 @@ export default function Footer({ settings }: { settings?: any }) {
           <ul className="space-y-3 text-sm flex flex-col">
             <Link href="/careers" className="hover:text-brand transition-colors">Careers</Link>
             <Link href="/franchise" className="hover:text-brand transition-colors">Become a Partner</Link>
+            <Link href="/tools" className="hover:text-brand transition-colors">Free Tools & Calculators</Link>
             <a href="https://www.xe.com/currencyconverter/" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Currency Converter</a>
             <a href="https://www.timeanddate.com/date/duration.html" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Date Converter</a>
             <a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-practice-tests" rel="noopener nofollow" target="_blank" className="hover:text-brand transition-colors">Free IELTS Mock Test</a>
@@ -67,7 +70,7 @@ export default function Footer({ settings }: { settings?: any }) {
         <div>
           <h4 className="text-white font-bold mb-6">Stay in Touch</h4>
           <p className="text-sm mb-6">Follow us for latest visa updates, scholarship news, and events.</p>
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-3 mb-6 flex-wrap">
             <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
@@ -77,6 +80,11 @@ export default function Footer({ settings }: { settings?: any }) {
             <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
             </a>
+            {socialLinks.tiktok && (
+              <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z"/></svg>
+              </a>
+            )}
           </div>
           <a href={socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#25D366] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
             <MessageCircle className="w-5 h-5" />

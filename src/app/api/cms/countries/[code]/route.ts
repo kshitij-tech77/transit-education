@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 
+function parseJsonField(value: unknown): unknown {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    try { return JSON.parse(value); } catch { return null; }
+  }
+  return value;
+}
+
 // Validates that the code/id param contains only safe characters.
 // Blocks all PostgREST special chars (commas, dots, parens, percent) that
 // would allow injection into the .or() filter string.
@@ -70,7 +78,12 @@ export async function PUT(
         required_documents: body.requiredDocuments || [],
         major_intakes_description: body.majorIntakesDescription,
         meta_title: body.metaTitle,
-        meta_description: body.metaDescription
+        meta_description: body.metaDescription,
+        cost_of_living: parseJsonField(body.costOfLiving),
+        scholarship_data: parseJsonField(body.scholarshipData),
+        city_guides: parseJsonField(body.cityGuides),
+        university_list: parseJsonField(body.universityList),
+        visa_extended: parseJsonField(body.visaExtended)
       })
       .or(`id.eq.${code},code.eq.${code.toUpperCase()}`)
       .select()

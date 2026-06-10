@@ -31,6 +31,11 @@ export async function GET() {
       majorIntakesDescription: c.major_intakes_description || '',
       metaTitle: c.meta_title || '',
       metaDescription: c.meta_description || '',
+      costOfLiving: c.cost_of_living || null,
+      scholarshipData: c.scholarship_data || null,
+      cityGuides: c.city_guides || null,
+      universityList: c.university_list || null,
+      visaExtended: c.visa_extended || null,
       lastEdited: c.updated_at
     }));
 

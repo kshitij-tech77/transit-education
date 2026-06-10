@@ -10,10 +10,12 @@ import SuccessStories from "@/components/home/SuccessStories";
 import TeamTeaser from "@/components/home/TeamTeaser";
 import CEOMessage from "@/components/home/CEOMessage";
 import Testimonials from "@/components/home/Testimonials";
+import GoogleReviews from "@/components/home/GoogleReviews";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
 import EventsPopup from "@/components/home/EventsPopup";
 import LatestBlog from "@/components/home/LatestBlog";
 import ContactCTA from "@/components/home/ContactCTA";
+import CertificationBadges from "@/components/shared/CertificationBadges";
 import SectionLabel from "@/components/shared/SectionLabel";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { supabase } from "@/lib/supabase";
@@ -194,13 +196,15 @@ export default async function Home() {
       <Destinations />
       <WelcomeAbout />
       <Services />
-      <StatsSection stats={settingsRes.data} />
+      <StatsSection stats={settingsRes.data?.stats || settingsRes.data} />
       <WhyTransit />
       <ProcessSteps />
       <SuccessStories stories={successStories} />
       <TeamTeaser members={teamMembers} />
       <CEOMessage {...ceo} />
       <Testimonials testimonials={testimonials} />
+      <GoogleReviews />
+      <CertificationBadges />
       <EventsPopup events={upcomingEvents} />
       <UpcomingEvents events={upcomingEvents} />
       
