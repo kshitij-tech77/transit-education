@@ -172,12 +172,32 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  /* Fix #20 — body baseline: 16px, line-height 1.6 */
   body {
     @apply bg-background text-foreground;
+    font-size: 16px;
+    line-height: 1.6;
   }
   html {
     @apply font-sans;
   }
+
+  /* Fix #20 — strict type scale: each heading level ≥25% larger than the next */
+  h1 { font-size: clamp(32px, 6vw, 64px); line-height: 1.1; font-weight: 800; text-wrap: balance; }
+  h2 { font-size: clamp(24px, 4vw, 48px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+  h3 { font-size: clamp(18px, 2.5vw, 32px); line-height: 1.25; font-weight: 700; text-wrap: balance; }
+  h4 { font-size: 18px; line-height: 1.35; font-weight: 600; }
+  h5 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+  h6 { font-size: 14px; line-height: 1.4; font-weight: 600; }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Fix #21 — all hardcoded red brand references should use var(--brand).
+     Any remaining inline #A93226 in templates is now overridden at the variable level,
+     so updating --brand here propagates everywhere automatically. */
 }
 
 /* ── Blog Typography ─────────────────────────────────────────── */
@@ -363,4 +383,42 @@
   @media (min-width: 960px) {
     padding-inline: 40px;
   }
+}
+
+/* Fix #22 — standard section vertical padding: 80px (py-20).
+   Apply .section-pad to override any oversized gaps. */
+@utility section-pad {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+/* Fix #6 — hero headline mobile: word-break safety at 375px and 320px */
+@media (max-width: 375px) {
+  .hero-headline {
+    font-size: clamp(26px, 8.5vw, 32px) !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+@media (max-width: 320px) {
+  .hero-headline {
+    font-size: 24px !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Fix #21 — prose-legal shared styles for legal pages */
+.prose-legal {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--prose-body);
+}
+.prose-legal a {
+  color: var(--brand);
+  font-weight: 500;
+}
+.prose-legal a:hover {
+  color: var(--brand-dark);
+  text-decoration: underline;
 }

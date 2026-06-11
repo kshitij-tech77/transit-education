@@ -1,0 +1,14 @@
+export { DashboardSection }      from "./DashboardSection";
+export { StudentsSection }       from "./StudentsSection";
+export { BlogSection }           from "./BlogSection";
+export { FaqSection }            from "./FaqSection";
+export { CountryPagesSection }   from "./CountryPagesSection";
+export { SuccessStoriesSection } from "./SuccessStoriesSection";
+export { ResourcesSection }      from "./ResourcesSection";
+export { MediaLibrarySection }   from "./MediaLibrarySection";
+export { TestimonialsSection }   from "./TestimonialsSection";
+export { EventsSection }         from "./EventsSection";
+export { CareersSection }        from "./CareersSection";
+export { FranchiseSection }      from "./FranchiseSection";
+export { BranchesSection }       from "./BranchesSection";
+export { SettingsSection }       from "./SettingsSection";

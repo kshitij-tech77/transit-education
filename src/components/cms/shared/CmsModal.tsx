@@ -25,14 +25,14 @@ export function CmsModal({
   return (
     // Overlay — z-[100] is intentional layering for CMS modals above portal chrome
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/35 backdrop-blur-[2px]"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/35 backdrop-blur-[2px]"
       onClick={onClose}
     >
       {/* Panel — stop propagation so clicks inside don't close the modal */}
       <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "bg-white w-[480px] rounded-2xl shadow-2xl border border-gray-200",
+          "bg-white w-120 rounded-2xl shadow-2xl border border-gray-200",
           "animate-in fade-in zoom-in duration-200",
           className,
         )}

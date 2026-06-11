@@ -4,6 +4,7 @@ import BranchesStrip from "@/components/home/BranchesStrip";
 import WhatsAppButton from "@/components/shared/WhatsAppButton";
 import StickyCtaBar from "@/components/shared/StickyCtaBar";
 import CookieConsent from "@/components/shared/CookieConsent";
+import MotionProvider from "@/components/shared/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/lib/supabase";
 
@@ -42,7 +43,7 @@ export default async function FrontendLayout({
   const branchCards = sortedBranches.map(b => ({ ...b, slug: toSlug(b.name) }));
 
   return (
-    <>
+    <MotionProvider>
       <Header
         studyAbroadLinks={studyAbroadLinks.length > 0 ? studyAbroadLinks : undefined}
         locationsLinks={locationsLinks.length > 0 ? locationsLinks : undefined}
@@ -54,6 +55,6 @@ export default async function FrontendLayout({
       <StickyCtaBar phone={settings?.phone} whatsapp={settings?.whatsapp_number} />
       <CookieConsent />
       <Toaster />
-    </>
+    </MotionProvider>
   );
 }

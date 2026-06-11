@@ -6,6 +6,28 @@ import useEmblaCarousel from "embla-carousel-react";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+
+/* Fix #27 — link each card to its destination page + hover lift */
+const CODE_TO_SLUG: Record<string, string> = {
+  au: "australia",
+  ca: "canada",
+  gb: "uk",
+  us: "usa",
+  nz: "new-zealand",
+  kr: "south-korea",
+  it: "italy",
+  ie: "ireland",
+  de: "germany",
+  jp: "japan",
+  fr: "france",
+};
+
+function getSlug(countryId: string): string {
+  if (!countryId) return "";
+  const lower = countryId.toLowerCase().trim();
+  return CODE_TO_SLUG[lower] ?? lower;
+}
 
 export default function SuccessStories({ stories }: { stories: any[] }) {
   const successStoriesData = stories || [];
@@ -52,9 +74,10 @@ export default function SuccessStories({ stories }: { stories: any[] }) {
 
         <div className="overflow-hidden px-4" ref={emblaRef}>
           <div className="flex gap-4 md:gap-6">
-            {successStoriesData.map((story, i) => (
-              <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-2">
-                <div className="bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl h-[400px] relative overflow-hidden group">
+            {successStoriesData.map((story, i) => {
+              const slug = getSlug(story.country_id || "");
+              const CardInner = (
+                <div className="bg-linear-to-br from-gray-800 to-black p-1 rounded-2xl h-[400px] relative overflow-hidden group cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
                   <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
                     {story.approvalImage ? (
                       <img
@@ -65,12 +88,12 @@ export default function SuccessStories({ stories }: { stories: any[] }) {
                       />
                     ) : null}
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  
+                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
+
                   <div className="absolute top-4 right-4 bg-white text-black px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                     {story.year}
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <div className="inline-flex items-center px-2 py-1 bg-white/20 backdrop-blur-sm rounded-md text-xs font-semibold mb-3">
                       {story.country}
@@ -80,8 +103,20 @@ export default function SuccessStories({ stories }: { stories: any[] }) {
                     <p className="text-brand-light text-xs font-medium uppercase tracking-wider mt-2">{story.university}</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+
+              return (
+                <div key={i} className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-2">
+                  {slug ? (
+                    <Link href={`/study-abroad/${slug}`} aria-label={`Study in ${story.country}`}>
+                      {CardInner}
+                    </Link>
+                  ) : (
+                    CardInner
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

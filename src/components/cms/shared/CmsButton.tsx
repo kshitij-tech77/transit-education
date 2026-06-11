@@ -3,12 +3,6 @@ import { cn } from "@/lib/utils";
 
 export type CmsButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
 
-// All hex values from Portal.tsx Button replaced with design-system tokens.
-// `bg-brand`         = var(--brand)         = #A93226
-// `bg-brand-dark`    = var(--brand-dark)    = #7E2219
-// `bg-brand-surface` = var(--brand-surface) = #FEF2F1  (added in Phase 2)
-// `border-gray-200`  = var(--gray-200)      = #E5E4E0
-// `text-gray-600`    = var(--gray-600)      = #6B6966
 const VARIANT_STYLES: Record<CmsButtonVariant, string> = {
   primary:     "bg-brand text-white hover:bg-brand-dark",
   secondary:   "bg-white text-gray-600 border border-gray-200 hover:border-brand hover:text-brand",
@@ -17,8 +11,8 @@ const VARIANT_STYLES: Record<CmsButtonVariant, string> = {
 };
 
 const SIZE_STYLES: Record<CmsButtonVariant, string> = {
-  primary:     "text-xs px-[18px] py-[9px]",
-  secondary:   "text-xs px-[18px] py-[9px]",
+  primary:     "text-xs px-4.5 py-2.25",
+  secondary:   "text-xs px-4.5 py-2.25",
   ghost:       "text-[11px] px-3 py-1.5",
   destructive: "text-[11px] px-3 py-1.5",
 };
