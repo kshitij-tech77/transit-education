@@ -114,26 +114,28 @@ export default function CmsLogin() {
           )}
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Email Address</label>
+            <label htmlFor="cms-email" className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} />
               <input
+                id="cms-email"
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 disabled={locked}
                 className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                placeholder="admin@transiteducation.com"
+                placeholder="your@email.com"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Password</label>
+            <label htmlFor="cms-password" className="text-[10px] font-[700] text-[#999] uppercase tracking-[0.08em] ml-1">Password</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BBB]" size={16} />
               <input
+                id="cms-password"
                 type="password"
                 required
                 value={password}

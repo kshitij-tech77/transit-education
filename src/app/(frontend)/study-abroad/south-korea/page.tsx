@@ -2,6 +2,19 @@ import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Schema from "@/components/shared/Schema";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Study in South Korea from Nepal | D-2 Visa & GKS Scholarship",
+  description: "Complete guide to studying in South Korea from Nepal. D-2 student visa, Alien Registration Card, GKS scholarship, TOPIK requirements, and top Korean universities for Nepali students.",
+  alternates: { canonical: "https://transiteducation.com.np/study-abroad/south-korea" },
+  openGraph: {
+    title: "Study in South Korea from Nepal",
+    description: "D-2 visa, ARC registration, GKS scholarship, and work rights — full guide for Nepali students.",
+    url: "https://transiteducation.com.np/study-abroad/south-korea",
+    type: "website",
+  },
+};
 
 export default function SouthKoreaPage() {
   const faqData = {

@@ -1,10 +1,11 @@
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { CheckCircle2, GraduationCap, ClipboardCheck, Search, Users2, FileText } from "lucide-react";
 import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admission Counselling | University Application Help — Transit Education",
+  title: "Admission Counselling | University Application Help",
   description: "Expert university admission counselling for Nepali students. SOP writing, LOR guidance, and applications to 50+ partner institutions in Canada, Australia, UK, USA & more.",
   alternates: { canonical: "https://transiteducation.com.np/services/admission-counselling" },
   openGraph: {
@@ -56,6 +57,11 @@ export default function AdmissionCounsellingPage() {
         </div>
         
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services/admission-counselling" },
+            { label: "Admission Counselling" },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Expert Guidance</SectionLabel>
             <h1 className="text-4xl md:text-6xl font-extrabold mt-6 mb-8 leading-tight">

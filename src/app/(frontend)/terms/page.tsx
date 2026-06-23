@@ -3,7 +3,7 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Transit Education Nepal",
+  title: "Terms of Service",
   description: "Terms and conditions for using Transit Education's study abroad consultancy services in Nepal. Read before engaging our visa, admission, and counselling services.",
   alternates: { canonical: "https://transiteducation.com.np/terms" },
 };

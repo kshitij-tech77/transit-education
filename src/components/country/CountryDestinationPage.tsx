@@ -2,6 +2,7 @@ import { GraduationCap, CheckCircle2, ListChecks, FileText } from "lucide-react"
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -79,14 +80,24 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
           <img src={heroImage} alt={country.hero_title || countryId} className="w-full h-full object-cover" />
         </div>
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Study Abroad", href: "/study-abroad" },
+            { label: country.name || countryId },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Study Abroad</SectionLabel>
             <h1 className="text-5xl lg:text-7xl font-black mt-8 mb-6 leading-[0.9] tracking-tight">
               {country.hero_title || fallbacks.heroTitle || `Study in ${countryId}`}
             </h1>
-            <p className="text-xl text-gray-300 leading-relaxed">
-              {country.why_study || fallbacks.whyStudy || ''}
-            </p>
+            <div className="text-xl text-gray-300 leading-relaxed space-y-4">
+              {(country.why_study || fallbacks.whyStudy || '')
+                .split(/\n\n+/)
+                .filter(Boolean)
+                .map((para: string, i: number) => (
+                  <p key={i}>{para.trim()}</p>
+                ))}
+            </div>
             {country.tagline && (
               <p className="mt-6 text-brand font-bold text-lg">{country.tagline}</p>
             )}

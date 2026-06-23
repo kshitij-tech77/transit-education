@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   LayoutDashboard, Users, FileText, HelpCircle, Globe, GraduationCap,
   FileDown, Image as ImageIcon, MessageSquare, CalendarDays, Briefcase,
-  Handshake, MapPin, Settings, LogOut, Plus, Loader2, Trophy,
+  Handshake, MapPin, Settings, LogOut, Plus, Loader2,
 } from "lucide-react";
 import { useCmsData }    from "@/hooks/useCmsData";
 import { useCmsActions } from "@/hooks/useCmsActions";
@@ -17,7 +17,6 @@ import {
   MediaLibrarySection, TestimonialsSection, EventsSection,
   CareersSection, FranchiseSection, BranchesSection, SettingsSection,
 } from "@/components/cms/sections";
-import WorldCupSection from "@/components/cms/WorldCupSection";
 
 export default function TransitPortal() {
   const { data, loading: dataLoading, refetch } = useCmsData();
@@ -56,9 +55,6 @@ export default function TransitPortal() {
       { id: "Franchise Inquiries" as CmsSection, icon: Handshake,       badge: data.franchiseInquiries.length },
       { id: "Branches"            as CmsSection, icon: MapPin,          badge: null },
       { id: "Settings"            as CmsSection, icon: Settings,        badge: null },
-    ]},
-    { label: "CONTESTS", items: [
-      { id: "World Cup Contest"   as CmsSection, icon: Trophy,          badge: null },
     ]},
   ];
 
@@ -175,7 +171,7 @@ export default function TransitPortal() {
           {activeSection === "Franchise Inquiries" && <FranchiseSection {...sp} />}
           {activeSection === "Branches"            && <BranchesSection {...sp} />}
           {activeSection === "Settings"            && <SettingsSection data={data} actionsLoading={actionLoading} onSave={save} onToast={onToast} />}
-          {activeSection === "World Cup Contest"  && <WorldCupSection />}
+
         </main>
       </div>
 

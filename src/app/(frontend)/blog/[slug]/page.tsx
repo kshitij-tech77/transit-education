@@ -63,8 +63,9 @@ export async function generateMetadata({
   return {
     title: post.meta_title || post.title,
     description:
-      post.meta_description ||
-      "Read the latest updates from Nepal's most trusted study abroad consultancy.",
+      (post.meta_description || "Read the latest updates from Nepal's most trusted study abroad consultancy.")
+        .replace(/\s*\*[…\.]{1,3}\s*$/, "")
+        .trim(),
     alternates: {
       canonical:
         post.canonical_url || `https://transiteducation.com.np/blog/${post.slug}`,

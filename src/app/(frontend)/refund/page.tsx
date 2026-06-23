@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Refund Policy | Transit Education Nepal",
+  title: "Refund Policy",
   description: "Transit Education's refund and cancellation policy for study abroad consultancy, visa assistance, and IELTS/PTE preparation services in Nepal.",
   alternates: { canonical: "https://transiteducation.com.np/refund" },
 };

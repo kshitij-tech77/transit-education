@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Study Abroad Resources for Nepali Students | Transit Education",
+  title: "Free Study Abroad Resources for Nepali Students",
   description: "Download free guides, checklists, and visa requirement sheets for studying in Canada, Australia, UK, USA, and more. Resources by Transit Education Nepal.",
   alternates: { canonical: "https://transiteducation.com.np/resources" },
   openGraph: {

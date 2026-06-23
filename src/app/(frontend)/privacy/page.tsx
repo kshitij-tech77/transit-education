@@ -3,7 +3,7 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Transit Education Nepal",
+  title: "Privacy Policy",
   description: "Read Transit Education's privacy policy. Learn how we collect, use, and protect your personal information when you use our study abroad consultancy services.",
   alternates: { canonical: "https://transiteducation.com.np/privacy" },
 };

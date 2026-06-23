@@ -1,10 +1,11 @@
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { CheckCircle2, ShieldCheck, FileSearch, Send, MessageSquare, Landmark } from "lucide-react";
 import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Student Visa Service Nepal | 98% Success Rate — Transit Education",
+  title: "Student Visa Service Nepal | 98% Success Rate",
   description: "Complete student visa processing for Canada, Australia, UK, USA, and Europe. File preparation, interview coaching, and IRCC guidance by expert counsellors in Nepal.",
   alternates: { canonical: "https://transiteducation.com.np/services/student-visa-service" },
   openGraph: {
@@ -56,6 +57,11 @@ export default function StudentVisaServicePage() {
         </div>
         
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services/student-visa-service" },
+            { label: "Student Visa Service" },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Visa Excellence</SectionLabel>
             <h1 className="text-4xl md:text-6xl font-extrabold mt-6 mb-8 leading-tight">

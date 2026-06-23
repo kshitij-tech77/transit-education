@@ -1,11 +1,12 @@
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { FileText, CheckCircle2, AlertCircle, Lightbulb, Clock, Users2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SOP Writing Support Nepal | Statement of Purpose Help — Transit Education",
+  title: "SOP Writing Support Nepal | Statement of Purpose Help",
   description: "Expert SOP writing guidance for Canadian, Australian, UK, and US student visas. Our counsellors help Nepali students craft compelling statements of purpose that get approved.",
   alternates: { canonical: "https://transiteducation.com.np/services/sop-writing" },
   openGraph: {
@@ -109,6 +110,11 @@ export default function SopWritingPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
         </div>
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services/sop-writing" },
+            { label: "SOP Writing Support" },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">
               Document Support

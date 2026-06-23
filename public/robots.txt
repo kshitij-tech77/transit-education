@@ -2,6 +2,13 @@
 User-agent: *
 Allow: /
 
+# *
+User-agent: *
+Disallow: /cms
+Disallow: /cms/
+Disallow: /admin
+Disallow: /admin/
+
 # Host
 Host: https://transiteducation.com.np
 

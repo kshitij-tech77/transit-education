@@ -176,8 +176,9 @@ export default function ContactPageClient() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Full Name *</label>
+                    <label htmlFor="ct-name" className="text-sm font-bold text-gray-700 uppercase tracking-wider">Full Name *</label>
                     <input
+                      id="ct-name"
                       type="text"
                       required
                       value={form.name}
@@ -187,8 +188,9 @@ export default function ContactPageClient() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">WhatsApp Number *</label>
+                    <label htmlFor="ct-phone" className="text-sm font-bold text-gray-700 uppercase tracking-wider">WhatsApp Number *</label>
                     <input
+                      id="ct-phone"
                       type="tel"
                       required
                       value={form.phone}
@@ -200,8 +202,9 @@ export default function ContactPageClient() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Subject</label>
+                  <label htmlFor="ct-subject" className="text-sm font-bold text-gray-700 uppercase tracking-wider">Subject</label>
                   <select
+                    id="ct-subject"
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
                     className="w-full bg-white border border-gray-200 rounded-2xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-brand/20 transition-all appearance-none"
@@ -216,8 +219,9 @@ export default function ContactPageClient() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Message</label>
+                  <label htmlFor="ct-message" className="text-sm font-bold text-gray-700 uppercase tracking-wider">Message</label>
                   <textarea
+                    id="ct-message"
                     rows={5}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}

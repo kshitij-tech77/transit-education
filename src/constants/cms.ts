@@ -25,7 +25,6 @@ export const CMS_SECTIONS = [
   "Events",
   "Careers",
   "Franchise Inquiries",
-  "World Cup Contest",
 ] as const;
 
 export type CmsSection = (typeof CMS_SECTIONS)[number];

@@ -2,7 +2,7 @@ import CountryDestinationPage from "@/components/country/CountryDestinationPage"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Study in Australia from Nepal | Visa, Requirements & Scholarships — Transit Education",
+  title: "Study in Australia from Nepal | Visa, Requirements & Scholarships",
   description: "Complete guide to studying in Australia from Nepal. Student Visa Subclass 500, GTE statement, OSHC, IELTS requirements, tuition fees, and scholarship options for Nepali students.",
   alternates: { canonical: "https://transiteducation.com.np/study-abroad/australia" },
   openGraph: {
