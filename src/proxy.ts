@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -39,14 +39,11 @@ export async function middleware(request: NextRequest) {
   const isCmsLoginRoute = pathname.startsWith('/cms/login')
   const isCmsApiRoute = pathname.startsWith('/api/cms')
 
-  // Case 1: User is logged in and tries to access login page -> Redirect to dashboard
   if (user && isCmsLoginRoute) {
     return NextResponse.redirect(new URL('/cms', request.url))
   }
 
-  // Case 2: User is NOT logged in and tries to access protected CMS routes
   if (!user && (isCmsRoute || isCmsApiRoute) && !isCmsLoginRoute) {
-    // Allow public access to specific frontend API routes
     const isPublicGet = isCmsApiRoute &&
       request.method === 'GET' &&
       [
@@ -63,10 +60,9 @@ export async function middleware(request: NextRequest) {
       '/api/cms/franchise-inquiries',
     ].includes(pathname)
 
-    const isPublicLeadPost = isPublicPost
     const isLoginRoute = pathname === '/api/cms/auth/login' && request.method === 'POST'
 
-    if (!isPublicGet && !isPublicLeadPost && !isLoginRoute) {
+    if (!isPublicGet && !isPublicPost && !isLoginRoute) {
       if (isCmsApiRoute) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
