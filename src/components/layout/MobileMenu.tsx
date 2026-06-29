@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, ChevronDown, MapPin, Globe, Info, Briefcase, BookOpen, FileText, Phone, Handshake, ShieldCheck } from "lucide-react";
+import { Menu, X, ChevronDown, MapPin, Globe, Info, Briefcase, BookOpen, FileText, Phone, Handshake, ShieldCheck, GraduationCap, MoreHorizontal } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,7 +14,56 @@ interface NavLink {
 interface MobileMenuProps {
   studyAbroadLinks?: NavLink[];
   locationsLinks?: NavLink[];
+  servicesLinks?: NavLink[];
+  coursesLinks?: NavLink[];
 }
+
+const DEFAULT_STUDY_ABROAD: NavLink[] = [
+  { title: "Canada",      href: "/study-abroad/canada" },
+  { title: "Australia",   href: "/study-abroad/australia" },
+  { title: "UK",          href: "/study-abroad/uk" },
+  { title: "USA",         href: "/study-abroad/usa" },
+  { title: "New Zealand", href: "/study-abroad/new-zealand" },
+  { title: "Germany",     href: "/study-abroad/germany" },
+  { title: "South Korea", href: "/study-abroad/south-korea" },
+  { title: "Ireland",     href: "/study-abroad/ireland" },
+  { title: "Italy",       href: "/study-abroad/italy" },
+];
+
+const DEFAULT_SERVICES: NavLink[] = [
+  { title: "Admission Counselling",   href: "/services/admission-counselling" },
+  { title: "Student Visa Service",    href: "/services/student-visa-service" },
+  { title: "Test Preparation",        href: "/services/test-preparation" },
+  { title: "Scholarships Assistance", href: "/services/scholarships-assistance" },
+  { title: "SOP Writing Support",     href: "/services/sop-writing" },
+  { title: "Compliance Guide",        href: "/compliance" },
+];
+
+const DEFAULT_COURSES: NavLink[] = [
+  { title: "Test Preparation",  href: "/courses/test-preparation" },
+  { title: "Language Training", href: "/courses/language-training" },
+];
+
+const DEFAULT_LOCATIONS: NavLink[] = [
+  { title: "Kathmandu", href: "/locations/kathmandu" },
+  { title: "Itahari",   href: "/locations/itahari" },
+  { title: "Damak",     href: "/locations/damak" },
+  { title: "Damauli",   href: "/locations/damauli" },
+];
+
+const ABOUT_LINKS: NavLink[] = [
+  { title: "About Transit",    href: "/about" },
+  { title: "Our Team",         href: "/team" },
+  { title: "Careers",          href: "/careers" },
+  { title: "Become a Partner", href: "/franchise" },
+];
+
+const MORE_LINKS: NavLink[] = [
+  { title: "Blog",          href: "/blog" },
+  { title: "Resources",     href: "/resources" },
+  { title: "Compliance",    href: "/compliance" },
+  { title: "Accreditation", href: "/accreditation" },
+];
 
 function Accordion({ label, icon: Icon, children }: { label: string; icon: any; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -80,25 +129,13 @@ function SubLink({ href, label, onClick }: { href: string; label: string; onClic
 }
 
 export default function MobileMenu({
-  studyAbroadLinks = [],
-  locationsLinks = [],
+  studyAbroadLinks = DEFAULT_STUDY_ABROAD,
+  locationsLinks   = DEFAULT_LOCATIONS,
+  servicesLinks    = DEFAULT_SERVICES,
+  coursesLinks     = DEFAULT_COURSES,
 }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
-
-  const destinations = studyAbroadLinks.length > 0 ? studyAbroadLinks : [
-    { href: "/study-abroad/uk", title: "UK" },
-    { href: "/study-abroad/usa", title: "USA" },
-    { href: "/study-abroad/canada", title: "Canada" },
-    { href: "/study-abroad/australia", title: "Australia" },
-  ];
-
-  const locations = locationsLinks.length > 0 ? locationsLinks : [
-    { href: "/locations/kathmandu", title: "Kathmandu" },
-    { href: "/locations/itahari", title: "Itahari" },
-    { href: "/locations/damak", title: "Damak" },
-    { href: "/locations/damauli", title: "Damauli" },
-  ];
 
   return (
     <div className="lg:hidden">
@@ -123,7 +160,6 @@ export default function MobileMenu({
             />
 
             {/* Drawer */}
-            {/* Fix #24 — width: min(100vw, 360px) ensures close button stays visible at 320px */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -152,25 +188,40 @@ export default function MobileMenu({
                 </button>
               </div>
 
-              {/* Nav */}
+              {/* Nav — mirrors desktop structure exactly */}
               <nav className="flex-1 overflow-y-auto px-5 py-3 divide-y divide-gray-100/80">
-                <NavItem href="/about" icon={Info} label="About Us" onClick={close} />
-
-                <Accordion label="Destinations" icon={Globe}>
-                  {destinations.map((l) => (
+                <Accordion label="About Us" icon={Info}>
+                  {ABOUT_LINKS.map((l) => (
                     <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
                   ))}
                 </Accordion>
 
-                <NavItem href="/services/admission-counselling" icon={Briefcase} label="Services" onClick={close} />
-                <NavItem href="/courses/test-preparation" icon={BookOpen} label="Courses" onClick={close} />
-                <NavItem href="/blog" icon={FileText} label="Blog" onClick={close} />
-                <NavItem href="/compliance" icon={ShieldCheck} label="Compliance" onClick={close} />
-                <NavItem href="/careers" icon={Briefcase} label="Careers" onClick={close} />
-                <NavItem href="/franchise" icon={Handshake} label="Become a Partner" onClick={close} />
+                <Accordion label="Study Abroad" icon={Globe}>
+                  {studyAbroadLinks.map((l) => (
+                    <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
+                  ))}
+                </Accordion>
+
+                <Accordion label="Student Services" icon={Briefcase}>
+                  {servicesLinks.map((l) => (
+                    <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
+                  ))}
+                </Accordion>
+
+                <Accordion label="Take Courses" icon={BookOpen}>
+                  {coursesLinks.map((l) => (
+                    <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
+                  ))}
+                </Accordion>
 
                 <Accordion label="Locations" icon={MapPin}>
-                  {locations.map((l) => (
+                  {locationsLinks.map((l) => (
+                    <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
+                  ))}
+                </Accordion>
+
+                <Accordion label="More" icon={MoreHorizontal}>
+                  {MORE_LINKS.map((l) => (
                     <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
                   ))}
                 </Accordion>
