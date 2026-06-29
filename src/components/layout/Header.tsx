@@ -286,6 +286,8 @@ export default function Header({
           <MobileMenu
             studyAbroadLinks={studyAbroadLinks}
             locationsLinks={locationsLinks}
+            servicesLinks={servicesLinks}
+            coursesLinks={coursesLinks}
           />
         </div>
       </div>
