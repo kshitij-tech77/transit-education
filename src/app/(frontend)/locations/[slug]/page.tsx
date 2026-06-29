@@ -116,7 +116,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const location = locationsData[slug as keyof typeof locationsData];
   if (!location) return {};
-  const title = `Study Abroad Consultancy in ${location.name} | Transit Education`;
+  const title = `Study Abroad Consultancy in ${location.name}`;
   const description = `Visit Transit Education at ${location.address}. Free counselling for student visas to Canada, Australia, UK, USA & more. ${location.phone}.`;
   return {
     title,

@@ -2,6 +2,19 @@ import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Schema from "@/components/shared/Schema";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Study in Ireland from Nepal | Student Visa, Work Rights & Scholarships",
+  description: "Complete guide to studying in Ireland from Nepal. Stamp 2 student visa, IRP registration, 20-hour work limit, GNIB, and top Irish universities for Nepali students.",
+  alternates: { canonical: "https://transiteducation.com.np/study-abroad/ireland" },
+  openGraph: {
+    title: "Study in Ireland from Nepal",
+    description: "Stamp 2 visa, IRP, 20hr work rights, and Irish Graduate Programme — full guide for Nepali students.",
+    url: "https://transiteducation.com.np/study-abroad/ireland",
+    type: "website",
+  },
+};
 
 export default function IrelandPage() {
   const faqData = {

@@ -1,11 +1,12 @@
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { BookOpen, Headphones, Languages, PenTool, Clock, Users, CalendarDays, CheckCircle2, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "IELTS & PTE Test Preparation in Nepal | Transit Education",
+  title: "IELTS & PTE Test Preparation in Nepal",
   description: "Expert IELTS, PTE Academic, and TOEFL coaching at Transit Education Nepal. Proven strategies, mock tests, and personalised feedback to hit your target band score.",
   alternates: { canonical: "https://transiteducation.com.np/services/test-preparation" },
   openGraph: {
@@ -61,6 +62,11 @@ export default function TestPreparationPage() {
         </div>
         
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services/test-preparation" },
+            { label: "Test Preparation" },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Academy Excellence</SectionLabel>
             <h1 className="text-4xl md:text-6xl font-extrabold mt-6 mb-8 leading-tight">

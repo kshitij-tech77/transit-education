@@ -60,29 +60,31 @@ export default function LeadForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-        <Input 
-          {...register("fullName")} 
-          placeholder="John Doe" 
+        <label htmlFor="lead-fullName" className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+        <Input
+          id="lead-fullName"
+          {...register("fullName")}
+          placeholder="John Doe"
           className={errors.fullName ? "border-red-500" : ""}
         />
         {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number *</label>
-        <Input 
-          {...register("whatsapp")} 
-          placeholder="+977 9800000000" 
+        <label htmlFor="lead-whatsapp" className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number *</label>
+        <Input
+          id="lead-whatsapp"
+          {...register("whatsapp")}
+          placeholder="+977 9800000000"
           className={errors.whatsapp ? "border-red-500" : ""}
         />
         {errors.whatsapp && <p className="text-red-500 text-xs mt-1">{errors.whatsapp.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Destination *</label>
+        <label htmlFor="lead-destination" className="block text-sm font-medium text-gray-700 mb-1">Preferred Destination *</label>
         <Select onValueChange={(val: string | null) => { if (val) setValue("destination", val); }}>
-          <SelectTrigger className={errors.destination ? "border-red-500" : ""}>
+          <SelectTrigger id="lead-destination" className={errors.destination ? "border-red-500" : ""}>
             <SelectValue placeholder="Select Destination" />
           </SelectTrigger>
           <SelectContent>
@@ -101,9 +103,9 @@ export default function LeadForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">IELTS Status *</label>
+        <label htmlFor="lead-ieltsStatus" className="block text-sm font-medium text-gray-700 mb-1">IELTS Status *</label>
         <Select onValueChange={(val: string | null) => { if (val) setValue("ieltsStatus", val); }}>
-          <SelectTrigger className={errors.ieltsStatus ? "border-red-500" : ""}>
+          <SelectTrigger id="lead-ieltsStatus" className={errors.ieltsStatus ? "border-red-500" : ""}>
             <SelectValue placeholder="Select Status" />
           </SelectTrigger>
           <SelectContent>

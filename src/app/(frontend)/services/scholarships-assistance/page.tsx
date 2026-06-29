@@ -1,10 +1,11 @@
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { GraduationCap, Award, Landmark, TrendingUp, CheckCircle2, HeartHandshake } from "lucide-react";
 import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Scholarships Assistance for Nepali Students | Transit Education",
+  title: "Scholarships Assistance for Nepali Students",
   description: "Find and apply for merit-based and need-based scholarships at top universities in Canada, Australia, UK, and USA. Expert guidance from Transit Education Nepal.",
   alternates: { canonical: "https://transiteducation.com.np/services/scholarships-assistance" },
   openGraph: {
@@ -56,6 +57,11 @@ export default function ScholarshipsAssistancePage() {
         </div>
         
         <div className="container relative z-10">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services/scholarships-assistance" },
+            { label: "Scholarships Assistance" },
+          ]} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Financial Support</SectionLabel>
             <h1 className="text-4xl md:text-6xl font-extrabold mt-6 mb-8 leading-tight">

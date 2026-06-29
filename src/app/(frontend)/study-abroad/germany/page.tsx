@@ -2,7 +2,7 @@ import CountryDestinationPage from "@/components/country/CountryDestinationPage"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Study in Germany from Nepal | Free Education, APS & DAAD — Transit Education",
+  title: "Study in Germany from Nepal | Free Education, APS & DAAD",
   description: "Complete guide to studying in Germany from Nepal. Free public university education, APS certificate process, blocked account (Sperrkonto), DAAD scholarships, and National D Visa guidance.",
   alternates: { canonical: "https://transiteducation.com.np/study-abroad/germany" },
   openGraph: {

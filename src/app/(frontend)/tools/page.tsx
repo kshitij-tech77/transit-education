@@ -4,7 +4,7 @@ import { Calculator, GraduationCap, DollarSign, ArrowRight } from "lucide-react"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Study Abroad Tools | IELTS Calculator, GPA Converter, Cost Calculator — Transit Education",
+  title: "Free Study Abroad Tools | IELTS Calculator, GPA Converter, Cost Estimator",
   description: "Free tools for Nepali students planning to study abroad. Calculate IELTS band scores, convert Nepal NEB/SLC percentage to GPA, and estimate cost of studying in Canada, Australia, UK, and Germany.",
   alternates: { canonical: "https://transiteducation.com.np/tools" },
   openGraph: {

@@ -4,13 +4,13 @@ import React from "react";
 
 const BASE = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media";
 
+/* Fix #4 — removed slot where Transit Education logo was used as a placeholder */
 const logos = [
-  { src: `${BASE}/2023/05/Untitled-design-6.png`,  alt: "Partner Logo" },
-  { src: `${BASE}/2023/05/Untitled-design-8.png`,  alt: "Partner Logo" },
-  { src: `${BASE}/2023/05/Untitled-design-14.png`, alt: "Transit Education" },
-  { src: `${BASE}/2023/05/Untitled-design-16.png`, alt: "Partner Logo" },
-  { src: `${BASE}/2021/07/images-1.png`,            alt: "Partner Logo" },
-  { src: `${BASE}/2021/07/images-1.jpg`,            alt: "Partner Logo" },
+  { src: `${BASE}/2023/05/Untitled-design-6.png`,  alt: "Partner University" },
+  { src: `${BASE}/2023/05/Untitled-design-8.png`,  alt: "Partner University" },
+  { src: `${BASE}/2023/05/Untitled-design-16.png`, alt: "Partner University" },
+  { src: `${BASE}/2021/07/images-1.png`,            alt: "Partner University" },
+  { src: `${BASE}/2021/07/images-1.jpg`,            alt: "Partner University" },
 ];
 
 export default function UniversityLogos() {

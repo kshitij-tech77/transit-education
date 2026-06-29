@@ -1,34 +1,16 @@
-# All crawlers
+# *
 User-agent: *
 Allow: /
+
+# *
+User-agent: *
 Disallow: /cms
 Disallow: /cms/
-Disallow: /api/cms/
-
-# AI crawlers — allow for GEO/AEO indexing
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: Googlebot
-Allow: /
+Disallow: /admin
+Disallow: /admin/
 
 # Host
 Host: https://transiteducation.com.np
 
 # Sitemaps
 Sitemap: https://transiteducation.com.np/sitemap.xml
-
-# AI-readable content summary
-LLMs: https://transiteducation.com.np/llms.txt

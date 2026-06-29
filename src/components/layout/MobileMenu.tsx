@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, ChevronDown, MapPin, Globe, Info, Briefcase, BookOpen, FileText, Phone, Handshake } from "lucide-react";
+import { Menu, X, ChevronDown, MapPin, Globe, Info, Briefcase, BookOpen, FileText, Phone, Handshake, ShieldCheck } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -123,12 +123,14 @@ export default function MobileMenu({
             />
 
             {/* Drawer */}
+            {/* Fix #24 — width: min(100vw, 360px) ensures close button stays visible at 320px */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 220 }}
-              className="fixed top-0 right-0 bottom-0 w-[320px] bg-white z-[101] flex flex-col shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 bg-white z-[101] flex flex-col shadow-2xl"
+              style={{ width: "min(100vw, 360px)" }}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
@@ -163,6 +165,7 @@ export default function MobileMenu({
                 <NavItem href="/services/admission-counselling" icon={Briefcase} label="Services" onClick={close} />
                 <NavItem href="/courses/test-preparation" icon={BookOpen} label="Courses" onClick={close} />
                 <NavItem href="/blog" icon={FileText} label="Blog" onClick={close} />
+                <NavItem href="/compliance" icon={ShieldCheck} label="Compliance" onClick={close} />
                 <NavItem href="/careers" icon={Briefcase} label="Careers" onClick={close} />
                 <NavItem href="/franchise" icon={Handshake} label="Become a Partner" onClick={close} />
 

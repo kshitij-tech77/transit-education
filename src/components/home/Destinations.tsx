@@ -12,20 +12,20 @@ const destinations = [
   { country: "USA", slug: "usa", iso: "us", tagline: "Top Universities" },
   { country: "New Zealand", slug: "new-zealand", iso: "nz", tagline: "Safe & Quality" },
   { country: "South Korea", slug: "south-korea", iso: "kr", tagline: "KGSP Scholarship" },
-  { country: "Europe", slug: "italy", iso: "eu", tagline: "Low Tuition" },
+  { country: "Italy", slug: "italy", iso: "it", tagline: "Low Tuition" },
   { country: "Ireland", slug: "ireland", iso: "ie", tagline: "EU Tech Hub" },
 ];
 
 export default function Destinations() {
   return (
-    <section className="py-24 bg-[#F8FAFC]">
-      <div className="container px-4">
+    <section className="py-20 bg-[#F8FAFC]">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55 }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
           <SectionLabel>Global Opportunities</SectionLabel>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 mt-4 tracking-tight">
@@ -36,48 +36,38 @@ export default function Destinations() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
           {destinations.map((dest, i) => (
             <motion.div
               key={dest.slug}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="h-full"
             >
-              <Link 
+              <Link
                 href={`/study-abroad/${dest.slug}`}
-                className="group relative flex flex-col h-full overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-white p-4 md:p-8 border border-slate-200/60 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-brand/10 md:hover:-translate-y-3"
+                className="group flex flex-col bg-white rounded-2xl md:rounded-3xl border border-gray-200 shadow-sm p-5 md:p-7 min-h-40 md:min-h-55 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-brand/10 hover:border-brand/40 hover:-translate-y-1"
               >
-                {/* Flag Icon Wrapper */}
-                <div className="mb-4 md:mb-10 relative">
-                  <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:scale-110 transition-transform duration-500 overflow-hidden">
-                    <span className={`fi fi-${dest.iso} text-3xl md:text-5xl shadow-sm rounded-lg`} />
-                  </div>
+                {/* Flag */}
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 overflow-hidden shrink-0">
+                  <span className={`fi fi-${dest.iso} text-3xl md:text-4xl`} />
                 </div>
 
-                {/* Content */}
-                <div className="mt-auto">
-                  <h3 className="text-lg md:text-2xl font-bold text-slate-900 mb-1 md:mb-2 group-hover:text-brand transition-colors">
+                {/* Content — always at bottom of available space */}
+                <div className="flex flex-col gap-2 mt-auto">
+                  <h3 className="text-sm md:text-xl font-bold text-slate-900 leading-tight group-hover:text-brand transition-colors duration-200">
                     {dest.country}
                   </h3>
-                  <div className="hidden md:flex items-center gap-3">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold uppercase tracking-widest group-hover:bg-brand/10 group-hover:text-brand transition-all">
-                      {dest.tagline}
-                    </span>
-                    
-                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14m-7-7 7 7-7 7"/>
-                      </svg>
-                    </div>
-                  </div>
+                  <span className="inline-block px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] md:text-[11px] font-bold uppercase tracking-wider group-hover:bg-brand/10 group-hover:text-brand transition-all duration-200 w-fit">
+                    {dest.tagline}
+                  </span>
                 </div>
               </Link>
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

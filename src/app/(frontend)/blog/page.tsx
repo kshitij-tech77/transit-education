@@ -55,8 +55,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
     excerpt: p.body?.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...'
   })) || [];
 
+  /* Fix #19 — filter UNCATEGORIZED from public-facing category list */
   const categoryCounts = categoriesRaw?.reduce((acc: any, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + 1;
+    const cat = curr.category?.trim();
+    if (!cat || cat.toLowerCase() === "uncategorized") return acc;
+    acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {}) || {};
 
@@ -102,20 +105,21 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
               {blogPosts.length > 0 ? blogPosts.map((post) => (
                 <article key={post.id} className="group">
                   <Link href={`/blog/${post.slug}`} className="block relative h-[400px] rounded-[2.5rem] overflow-hidden mb-8 shadow-lg group-hover:shadow-2xl transition-all duration-500">
-                    {post.featuredImage && (
-                      <Image
-                        src={resolveMediaUrl(post.featuredImage)}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 66vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
+                    {/* Fix #12 — always render an image; fallback when no thumbnail */}
+                    <Image
+                      src={post.featuredImage ? resolveMediaUrl(post.featuredImage) : "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"}
+                      alt={post.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 66vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    {post.category && post.category.toLowerCase() !== "uncategorized" && (
+                      <div className="absolute top-6 left-6">
+                        <span className="bg-brand text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">
+                          {post.category}
+                        </span>
+                      </div>
                     )}
-                    <div className="absolute top-6 left-6">
-                      <span className="bg-brand text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">
-                        {post.category}
-                      </span>
-                    </div>
                   </Link>
                   
                   <div className="space-y-4">

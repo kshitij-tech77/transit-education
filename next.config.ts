@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 
+const __impeccableLiveSrc =
+  process.env.NODE_ENV === "development" ? " http://localhost:8400" : "";
+
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -11,11 +14,11 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com${__impeccableLiveSrc}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://transiteducation.com.np https://images.unsplash.com https://flagcdn.com https://i.pravatar.cc https://vlrhwdcqzpfqpbqeaqyr.supabase.co https://www.googletagmanager.com https://www.google-analytics.com",
-      "connect-src 'self' https://vlrhwdcqzpfqpbqeaqyr.supabase.co wss://vlrhwdcqzpfqpbqeaqyr.supabase.co https://maps.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
+      `connect-src 'self' https://vlrhwdcqzpfqpbqeaqyr.supabase.co wss://vlrhwdcqzpfqpbqeaqyr.supabase.co https://maps.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net${__impeccableLiveSrc}`,
       "frame-src https://www.google.com https://maps.google.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
@@ -25,6 +28,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async headers() {
     return [
       {

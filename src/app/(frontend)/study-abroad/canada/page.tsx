@@ -2,7 +2,7 @@ import CountryDestinationPage from "@/components/country/CountryDestinationPage"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Study in Canada from Nepal | Study Permit, PGWP & PR Path — Transit Education",
+  title: "Study in Canada from Nepal | Study Permit, PGWP & PR Path",
   description: "Complete guide to studying in Canada from Nepal. Canada Study Permit, SDS vs non-SDS, PGWP work rights, and pathway to Canadian Permanent Residency for Nepali students.",
   alternates: { canonical: "https://transiteducation.com.np/study-abroad/canada" },
   openGraph: {

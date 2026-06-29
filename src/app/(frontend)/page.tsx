@@ -24,7 +24,7 @@ import { Metadata } from "next";
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: "Transit Education | Your Transit to Global Destinations",
+  title: { absolute: "Transit Education | Your Transit to Global Destinations" },
   description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
   alternates: { canonical: "https://transiteducation.com.np" },
   openGraph: {
