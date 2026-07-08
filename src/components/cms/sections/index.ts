@@ -12,3 +12,4 @@ export { CareersSection }        from "./CareersSection";
 export { FranchiseSection }      from "./FranchiseSection";
 export { BranchesSection }       from "./BranchesSection";
 export { SettingsSection }       from "./SettingsSection";
+export { LoyaltySection }        from "./LoyaltySection";

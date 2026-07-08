@@ -30,6 +30,9 @@ import type {
   JobOpening,
   JobApplication,
   FranchiseInquiry,
+  LoyaltyReward,
+  LoyaltyRedemption,
+  LoyaltyMember,
 } from "@/types/cms";
 import { INITIAL_CMS_DATA } from "@/types/cms";
 
@@ -51,6 +54,9 @@ const ENDPOINTS = [
   { key: "jobOpenings",        path: "/api/cms/job-openings"        },
   { key: "jobApplications",    path: "/api/cms/job-applications"    },
   { key: "franchiseInquiries", path: "/api/cms/franchise-inquiries" },
+  { key: "loyaltyRewards",     path: "/api/cms/loyalty/rewards"     },
+  { key: "loyaltyRedemptions", path: "/api/cms/loyalty/redemptions" },
+  { key: "loyaltyMembers",     path: "/api/cms/loyalty/members"     },
 ] as const;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -83,6 +89,9 @@ function parseResults(results: (unknown | null)[]): CmsDataState {
     jobOpenings,
     jobApplications,
     franchiseInquiries,
+    loyaltyRewards,
+    loyaltyRedemptions,
+    loyaltyMembers,
   ] = results;
 
   return {
@@ -100,6 +109,9 @@ function parseResults(results: (unknown | null)[]): CmsDataState {
     jobOpenings:        isArray<JobOpening>(jobOpenings)     ? jobOpenings        : [],
     jobApplications:    isArray<JobApplication>(jobApplications) ? jobApplications : [],
     franchiseInquiries: isArray<FranchiseInquiry>(franchiseInquiries) ? franchiseInquiries : [],
+    loyaltyRewards:     isArray<LoyaltyReward>(loyaltyRewards)         ? loyaltyRewards     : [],
+    loyaltyRedemptions: isArray<LoyaltyRedemption>(loyaltyRedemptions) ? loyaltyRedemptions : [],
+    loyaltyMembers:     isArray<LoyaltyMember>(loyaltyMembers)         ? loyaltyMembers     : [],
   };
 }
 
