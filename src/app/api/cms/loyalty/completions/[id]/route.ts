@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
 
 const StatusSchema = z.object({
   status: z.enum(['APPROVED', 'REJECTED']),
@@ -76,6 +77,8 @@ export async function PUT(
       })
       .eq('id', completion.member_id);
 
+    revalidateTag(`portal-activity-${completion.member_id}`, 'max');
+
     if (member.referred_by_member_id && milestone.referrer_bonus_points) {
       const { data: referrer } = await supabaseAdmin
         .from('loyalty_members')
@@ -99,6 +102,8 @@ export async function PUT(
             lifetime_points_earned: referrer.lifetime_points_earned + milestone.referrer_bonus_points,
           })
           .eq('id', member.referred_by_member_id);
+
+        revalidateTag(`portal-activity-${member.referred_by_member_id}`, 'max');
       }
     }
   }

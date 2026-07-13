@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
 
 const StatusSchema = z.object({
   status: z.enum(['FULFILLED', 'REJECTED']),
@@ -76,5 +77,6 @@ export async function PUT(
     console.error('PUT /api/cms/loyalty/redemptions/[id] error:', error);
     return NextResponse.json({ error: 'Failed to update redemption' }, { status: 400 });
   }
+  revalidateTag(`portal-activity-${redemption.member_id}`, 'max');
   return NextResponse.json(updated);
 }
