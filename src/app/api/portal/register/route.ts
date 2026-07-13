@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { generateReferralCode, REFERRAL_SIGNUP_POINTS } from '@/lib/loyalty';
+import { awardReferralConversionBonus } from '@/lib/loyalty-admin';
 import { z } from 'zod';
 
 const RegisterSchema = z.object({
   referralCode: z.string().max(20).trim().optional(),
 });
+
+// Escapes ILIKE wildcard characters so an exact-match lookup can't be
+// widened by a literal `%` or `_` in the user's own email address (e.g.
+// "john_doe@example.com" would otherwise match "johnxdoe@example.com" too,
+// since `_` means "any one character" to ILIKE).
+function escapeLikePattern(value: string): string {
+  return value.replace(/[\\%_]/g, char => `\\${char}`);
+}
 
 // Idempotent — called right after OTP verify on the client. Creates the
 // loyalty_members row on first login only; a repeat call for an existing
@@ -73,6 +82,35 @@ export async function POST(req: NextRequest) {
       reason_code: 'REFERRAL_SIGNUP',
       related_member_id: user.id,
     });
+  }
+
+  // Best-effort auto-link to an existing student/lead record by email, plus
+  // the referral conversion bonus if this signup was referred and the link
+  // is unambiguous. Never blocks or fails signup — this is enrichment, not
+  // a gate, so any failure here is caught and logged rather than surfaced.
+  try {
+    if (user.email) {
+      const { data: matches } = await supabaseAdmin
+        .from('students')
+        .select('id')
+        .ilike('email', escapeLikePattern(user.email));
+
+      // Exactly one match only — 0 or 2+ candidates are left for staff to
+      // link manually via the CMS, rather than guessing and possibly
+      // crediting the referral conversion bonus to the wrong lead.
+      if (matches && matches.length === 1) {
+        await supabaseAdmin
+          .from('loyalty_members')
+          .update({ student_id: matches[0].id })
+          .eq('id', newMember.id);
+
+        if (referredByMemberId) {
+          await awardReferralConversionBonus(newMember.id);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('POST /api/portal/register auto-link error:', err);
   }
 
   return NextResponse.json({
