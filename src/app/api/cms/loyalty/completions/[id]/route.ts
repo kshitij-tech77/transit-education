@@ -68,10 +68,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Failed to credit points' }, { status: 500 });
     }
 
+    // points_balance updated by DB trigger on loyalty_transactions insert — do not double-update
     await supabaseAdmin
       .from('loyalty_members')
       .update({
-        points_balance: member.points_balance + milestone.points,
         lifetime_points_earned: member.lifetime_points_earned + milestone.points,
       })
       .eq('id', completion.member_id);
@@ -92,10 +92,10 @@ export async function PUT(
           related_member_id: completion.member_id,
         });
 
+        // points_balance updated by DB trigger on loyalty_transactions insert — do not double-update
         await supabaseAdmin
           .from('loyalty_members')
           .update({
-            points_balance: referrer.points_balance + milestone.referrer_bonus_points,
             lifetime_points_earned: referrer.lifetime_points_earned + milestone.referrer_bonus_points,
           })
           .eq('id', member.referred_by_member_id);
