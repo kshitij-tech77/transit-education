@@ -39,31 +39,44 @@ export default function ActivityPage() {
 
   useEffect(() => {
     (async () => {
-      let { data: memberRow, error } = await supabase
-        .from("loyalty_members")
-        .select("points_balance, lifetime_points_earned")
-        .eq("id", userId)
-        .maybeSingle();
-
-      // Same PostgREST-errors-on-unknown-column risk covered since Phase 3.
-      if (error) {
-        const fallback = await supabase
+      // Wrapped in try/finally: if either query throws instead of resolving
+      // to {data, error} (a real network failure, not just a query-level
+      // error), setMemberLoading(false) must still fire — otherwise the
+      // page is stuck behind the full-page spinner forever with no way out.
+      try {
+        let { data: memberRow, error } = await supabase
           .from("loyalty_members")
-          .select("points_balance")
+          .select("points_balance, lifetime_points_earned")
           .eq("id", userId)
           .maybeSingle();
-        memberRow = fallback.data ? { ...fallback.data, lifetime_points_earned: 0 } : null;
-      }
 
-      setMember(memberRow ?? null);
-      setMemberLoading(false);
+        // Same PostgREST-errors-on-unknown-column risk covered since Phase 3.
+        if (error) {
+          const fallback = await supabase
+            .from("loyalty_members")
+            .select("points_balance")
+            .eq("id", userId)
+            .maybeSingle();
+          memberRow = fallback.data ? { ...fallback.data, lifetime_points_earned: 0 } : null;
+        }
+
+        setMember(memberRow ?? null);
+      } catch {
+        setMember(null);
+      } finally {
+        setMemberLoading(false);
+      }
     })();
   }, [userId]);
 
   const loadActivity = useCallback(async (targetPage: number) => {
     setActivityLoading(true);
+    // A hard timeout so a hung network request can't leave this spinner
+    // showing forever — fetch() has no built-in timeout of its own.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-      const res = await fetch(`/api/portal/activity?page=${targetPage}&limit=${PAGE_SIZE}`);
+      const res = await fetch(`/api/portal/activity?page=${targetPage}&limit=${PAGE_SIZE}`, { signal: controller.signal });
       if (!res.ok) throw new Error();
       const data = await res.json();
       setItems(data.items ?? []);
@@ -72,6 +85,7 @@ export default function ActivityPage() {
       setItems([]);
       setTotal(0);
     } finally {
+      clearTimeout(timeout);
       setActivityLoading(false);
     }
   }, []);
