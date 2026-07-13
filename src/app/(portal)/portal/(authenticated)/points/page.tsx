@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check, Star, Crown, Gem } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { computeTierProgress, type LoyaltyTier } from "@/lib/loyalty-tiers";
 import { usePortalUser } from "../layout";
@@ -24,6 +24,13 @@ const TIER_BENEFITS: Record<LoyaltyTier, string> = {
   SILVER: "Priority support",
   GOLD: "Exclusive rewards",
   PLATINUM: "All rewards unlocked",
+};
+
+const TIER_BENEFIT_ICONS: Record<LoyaltyTier, typeof Check> = {
+  BRONZE: Check,
+  SILVER: Star,
+  GOLD: Crown,
+  PLATINUM: Gem,
 };
 
 export default function PointsPage() {
@@ -109,14 +116,18 @@ export default function PointsPage() {
             <p className="text-lg font-semibold text-gray-800">Tier Benefits</p>
             <TierLadder tier={tier} />
             <div className="space-y-2 pt-1">
-              {Object.entries(TIER_BENEFITS).map(([t, benefit]) => (
-                <div key={t} className="flex items-center gap-2.5 text-sm">
-                  <span className={`font-bold w-16 shrink-0 ${t === tier ? "text-brand" : "text-gray-400"}`}>
-                    {t.charAt(0) + t.slice(1).toLowerCase()}
-                  </span>
-                  <span className="text-gray-600">{benefit}</span>
-                </div>
-              ))}
+              {Object.entries(TIER_BENEFITS).map(([t, benefit]) => {
+                const BenefitIcon = TIER_BENEFIT_ICONS[t as LoyaltyTier];
+                return (
+                  <div key={t} className="flex items-center gap-2.5 text-sm">
+                    <BenefitIcon size={14} className={t === tier ? "text-brand" : "text-gray-400"} />
+                    <span className={`font-bold w-16 shrink-0 ${t === tier ? "text-brand" : "text-gray-400"}`}>
+                      {t.charAt(0) + t.slice(1).toLowerCase()}
+                    </span>
+                    <span className="text-gray-600">{benefit}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Share2, UserPlus, Gift, Loader2 } from "lucide-react";
+import { Share2, UserPlus, Gift, Loader2, Users, Coins } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { computeTierProgress } from "@/lib/loyalty-tiers";
 import { REFERRAL_SIGNUP_POINTS } from "@/lib/loyalty";
@@ -103,10 +103,16 @@ export default function ReferralsPage() {
           {friendsReferred !== null && totalBonusPoints !== null && (
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-5 text-center">
+                <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand mx-auto mb-2">
+                  <Users size={16} />
+                </div>
                 <p className="text-4xl font-bold text-gray-900">{friendsReferred}</p>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Friends Referred</p>
               </div>
               <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-5 text-center">
+                <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand mx-auto mb-2">
+                  <Coins size={16} />
+                </div>
                 <p className="text-4xl font-bold text-gray-900">{totalBonusPoints}</p>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Bonus Points Earned</p>
               </div>
@@ -119,7 +125,7 @@ export default function ReferralsPage() {
               {STEPS.map((s, i) => {
                 const Icon = s.icon;
                 return (
-                  <div key={s.title} className="flex flex-col items-start gap-2">
+                  <div key={s.title} className="flex flex-col items-start gap-2 border-l-2 border-brand pl-3.5">
                     <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand">
                       <Icon size={16} />
                     </div>

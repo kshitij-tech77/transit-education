@@ -12,9 +12,9 @@ export function MilestoneProgress({ completedCount, totalCount, nextTier }: Mile
   const percent = totalCount > 0 ? Math.min(100, (completedCount / totalCount) * 100) : 0;
 
   return (
-    <div className="bg-brand-surface rounded-2xl shadow-sm p-6 flex items-center justify-between gap-4 flex-wrap">
+    <div className="bg-amber-50 rounded-2xl shadow-sm p-6 flex items-center justify-between gap-4 flex-wrap">
       <div className="flex items-center gap-3 min-w-0">
-        <Trophy size={22} className="text-brand shrink-0" />
+        <Trophy size={22} className="text-amber-500 shrink-0" />
         <div className="min-w-0">
           <p className="text-lg font-semibold text-gray-800">Complete more milestones to level up!</p>
           <p className="text-sm text-gray-600">

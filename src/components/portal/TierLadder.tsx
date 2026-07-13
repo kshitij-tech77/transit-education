@@ -19,13 +19,13 @@ export function TierLadder({ tier }: TierLadderProps) {
         return (
           <div
             key={t.tier}
-            className={`rounded-xl border p-3.5 text-center ${
-              isCurrent ? "border-brand bg-brand-surface" : isReached ? "border-green-200 bg-green-50" : "border-[#E5E4E0]"
+            className={`rounded-xl p-3.5 text-center transition-colors ${
+              isCurrent ? "bg-brand text-white" : "bg-gray-100"
             }`}
           >
             {isReached && !isCurrent && <Check size={14} className="text-green-600 mx-auto mb-1" />}
-            <p className={`text-[13px] font-extrabold ${isCurrent ? "text-brand" : "text-[#111]"}`}>{TIER_NAMES[t.tier]}</p>
-            <p className="text-[10.5px] text-gray-400 mt-0.5">{t.minPoints}+ pts</p>
+            <p className={`text-[13px] font-extrabold ${isCurrent ? "text-white" : "text-gray-900"}`}>{TIER_NAMES[t.tier]}</p>
+            <p className={`text-[10.5px] mt-0.5 ${isCurrent ? "text-white/80" : "text-gray-400"}`}>{t.minPoints}+ pts</p>
           </div>
         );
       })}
