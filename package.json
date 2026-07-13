@@ -8,7 +8,8 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint",
-    "check-usage": "tsx scripts/check-supabase-usage.ts"
+    "check-usage": "tsx scripts/check-supabase-usage.ts",
+    "backfill-loyalty-links": "tsx scripts/backfill-loyalty-student-links.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
