@@ -1,17 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getUserEmailMap } from '@/lib/loyalty-admin';
 
-export async function GET() {
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
+
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  // Bounded + paginated: this list grows without limit across all members,
+  // so default to the most recent page instead of fetching every row ever.
+  const { searchParams } = new URL(req.url);
+  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1);
+  const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(searchParams.get('pageSize') ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
   const { data, error } = await supabaseAdmin
     .from('loyalty_milestone_completions')
     .select(`*, loyalty_milestones (title)`)
-    .order('submitted_at', { ascending: false });
+    .order('submitted_at', { ascending: false })
+    .range(from, to);
 
   if (error) {
     console.error('GET /api/cms/loyalty/completions error:', error);

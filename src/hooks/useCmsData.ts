@@ -130,6 +130,8 @@ interface UseCmsDataReturn {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  /** Refetches only the given keys, leaving the rest of `data` untouched. */
+  refetchKeys: (keys: (keyof CmsDataState)[]) => Promise<void>;
 }
 
 export function useCmsData(): UseCmsDataReturn {
@@ -168,5 +170,48 @@ export function useCmsData(): UseCmsDataReturn {
     }
   }, []);
 
-  return { data, loading, error, refetch };
+  // Targeted refetch for mutations that only affect a couple of sections
+  // (e.g. a loyalty edit) — avoids re-fetching all 19 endpoints. Falls back
+  // to the previous value per key on error, instead of blanking it out, so a
+  // transient failure on one endpoint doesn't wipe already-loaded data.
+  const refetchKeys = useCallback(async (keys: (keyof CmsDataState)[]) => {
+    const targets = ENDPOINTS.filter(e => (keys as string[]).includes(e.key));
+    if (targets.length === 0) return;
+
+    setLoading(true);
+    try {
+      const responses = await Promise.all(targets.map(({ path }) => fetch(path)));
+      const results = await Promise.all(
+        responses.map(async (res, i) => {
+          if (!res.ok) {
+            console.error(
+              `[useCmsData] ${targets[i].path} → ${res.status} ${res.statusText}`
+            );
+            return undefined;
+          }
+          return res.json() as Promise<unknown>;
+        })
+      );
+
+      setData(prev => {
+        const next = { ...prev };
+        targets.forEach((t, i) => {
+          const raw = results[i];
+          if (raw === undefined) return; // keep previous value for this key
+          const isObjectKey = t.key === "settings" || t.key === "media";
+          const valid = isObjectKey ? isObject(raw) : isArray(raw);
+          if (valid) {
+            (next as Record<string, unknown>)[t.key] = raw;
+          }
+        });
+        return next;
+      });
+    } catch (err) {
+      console.error("[useCmsData] refetchKeys failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { data, loading, error, refetch, refetchKeys };
 }

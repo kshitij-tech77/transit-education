@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   LayoutDashboard, Users, FileText, HelpCircle, Globe, GraduationCap,
   FileDown, Image as ImageIcon, MessageSquare, CalendarDays, Briefcase,
@@ -11,6 +11,7 @@ import { useCmsActions } from "@/hooks/useCmsActions";
 import { useCmsAuth }    from "@/hooks/useCmsAuth";
 import { TRANSIT_LOGO_URL } from "@/constants/assets";
 import type { CmsSection } from "@/constants/cms";
+import type { CmsDataState } from "@/types/cms";
 import {
   DashboardSection, StudentsSection, BlogSection, FaqSection,
   CountryPagesSection, SuccessStoriesSection, ResourcesSection,
@@ -19,9 +20,32 @@ import {
   LoyaltySection,
 } from "@/components/cms/sections";
 
+// Loyalty mutations only need to refresh the section(s) they can actually
+// affect, instead of all 19 CMS endpoints. Redemption/completion decisions
+// also touch loyaltyMembers (points are credited/refunded as a side effect),
+// so those two refetch the members list too; pure catalog edits don't.
+const LOYALTY_REFETCH_KEYS: Partial<Record<string, (keyof CmsDataState)[]>> = {
+  "loyalty/rewards":     ["loyaltyRewards"],
+  "loyalty/milestones":  ["loyaltyMilestones"],
+  "loyalty/redemptions": ["loyaltyRedemptions", "loyaltyMembers"],
+  "loyalty/completions": ["loyaltyCompletions", "loyaltyMembers"],
+};
+
 export default function TransitPortal() {
-  const { data, loading: dataLoading, refetch } = useCmsData();
-  const { save, remove, deleteMedia, uploadMedia, loading: actionLoading } = useCmsActions(refetch);
+  const { data, loading: dataLoading, refetch, refetchKeys } = useCmsData();
+
+  // Every non-loyalty section keeps calling the full refetch exactly as
+  // before; only loyalty mutations get routed to a targeted refetch.
+  const handleMutationSuccess = useCallback((apiPath: string) => {
+    const keys = LOYALTY_REFETCH_KEYS[apiPath];
+    if (keys) {
+      void refetchKeys(keys);
+    } else {
+      void refetch();
+    }
+  }, [refetch, refetchKeys]);
+
+  const { save, remove, deleteMedia, uploadMedia, loading: actionLoading } = useCmsActions(handleMutationSuccess);
   const { user, profile, loading: authLoading, handleLogout } = useCmsAuth();
 
   const [activeSection, setActiveSection]   = useState<CmsSection>("Dashboard");

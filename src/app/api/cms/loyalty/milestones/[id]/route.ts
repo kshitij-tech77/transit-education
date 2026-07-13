@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
 
 const MilestoneSchema = z.object({
   title: z.string().min(1).max(100).trim(),
@@ -49,6 +50,7 @@ export async function PUT(
     console.error('PUT /api/cms/loyalty/milestones/[id] error:', error);
     return NextResponse.json({ error: 'Failed to update milestone' }, { status: 400 });
   }
+  revalidateTag('loyalty-milestones', 'max');
   return NextResponse.json(updated);
 }
 
@@ -67,5 +69,6 @@ export async function DELETE(
     console.error('DELETE /api/cms/loyalty/milestones/[id] error:', error);
     return NextResponse.json({ error: 'Failed to delete milestone' }, { status: 400 });
   }
+  revalidateTag('loyalty-milestones', 'max');
   return NextResponse.json({ success: true });
 }

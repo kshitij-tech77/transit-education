@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 const MilestoneSchema = z.object({
   title: z.string().min(1).max(100).trim(),
@@ -14,17 +15,31 @@ const MilestoneSchema = z.object({
   active: z.boolean().optional(),
 });
 
+// Milestone definitions are staff-curated and rarely change. Cached for 30
+// minutes; any create/update/delete below calls revalidateTag to invalidate
+// immediately so admins never see stale data after their own edit.
+const getCachedMilestones = unstable_cache(
+  async () => {
+    const { data, error } = await supabaseAdmin
+      .from('loyalty_milestones')
+      .select('*')
+      .order('sort_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+  ['cms-loyalty-milestones'],
+  { revalidate: 1800, tags: ['loyalty-milestones'] }
+);
+
 export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { data, error } = await supabaseAdmin
-    .from('loyalty_milestones')
-    .select('*')
-    .order('sort_order', { ascending: true });
-
-  if (error) {
+  let data;
+  try {
+    data = await getCachedMilestones();
+  } catch (error) {
     console.error('GET /api/cms/loyalty/milestones error:', error);
     return NextResponse.json({ error: 'Failed to load milestones' }, { status: 500 });
   }
@@ -74,5 +89,6 @@ export async function POST(req: NextRequest) {
     console.error('POST /api/cms/loyalty/milestones error:', error);
     return NextResponse.json({ error: 'Failed to create milestone' }, { status: 400 });
   }
+  revalidateTag('loyalty-milestones', 'max');
   return NextResponse.json(newItem, { status: 201 });
 }

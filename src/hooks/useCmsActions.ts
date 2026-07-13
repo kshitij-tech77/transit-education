@@ -53,10 +53,11 @@ interface UseCmsActionsReturn {
 }
 
 /**
- * @param onSuccess  Called after any successful mutation. Pass `refetch` from
- *                   useCmsData to keep data in sync.
+ * @param onSuccess  Called after any successful mutation with the resolved
+ *                   API path (e.g. "loyalty/rewards", "media") so the caller
+ *                   can decide between a full refetch and a targeted one.
  */
-export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
+export function useCmsActions(onSuccess: (apiPath: string) => void): UseCmsActionsReturn {
   const [loading, setLoading] = useState(false);
 
   // ── save ───────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
           throw new Error(`${res.status} — ${text.slice(0, 120)}`);
         }
 
-        onSuccess();
+        onSuccess(apiPath);
         return {
           ok:      true,
           message: isEdit ? "Updated successfully" : "Created successfully",
@@ -119,7 +120,7 @@ export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
 
         if (!res.ok) throw new Error(`${res.status}`);
 
-        onSuccess();
+        onSuccess(apiPath);
         return { ok: true, message: "Deleted successfully" };
       } catch (err) {
         return {
@@ -134,6 +135,8 @@ export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
   );
 
   // ── deleteMedia ────────────────────────────────────────────────────────────
+  // Not used by any loyalty flow (reward images are entered as a plain URL,
+  // not uploaded) — always routes to a full refetch via the "media" path.
 
   const deleteMedia = useCallback(
     async (filePath: string): Promise<ActionResult> => {
@@ -147,7 +150,7 @@ export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
 
         if (!res.ok) throw new Error(`${res.status}`);
 
-        onSuccess();
+        onSuccess("media");
         return { ok: true, message: "Media deleted successfully" };
       } catch (err) {
         return {
@@ -181,7 +184,7 @@ export function useCmsActions(onSuccess: () => void): UseCmsActionsReturn {
         if (!res.ok) throw new Error(`${res.status}`);
 
         const json = (await res.json()) as { path?: string };
-        onSuccess();
+        onSuccess("media");
         return {
           ok:      true,
           message: `Uploaded: ${file.name}`,

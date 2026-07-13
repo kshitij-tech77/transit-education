@@ -1,17 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getUserEmailMap } from '@/lib/loyalty-admin';
 
-export async function GET() {
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
+
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  // Bounded + paginated: the member directory grows without limit, so
+  // default to the most recent page instead of fetching every row ever.
+  const { searchParams } = new URL(req.url);
+  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1);
+  const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(searchParams.get('pageSize') ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
   const { data: members, error } = await supabaseAdmin
     .from('loyalty_members')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   if (error) {
     console.error('GET /api/cms/loyalty/members error:', error);
@@ -19,6 +31,9 @@ export async function GET() {
   }
 
   const emailMap = await getUserEmailMap();
+  // Only resolves referral codes for referrers within this page — a referrer
+  // on a different page will show referredByCode: null. Acceptable tradeoff
+  // for bounding this query; the referral relationship itself isn't lost.
   const codeById = new Map(members.map(m => [m.id, m.referral_code as string]));
 
   const formatted = members.map(m => ({

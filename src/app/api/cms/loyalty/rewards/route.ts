@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
+import { unstable_cache, revalidateTag } from 'next/cache';
 
 const RewardSchema = z.object({
   title: z.string().min(1).max(100).trim(),
@@ -13,17 +14,31 @@ const RewardSchema = z.object({
   min_tier: z.union([z.enum(['BRONZE', 'SILVER', 'GOLD', 'PLATINUM']), z.null()]).optional(),
 });
 
+// Reward catalog is staff-curated and rarely changes. Cached for 30 minutes;
+// any create/update/delete below calls revalidateTag to invalidate
+// immediately so admins never see stale data after their own edit.
+const getCachedRewards = unstable_cache(
+  async () => {
+    const { data, error } = await supabaseAdmin
+      .from('loyalty_rewards')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  ['cms-loyalty-rewards'],
+  { revalidate: 1800, tags: ['loyalty-rewards'] }
+);
+
 export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { data, error } = await supabaseAdmin
-    .from('loyalty_rewards')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
+  let data;
+  try {
+    data = await getCachedRewards();
+  } catch (error) {
     console.error('GET /api/cms/loyalty/rewards error:', error);
     return NextResponse.json({ error: 'Failed to load rewards' }, { status: 500 });
   }
@@ -71,5 +86,6 @@ export async function POST(req: NextRequest) {
     console.error('POST /api/cms/loyalty/rewards error:', error);
     return NextResponse.json({ error: 'Failed to create reward' }, { status: 400 });
   }
+  revalidateTag('loyalty-rewards', 'max');
   return NextResponse.json(newItem, { status: 201 });
 }

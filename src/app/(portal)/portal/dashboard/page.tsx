@@ -100,9 +100,11 @@ export default function PortalDashboard() {
 
     const [{ data: rewardRows }, { data: redemptionRows }, { data: milestoneRows }, { data: completionRows }] = await Promise.all([
       supabase.from("loyalty_rewards").select("id, title, description, points_cost, stock, image_url, min_tier").eq("active", true).order("points_cost"),
-      supabase.from("loyalty_redemptions").select("id, reward_id, points_spent, status, created_at").order("created_at", { ascending: false }),
+      // Per-user history, restricted to the caller's own rows by RLS
+      // ("redemptions select own" policy) — bounded defensively regardless.
+      supabase.from("loyalty_redemptions").select("id, reward_id, points_spent, status, created_at").order("created_at", { ascending: false }).limit(50),
       supabase.from("loyalty_milestones").select("id, title, description, icon, points, sort_order").eq("active", true).order("sort_order"),
-      supabase.from("loyalty_milestone_completions").select("id, milestone_id, status").eq("member_id", user.id),
+      supabase.from("loyalty_milestone_completions").select("id, milestone_id, status").eq("member_id", user.id).limit(100),
     ]);
 
     setMember(memberRow ?? null);
