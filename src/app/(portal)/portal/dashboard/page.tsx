@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Gift, Copy, Check, LogOut, Share2 } from "lucide-react";
+import { Loader2, Gift, Copy, Check, LogOut, Share2, Flag, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { tierForPoints, tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 interface Member {
   id: string;
   referral_code: string;
   points_balance: number;
+  lifetime_points_earned: number;
 }
 
 interface Reward {
@@ -18,6 +20,7 @@ interface Reward {
   points_cost: number;
   stock: number | null;
   image_url: string | null;
+  min_tier: LoyaltyTier | null;
 }
 
 interface Redemption {
@@ -28,6 +31,28 @@ interface Redemption {
   created_at: string;
 }
 
+interface Milestone {
+  id: string;
+  title: string;
+  description: string | null;
+  icon: string | null;
+  points: number;
+  sort_order: number;
+}
+
+interface Completion {
+  id: string;
+  milestone_id: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+}
+
+const TIER_LABELS: Record<LoyaltyTier, string> = {
+  BRONZE: "🥉 Bronze",
+  SILVER: "🥈 Silver",
+  GOLD: "🥇 Gold",
+  PLATINUM: "💎 Platinum",
+};
+
 export default function PortalDashboard() {
   const router = useRouter();
 
@@ -35,8 +60,11 @@ export default function PortalDashboard() {
   const [member, setMember] = useState<Member | null>(null);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const [completions, setCompletions] = useState<Completion[]>([]);
   const [loading, setLoading] = useState(true);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
+  const [claimingId, setClaimingId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -48,15 +76,40 @@ export default function PortalDashboard() {
     }
     setEmail(user.email ?? null);
 
-    const [{ data: memberRow }, { data: rewardRows }, { data: redemptionRows }] = await Promise.all([
-      supabase.from("loyalty_members").select("id, referral_code, points_balance").eq("id", user.id).single(),
-      supabase.from("loyalty_rewards").select("id, title, description, points_cost, stock, image_url").eq("active", true).order("points_cost"),
+    let { data: memberRow } = await supabase
+      .from("loyalty_members")
+      .select("id, referral_code, points_balance, lifetime_points_earned")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!memberRow) {
+      // First login via the magic-link email skips handleVerify's register
+      // call (that only runs on the 6-digit-code path), so create the
+      // loyalty_members row here instead. Idempotent — see register/route.ts.
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      const res = await fetch("/api/portal/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ referralCode: ref || undefined }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        memberRow = { id: created.id, referral_code: created.referralCode, points_balance: created.pointsBalance, lifetime_points_earned: 0 };
+      }
+    }
+
+    const [{ data: rewardRows }, { data: redemptionRows }, { data: milestoneRows }, { data: completionRows }] = await Promise.all([
+      supabase.from("loyalty_rewards").select("id, title, description, points_cost, stock, image_url, min_tier").eq("active", true).order("points_cost"),
       supabase.from("loyalty_redemptions").select("id, reward_id, points_spent, status, created_at").order("created_at", { ascending: false }),
+      supabase.from("loyalty_milestones").select("id, title, description, icon, points, sort_order").eq("active", true).order("sort_order"),
+      supabase.from("loyalty_milestone_completions").select("id, milestone_id, status").eq("member_id", user.id),
     ]);
 
     setMember(memberRow ?? null);
     setRewards(rewardRows ?? []);
     setRedemptions(redemptionRows ?? []);
+    setMilestones(milestoneRows ?? []);
+    setCompletions(completionRows ?? []);
     setLoading(false);
   }, [router]);
 
@@ -82,6 +135,24 @@ export default function PortalDashboard() {
     }
   }
 
+  async function handleClaim(milestoneId: string) {
+    setClaimingId(milestoneId);
+    try {
+      const res = await fetch("/api/portal/milestones/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ milestoneId }),
+      });
+      if (!res.ok) throw new Error(res.status === 409 ? "Already claimed" : "Couldn't submit claim");
+      setToast("Submitted! Staff will review shortly.");
+      await load();
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : "Couldn't submit claim");
+    } finally {
+      setClaimingId(null);
+    }
+  }
+
   async function handleCopyReferral() {
     if (!member) return;
     await navigator.clipboard.writeText(`${window.location.origin}/portal/login?ref=${member.referral_code}`);
@@ -102,6 +173,9 @@ export default function PortalDashboard() {
     );
   }
 
+  const tier = tierForPoints(member?.lifetime_points_earned ?? 0);
+  const completionByMilestone = new Map(completions.map(c => [c.milestone_id, c.status]));
+
   return (
     <div className="min-h-screen bg-[#FAFAF8] p-6">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -116,7 +190,10 @@ export default function PortalDashboard() {
         </div>
 
         <div className="bg-brand rounded-3xl p-8 text-white shadow-xl">
-          <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">Your Points Balance</p>
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">Your Points Balance</p>
+            <span className="text-[11px] font-bold bg-white/20 px-2.5 py-1 rounded-full">{TIER_LABELS[tier]}</span>
+          </div>
           <p className="text-[42px] font-extrabold leading-tight">{member?.points_balance ?? 0}</p>
         </div>
 
@@ -139,6 +216,45 @@ export default function PortalDashboard() {
         </div>
 
         <div className="space-y-3">
+          <h2 className="text-[14px] font-bold text-[#111]">Your Journey</h2>
+          {milestones.length === 0 && (
+            <p className="text-[12px] text-gray-400 bg-white border border-[#E5E4E0] rounded-2xl p-6 text-center">No milestones yet — check back soon.</p>
+          )}
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] divide-y divide-gray-100">
+            {milestones.map(m => {
+              const status = completionByMilestone.get(m.id);
+              return (
+                <div key={m.id} className="flex items-center justify-between px-5 py-3.5 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-full bg-[#FEF2F1] flex items-center justify-center text-brand shrink-0 text-[15px]">
+                      {m.icon || <Flag size={16} />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-bold text-[#111] truncate">{m.title}</p>
+                      {m.description && <p className="text-[11px] text-gray-400 truncate">{m.description}</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] font-bold text-brand">{m.points} pts</span>
+                    {status === "APPROVED" && <span className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-green-100 text-green-700">Done</span>}
+                    {status === "PENDING" && <span className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700">Pending</span>}
+                    {(status === undefined || status === "REJECTED") && (
+                      <button
+                        onClick={() => handleClaim(m.id)}
+                        disabled={claimingId === m.id}
+                        className="text-[11px] font-bold bg-brand text-white px-3 py-1.5 rounded-lg hover:bg-brand-dark transition-colors disabled:opacity-40 flex items-center gap-1.5"
+                      >
+                        {claimingId === m.id ? <Loader2 className="animate-spin" size={12} /> : "Mark as done"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="space-y-3">
           <h2 className="text-[14px] font-bold text-[#111]">Redeem Rewards</h2>
           {rewards.length === 0 && (
             <p className="text-[12px] text-gray-400 bg-white border border-[#E5E4E0] rounded-2xl p-6 text-center">No rewards available yet — check back soon.</p>
@@ -147,6 +263,7 @@ export default function PortalDashboard() {
             {rewards.map(r => {
               const canAfford = (member?.points_balance ?? 0) >= r.points_cost;
               const outOfStock = r.stock !== null && r.stock <= 0;
+              const tierMet = !r.min_tier || tierRank(tier) >= tierRank(r.min_tier);
               return (
                 <div key={r.id} className="bg-white rounded-2xl border border-[#E5E4E0] p-5 space-y-3">
                   <div className="flex items-center gap-3">
@@ -162,10 +279,13 @@ export default function PortalDashboard() {
                     <span className="text-[12px] font-bold text-brand">{r.points_cost} pts</span>
                     <button
                       onClick={() => handleRedeem(r.id)}
-                      disabled={!canAfford || outOfStock || redeemingId === r.id}
+                      disabled={!canAfford || !tierMet || outOfStock || redeemingId === r.id}
                       className="text-[11px] font-bold bg-brand text-white px-3.5 py-2 rounded-lg hover:bg-brand-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
                     >
-                      {redeemingId === r.id ? <Loader2 className="animate-spin" size={12} /> : outOfStock ? "Out of stock" : canAfford ? "Redeem" : "Not enough points"}
+                      {redeemingId === r.id ? <Loader2 className="animate-spin" size={12} />
+                        : outOfStock ? "Out of stock"
+                        : !tierMet ? <><Lock size={11} /> Reach {TIER_LABELS[r.min_tier as LoyaltyTier]}</>
+                        : canAfford ? "Redeem" : "Not enough points"}
                     </button>
                   </div>
                 </div>

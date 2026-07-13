@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit, Trash2, Check, X, Gift } from "lucide-react";
+import { Plus, Edit, Trash2, Check, X, Gift, Flag } from "lucide-react";
 import type { CmsDataState } from "@/types/cms";
 import type { ActionResult } from "@/hooks/useCmsActions";
 import { StatusBadge, CmsCard, CmsButton, CmsModal, FormField, CMS_INPUT_CLS } from "@/components/cms/shared";
@@ -14,10 +14,12 @@ interface LoyaltySectionProps {
   onToast: (msg: string) => void;
 }
 
-type Tab = "Rewards" | "Redemptions" | "Members";
+type Tab = "Rewards" | "Milestones" | "Claims" | "Redemptions" | "Members";
+type ModalKind = "Reward" | "Milestone";
 
 export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast }: LoyaltySectionProps) {
   const [tab, setTab] = useState<Tab>("Rewards");
+  const [modalKind, setModalKind] = useState<ModalKind>("Reward");
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -25,8 +27,8 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
     setEditingItem(prev => ({ ...(prev ?? {}), [key]: value }));
   }
 
-  function openCreate() { setEditingItem({ active: true }); setShowModal(true); }
-  function openEdit(item: Record<string, unknown>) { setEditingItem(item); setShowModal(true); }
+  function openCreate(kind: ModalKind) { setModalKind(kind); setEditingItem({ active: true }); setShowModal(true); }
+  function openEdit(kind: ModalKind, item: Record<string, unknown>) { setModalKind(kind); setEditingItem(item); setShowModal(true); }
   function closeModal() { setShowModal(false); setEditingItem(null); }
 
   async function handleSaveReward() {
@@ -46,7 +48,24 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
     onToast(result.message);
   }
 
-  const TABS: Tab[] = ["Rewards", "Redemptions", "Members"];
+  async function handleSaveMilestone() {
+    if (!editingItem) return;
+    const result = await onSave("LoyaltyMilestone", editingItem);
+    onToast(result.message);
+    if (result.ok) closeModal();
+  }
+
+  async function handleDeleteMilestone(id: string) {
+    const result = await onDelete("loyalty/milestones", id);
+    onToast(result.message);
+  }
+
+  async function handleClaimDecision(id: string, status: "APPROVED" | "REJECTED") {
+    const result = await onSave("LoyaltyCompletion", { id, status });
+    onToast(result.message);
+  }
+
+  const TABS: Tab[] = ["Rewards", "Milestones", "Claims", "Redemptions", "Members"];
 
   return (
     <>
@@ -54,7 +73,10 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
         <div className="flex justify-between items-center">
           <h2 className="text-[18px] font-bold text-black">Loyalty Program</h2>
           {tab === "Rewards" && (
-            <CmsButton onClick={openCreate}><Plus size={14} /> Add Reward</CmsButton>
+            <CmsButton onClick={() => openCreate("Reward")}><Plus size={14} /> Add Reward</CmsButton>
+          )}
+          {tab === "Milestones" && (
+            <CmsButton onClick={() => openCreate("Milestone")}><Plus size={14} /> Add Milestone</CmsButton>
           )}
         </div>
 
@@ -105,8 +127,92 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
                     <td className="px-6 py-4">{r.stock === null ? "Unlimited" : r.stock}</td>
                     <td className="px-6 py-4"><StatusBadge status={r.active ? "LIVE" : "DRAFT"} /></td>
                     <td className="px-6 py-4 flex gap-2">
-                      <CmsButton variant="ghost" onClick={() => openEdit(r as unknown as Record<string, unknown>)}><Edit size={14} /></CmsButton>
+                      <CmsButton variant="ghost" onClick={() => openEdit("Reward", r as unknown as Record<string, unknown>)}><Edit size={14} /></CmsButton>
                       <CmsButton variant="destructive" onClick={() => handleDeleteReward(r.id)}><Trash2 size={14} /></CmsButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CmsCard>
+        )}
+
+        {tab === "Milestones" && (
+          <CmsCard noPadding className="overflow-hidden">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b">
+                  <th className="px-6 py-4">Milestone</th>
+                  <th className="px-6 py-4">Points</th>
+                  <th className="px-6 py-4">Referrer Bonus</th>
+                  <th className="px-6 py-4">Order</th>
+                  <th className="px-6 py-4">Active</th>
+                  <th className="px-6 py-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {data.loyaltyMilestones.length === 0 && (
+                  <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-400 text-[13px]">No milestones yet — add one to start the student journey.</td></tr>
+                )}
+                {data.loyaltyMilestones.map(m => (
+                  <tr key={m.id} className="text-[13px] hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0 text-[14px]">
+                          {m.icon || <Flag size={14} />}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-black">{m.title}</p>
+                          {m.description && <p className="text-[11px] text-gray-400 max-w-xs truncate">{m.description}</p>}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-black">{m.points}</td>
+                    <td className="px-6 py-4">{m.referrerBonusPoints ?? "—"}</td>
+                    <td className="px-6 py-4">{m.sortOrder}</td>
+                    <td className="px-6 py-4"><StatusBadge status={m.active ? "LIVE" : "DRAFT"} /></td>
+                    <td className="px-6 py-4 flex gap-2">
+                      <CmsButton variant="ghost" onClick={() => openEdit("Milestone", m as unknown as Record<string, unknown>)}><Edit size={14} /></CmsButton>
+                      <CmsButton variant="destructive" onClick={() => handleDeleteMilestone(m.id)}><Trash2 size={14} /></CmsButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CmsCard>
+        )}
+
+        {tab === "Claims" && (
+          <CmsCard noPadding className="overflow-hidden">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b">
+                  <th className="px-6 py-4">Student</th>
+                  <th className="px-6 py-4">Milestone</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Submitted</th>
+                  <th className="px-6 py-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {data.loyaltyCompletions.length === 0 && (
+                  <tr><td colSpan={5} className="px-6 py-8 text-center text-gray-400 text-[13px]">No milestone claims yet.</td></tr>
+                )}
+                {data.loyaltyCompletions.map(c => (
+                  <tr key={c.id} className="text-[13px] hover:bg-gray-50">
+                    <td className="px-6 py-4">{c.memberEmail ?? c.memberId.slice(0, 8)}</td>
+                    <td className="px-6 py-4 font-semibold text-black">{c.milestoneTitle}</td>
+                    <td className="px-6 py-4"><StatusBadge status={c.status} /></td>
+                    <td className="px-6 py-4 text-gray-400">{new Date(c.submittedAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 flex gap-2">
+                      {c.status === "PENDING" ? (
+                        <>
+                          <CmsButton variant="ghost" onClick={() => handleClaimDecision(c.id, "APPROVED")}><Check size={14} /> Approve</CmsButton>
+                          <CmsButton variant="destructive" onClick={() => handleClaimDecision(c.id, "REJECTED")}><X size={14} /> Reject</CmsButton>
+                        </>
+                      ) : (
+                        <span className="text-gray-300 text-[11px]">—</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -187,7 +293,7 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
         )}
       </div>
 
-      {showModal && (
+      {showModal && modalKind === "Reward" && (
         <CmsModal
           title={editingItem?.id ? "Edit Reward" : "New Reward"}
           onClose={closeModal}
@@ -216,6 +322,64 @@ export function LoyaltySection({ data, actionsLoading, onSave, onDelete, onToast
           </div>
           <FormField label="Image URL">
             <input className={CMS_INPUT_CLS} value={(editingItem?.image_url as string) ?? ''} onChange={e => update('image_url', e.target.value)} placeholder="/media/year/month/filename.png" />
+          </FormField>
+          <FormField label="Minimum Tier (blank = any tier)">
+            <select
+              className={CMS_INPUT_CLS}
+              value={(editingItem?.min_tier as string) ?? ''}
+              onChange={e => update('min_tier', e.target.value === '' ? null : e.target.value)}
+            >
+              <option value="">Any tier</option>
+              <option value="BRONZE">Bronze</option>
+              <option value="SILVER">Silver</option>
+              <option value="GOLD">Gold</option>
+              <option value="PLATINUM">Platinum</option>
+            </select>
+          </FormField>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={(editingItem?.active as boolean) ?? true} onChange={e => update('active', e.target.checked)} className="accent-brand" />
+            <span className="text-[12px] font-bold text-black">Active (visible in student portal)</span>
+          </label>
+        </CmsModal>
+      )}
+
+      {showModal && modalKind === "Milestone" && (
+        <CmsModal
+          title={editingItem?.id ? "Edit Milestone" : "New Milestone"}
+          onClose={closeModal}
+          onSave={handleSaveMilestone}
+          loading={actionsLoading}
+        >
+          <FormField label="Title">
+            <input className={CMS_INPUT_CLS} value={(editingItem?.title as string) ?? ''} onChange={e => update('title', e.target.value)} placeholder="e.g. Visa Approved" />
+          </FormField>
+          <FormField label="Description">
+            <textarea rows={2} className={`${CMS_INPUT_CLS} resize-none`} value={(editingItem?.description as string) ?? ''} onChange={e => update('description', e.target.value)} />
+          </FormField>
+          <div className="grid grid-cols-2 gap-3.5">
+            <FormField label="Icon (emoji)">
+              <input className={CMS_INPUT_CLS} value={(editingItem?.icon as string) ?? ''} onChange={e => update('icon', e.target.value)} placeholder="🎯" />
+            </FormField>
+            <FormField label="Category">
+              <input className={CMS_INPUT_CLS} value={(editingItem?.category as string) ?? ''} onChange={e => update('category', e.target.value)} placeholder="e.g. visa" />
+            </FormField>
+          </div>
+          <div className="grid grid-cols-2 gap-3.5">
+            <FormField label="Points">
+              <input type="number" min="1" className={CMS_INPUT_CLS} value={(editingItem?.points as number) ?? ''} onChange={e => update('points', parseInt(e.target.value))} />
+            </FormField>
+            <FormField label="Referrer Bonus (blank = none)">
+              <input
+                type="number"
+                min="1"
+                className={CMS_INPUT_CLS}
+                value={editingItem?.referrer_bonus_points === null || editingItem?.referrer_bonus_points === undefined ? '' : (editingItem.referrer_bonus_points as number)}
+                onChange={e => update('referrer_bonus_points', e.target.value === '' ? null : parseInt(e.target.value))}
+              />
+            </FormField>
+          </div>
+          <FormField label="Sort Order">
+            <input type="number" className={CMS_INPUT_CLS} value={(editingItem?.sort_order as number) ?? 0} onChange={e => update('sort_order', parseInt(e.target.value))} />
           </FormField>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={(editingItem?.active as boolean) ?? true} onChange={e => update('active', e.target.checked)} className="accent-brand" />

@@ -10,6 +10,7 @@ const RewardSchema = z.object({
   stock: z.union([z.coerce.number().int().min(0), z.null()]).optional(),
   active: z.boolean().optional(),
   image_url: z.string().max(500).trim().optional(),
+  min_tier: z.union([z.enum(['BRONZE', 'SILVER', 'GOLD', 'PLATINUM']), z.null()]).optional(),
 });
 
 export async function GET() {
@@ -35,6 +36,7 @@ export async function GET() {
     stock: r.stock,
     active: r.active,
     imageUrl: r.image_url,
+    minTier: r.min_tier,
   }));
 
   return NextResponse.json(formatted);
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
-  const { title, description, points_cost, stock, active, image_url } = parsed.data;
+  const { title, description, points_cost, stock, active, image_url, min_tier } = parsed.data;
 
   const { data: newItem, error } = await supabaseAdmin
     .from('loyalty_rewards')
@@ -60,6 +62,7 @@ export async function POST(req: NextRequest) {
       stock: stock ?? null,
       active: active ?? true,
       image_url: image_url || null,
+      min_tier: min_tier ?? null,
     })
     .select()
     .single();

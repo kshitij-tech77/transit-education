@@ -7,16 +7,55 @@ import CookieConsent from "@/components/shared/CookieConsent";
 import MotionProvider from "@/components/shared/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/lib/supabase";
+import { unstable_cache } from "next/cache";
+
+// These three queries feed shared chrome (nav links, footer branches, site
+// settings) that changes rarely. Cached independently of each page's own
+// `dynamic = 'force-dynamic'` so they don't hit Supabase on every request.
+const getCachedCountries = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .from('countries')
+      .select('name, code')
+      .eq('status', 'LIVE');
+    return data;
+  },
+  ['frontend-layout-countries'],
+  { revalidate: 300, tags: ['countries'] }
+);
+
+const getCachedBranches = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .from('branches')
+      .select('id, name, address, phone');
+    return data;
+  },
+  ['frontend-layout-branches'],
+  { revalidate: 300, tags: ['branches'] }
+);
+
+const getCachedSiteSettings = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single();
+    return data;
+  },
+  ['frontend-layout-site-settings'],
+  { revalidate: 300, tags: ['site-settings'] }
+);
 
 export default async function FrontendLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [{ data: countries }, { data: branches }, { data: settings }] = await Promise.all([
-    supabase.from('countries').select('name, code').eq('status', 'LIVE'),
-    supabase.from('branches').select('id, name, address, phone'),
-    supabase.from('site_settings').select('*').single()
+  const [countries, branches, settings] = await Promise.all([
+    getCachedCountries(),
+    getCachedBranches(),
+    getCachedSiteSettings(),
   ]);
 
   const BRANCH_ORDER = ['kathmandu', 'itahari', 'damak', 'damauli'];

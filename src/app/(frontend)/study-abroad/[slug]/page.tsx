@@ -2,19 +2,60 @@ import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, FileText } from "lucide-react";
-import { createClient } from "@/lib/supabase-server";
+import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
+
+// `slug` is passed as an argument, so each country gets its own cache entry,
+// revalidated every 5 minutes. Uses the anon client (not the cookie-aware
+// server client) since `unstable_cache` can't access request-time APIs like
+// cookies, and these are public, unauthenticated reads either way.
+const getCachedCountryBySlug = unstable_cache(
+  async (slug: string) => {
+    const res = await supabase
+      .from('countries')
+      .select('*')
+      .eq('code', slug)
+      .eq('status', 'LIVE')
+      .single();
+    return { data: res.data };
+  },
+  ['study-abroad-country'],
+  { revalidate: 300, tags: ['countries'] }
+);
+
+const getCachedCountryFaqs = unstable_cache(
+  async (slug: string) => {
+    const res = await supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', `study-abroad/${slug}`)
+      .eq('status', 'published')
+      .order('display_order', { ascending: true });
+    return { data: res.data };
+  },
+  ['study-abroad-country-faqs'],
+  { revalidate: 300, tags: ['faqs'] }
+);
+
+const getCachedGlobalFaqsFallback = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('faqs')
+      .select('*')
+      .eq('page_path', 'Homepage')
+      .eq('status', 'published')
+      .limit(6);
+    return { data: res.data };
+  },
+  ['study-abroad-global-faqs-fallback'],
+  { revalidate: 300, tags: ['faqs'] }
+);
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
-  const { data: country } = await supabase
-    .from('countries')
-    .select('*')
-    .eq('code', slug)
-    .eq('status', 'LIVE')
-    .single();
+  const { data: country } = await getCachedCountryBySlug(slug);
 
   if (!country) return {};
 
@@ -43,33 +84,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CountryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const supabase = await createClient();
 
   // Try fetching page-specific FAQs first
-  let { data: faqsRaw } = await supabase
-    .from('faqs')
-    .select('*')
-    .eq('page_path', `study-abroad/${slug}`)
-    .eq('status', 'published')
-    .order('display_order', { ascending: true });
+  let { data: faqsRaw } = await getCachedCountryFaqs(slug);
 
   // Fallback to Global FAQs if none for this specific country
   if (!faqsRaw || faqsRaw.length === 0) {
-    const { data: globalFaqs } = await supabase
-      .from('faqs')
-      .select('*')
-      .eq('page_path', 'Homepage')
-      .eq('status', 'published')
-      .limit(6);
+    const { data: globalFaqs } = await getCachedGlobalFaqsFallback();
     faqsRaw = globalFaqs;
   }
 
-  const { data: country } = await supabase
-    .from('countries')
-    .select('*')
-    .eq('code', slug)
-    .eq('status', 'LIVE')
-    .single();
+  const { data: country } = await getCachedCountryBySlug(slug);
 
   if (!country) {
     notFound();

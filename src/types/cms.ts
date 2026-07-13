@@ -22,6 +22,7 @@ import type {
   FaqCategory,
   FaqPagePath,
   LoyaltyRedemptionStatus,
+  LoyaltyCompletionStatus,
 } from "@/constants/cms";
 
 // ─── Auth / Profile ───────────────────────────────────────────────────────────
@@ -292,6 +293,30 @@ export interface LoyaltyReward {
   stock: number | null;
   active: boolean;
   imageUrl: string | null;
+  minTier: string | null;
+}
+
+export interface LoyaltyMilestone {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  icon: string | null;
+  points: number;
+  referrerBonusPoints: number | null;
+  sortOrder: number;
+  active: boolean;
+}
+
+export interface LoyaltyCompletion {
+  id: string;
+  memberId: string;
+  memberEmail: string | null;
+  milestoneId: string;
+  milestoneTitle: string;
+  status: LoyaltyCompletionStatus;
+  notes: string | null;
+  submittedAt: string;
 }
 
 export interface LoyaltyRedemption {
@@ -334,6 +359,8 @@ export interface CmsDataState {
   loyaltyRewards: LoyaltyReward[];
   loyaltyRedemptions: LoyaltyRedemption[];
   loyaltyMembers: LoyaltyMember[];
+  loyaltyMilestones: LoyaltyMilestone[];
+  loyaltyCompletions: LoyaltyCompletion[];
 }
 
 export const INITIAL_CMS_DATA: CmsDataState = {
@@ -354,4 +381,6 @@ export const INITIAL_CMS_DATA: CmsDataState = {
   loyaltyRewards: [],
   loyaltyRedemptions: [],
   loyaltyMembers: [],
+  loyaltyMilestones: [],
+  loyaltyCompletions: [],
 };

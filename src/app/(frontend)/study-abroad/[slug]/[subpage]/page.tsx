@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase-server";
+import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import Link from "next/link";
 import { CheckCircle2, ArrowLeft, ExternalLink } from "lucide-react";
+import { unstable_cache } from "next/cache";
 
 // ─── Static sub-page content (used when DB fields not yet populated) ───────────
 
@@ -351,6 +352,46 @@ const UNIVERSITIES_CONTENT: Record<string, { title: string; intro: string; unive
 const VALID_SUBPAGES = ["visa", "scholarships", "cost", "universities"] as const;
 type SubPage = (typeof VALID_SUBPAGES)[number];
 
+// `country`/`subpage` are passed as arguments, so each combination gets its
+// own cache entry, revalidated every 5 minutes. Uses the anon client (not the
+// cookie-aware server client) since `unstable_cache` can't access
+// request-time APIs like cookies, and these are public, unauthenticated reads.
+const getCachedCountryMeta = unstable_cache(
+  async (country: string) => {
+    const res = await supabase.from("countries").select("name, meta_title").eq("code", country).single();
+    return { data: res.data };
+  },
+  ['study-abroad-subpage-country-meta'],
+  { revalidate: 300, tags: ['countries'] }
+);
+
+const getCachedCountryDetail = unstable_cache(
+  async (country: string) => {
+    const res = await supabase
+      .from("countries")
+      .select("name, code, cost_of_living, scholarship_data, university_list, visa_extended")
+      .eq("code", country)
+      .single();
+    return { data: res.data };
+  },
+  ['study-abroad-subpage-country-detail'],
+  { revalidate: 300, tags: ['countries'] }
+);
+
+const getCachedSubpageFaqs = unstable_cache(
+  async (country: string, subpage: string) => {
+    const res = await supabase
+      .from("faqs")
+      .select("*")
+      .eq("page_path", `study-abroad/${country}/${subpage}`)
+      .eq("status", "published")
+      .order("display_order", { ascending: true });
+    return { data: res.data };
+  },
+  ['study-abroad-subpage-faqs'],
+  { revalidate: 300, tags: ['faqs'] }
+);
+
 export async function generateMetadata({
   params,
 }: {
@@ -360,8 +401,7 @@ export async function generateMetadata({
 
   if (!VALID_SUBPAGES.includes(subpage as SubPage)) return {};
 
-  const supabase = await createClient();
-  const { data } = await supabase.from("countries").select("name, meta_title").eq("code", country).single();
+  const { data } = await getCachedCountryMeta(country);
   const countryName = data?.name || country.charAt(0).toUpperCase() + country.slice(1);
 
   const titles: Record<SubPage, string> = {
@@ -400,19 +440,8 @@ export default async function CountrySubPage({
 
   if (!VALID_SUBPAGES.includes(subpage as SubPage)) notFound();
 
-  const supabase = await createClient();
-  const { data: countryData } = await supabase
-    .from("countries")
-    .select("name, code, cost_of_living, scholarship_data, university_list, visa_extended")
-    .eq("code", country)
-    .single();
-
-  const { data: faqsRaw } = await supabase
-    .from("faqs")
-    .select("*")
-    .eq("page_path", `study-abroad/${country}/${subpage}`)
-    .eq("status", "published")
-    .order("display_order", { ascending: true });
+  const { data: countryData } = await getCachedCountryDetail(country);
+  const { data: faqsRaw } = await getCachedSubpageFaqs(country, subpage);
 
   const faqs = faqsRaw?.map((f) => ({ ...f, featured: f.is_featured, status: "Published" })) || [];
 

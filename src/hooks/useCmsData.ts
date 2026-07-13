@@ -33,6 +33,8 @@ import type {
   LoyaltyReward,
   LoyaltyRedemption,
   LoyaltyMember,
+  LoyaltyMilestone,
+  LoyaltyCompletion,
 } from "@/types/cms";
 import { INITIAL_CMS_DATA } from "@/types/cms";
 
@@ -57,6 +59,8 @@ const ENDPOINTS = [
   { key: "loyaltyRewards",     path: "/api/cms/loyalty/rewards"     },
   { key: "loyaltyRedemptions", path: "/api/cms/loyalty/redemptions" },
   { key: "loyaltyMembers",     path: "/api/cms/loyalty/members"     },
+  { key: "loyaltyMilestones",  path: "/api/cms/loyalty/milestones"  },
+  { key: "loyaltyCompletions", path: "/api/cms/loyalty/completions" },
 ] as const;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -92,6 +96,8 @@ function parseResults(results: (unknown | null)[]): CmsDataState {
     loyaltyRewards,
     loyaltyRedemptions,
     loyaltyMembers,
+    loyaltyMilestones,
+    loyaltyCompletions,
   ] = results;
 
   return {
@@ -112,6 +118,8 @@ function parseResults(results: (unknown | null)[]): CmsDataState {
     loyaltyRewards:     isArray<LoyaltyReward>(loyaltyRewards)         ? loyaltyRewards     : [],
     loyaltyRedemptions: isArray<LoyaltyRedemption>(loyaltyRedemptions) ? loyaltyRedemptions : [],
     loyaltyMembers:     isArray<LoyaltyMember>(loyaltyMembers)         ? loyaltyMembers     : [],
+    loyaltyMilestones:  isArray<LoyaltyMilestone>(loyaltyMilestones)   ? loyaltyMilestones  : [],
+    loyaltyCompletions: isArray<LoyaltyCompletion>(loyaltyCompletions) ? loyaltyCompletions : [],
   };
 }
 

@@ -3,14 +3,15 @@ import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
 
-const RewardSchema = z.object({
+const MilestoneSchema = z.object({
   title: z.string().min(1).max(100).trim(),
   description: z.string().max(500).trim().optional(),
-  points_cost: z.coerce.number().int().positive(),
-  stock: z.union([z.coerce.number().int().min(0), z.null()]).optional(),
+  category: z.string().max(50).trim().optional(),
+  icon: z.string().max(20).trim().optional(),
+  points: z.coerce.number().int().positive(),
+  referrer_bonus_points: z.union([z.coerce.number().int().positive(), z.null()]).optional(),
+  sort_order: z.coerce.number().int().optional(),
   active: z.boolean().optional(),
-  image_url: z.string().max(500).trim().optional(),
-  min_tier: z.union([z.enum(['BRONZE', 'SILVER', 'GOLD', 'PLATINUM']), z.null()]).optional(),
 });
 
 export async function PUT(
@@ -22,30 +23,31 @@ export async function PUT(
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await params;
-  const parsed = RewardSchema.safeParse(await req.json());
+  const parsed = MilestoneSchema.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
-  const { title, description, points_cost, stock, active, image_url, min_tier } = parsed.data;
+  const { title, description, category, icon, points, referrer_bonus_points, sort_order, active } = parsed.data;
 
   const { data: updated, error } = await supabaseAdmin
-    .from('loyalty_rewards')
+    .from('loyalty_milestones')
     .update({
       title,
       description: description || null,
-      points_cost,
-      stock: stock ?? null,
+      category: category || null,
+      icon: icon || null,
+      points,
+      referrer_bonus_points: referrer_bonus_points ?? null,
+      sort_order: sort_order ?? 0,
       active: active ?? true,
-      image_url: image_url || null,
-      min_tier: min_tier ?? null,
     })
     .eq('id', id)
     .select()
     .single();
 
   if (error) {
-    console.error('PUT /api/cms/loyalty/rewards/[id] error:', error);
-    return NextResponse.json({ error: 'Failed to update reward' }, { status: 400 });
+    console.error('PUT /api/cms/loyalty/milestones/[id] error:', error);
+    return NextResponse.json({ error: 'Failed to update milestone' }, { status: 400 });
   }
   return NextResponse.json(updated);
 }
@@ -59,11 +61,11 @@ export async function DELETE(
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await params;
-  const { error } = await supabaseAdmin.from('loyalty_rewards').delete().eq('id', id);
+  const { error } = await supabaseAdmin.from('loyalty_milestones').delete().eq('id', id);
 
   if (error) {
-    console.error('DELETE /api/cms/loyalty/rewards/[id] error:', error);
-    return NextResponse.json({ error: 'Failed to delete reward' }, { status: 400 });
+    console.error('DELETE /api/cms/loyalty/milestones/[id] error:', error);
+    return NextResponse.json({ error: 'Failed to delete milestone' }, { status: 400 });
   }
   return NextResponse.json({ success: true });
 }

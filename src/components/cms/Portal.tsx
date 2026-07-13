@@ -54,7 +54,7 @@ export default function TransitPortal() {
     { label: "MANAGE", items: [
       { id: "Careers"             as CmsSection, icon: Briefcase,       badge: data.jobApplications.length },
       { id: "Franchise Inquiries" as CmsSection, icon: Handshake,       badge: data.franchiseInquiries.length },
-      { id: "Loyalty"             as CmsSection, icon: Gift,            badge: data.loyaltyRedemptions.filter(r => r.status === "PENDING").length },
+      { id: "Loyalty"             as CmsSection, icon: Gift,            badge: data.loyaltyRedemptions.filter(r => r.status === "PENDING").length + data.loyaltyCompletions.filter(c => c.status === "PENDING").length },
       { id: "Branches"            as CmsSection, icon: MapPin,          badge: null },
       { id: "Settings"            as CmsSection, icon: Settings,        badge: null },
     ]},

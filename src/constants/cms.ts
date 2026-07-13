@@ -44,6 +44,7 @@ export const CMS_MODAL_KEYS = [
   "Event",
   "JobOpening",
   "LoyaltyReward",
+  "LoyaltyMilestone",
 ] as const;
 
 export type CmsModalKey = (typeof CMS_MODAL_KEYS)[number];
@@ -72,6 +73,8 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   FranchiseInquiry: "franchise-inquiries",
   LoyaltyReward: "loyalty/rewards",
   LoyaltyRedemption: "loyalty/redemptions",
+  LoyaltyMilestone: "loyalty/milestones",
+  LoyaltyCompletion: "loyalty/completions",
 
   // Section name aliases (for direct section-level saves/deletes)
   "Blog Posts": "blog",
@@ -97,6 +100,8 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   media: "media",
   "loyalty/rewards": "loyalty/rewards",
   "loyalty/redemptions": "loyalty/redemptions",
+  "loyalty/milestones": "loyalty/milestones",
+  "loyalty/completions": "loyalty/completions",
 } as const;
 
 // ─── Student Statuses ─────────────────────────────────────────────────────────
@@ -197,3 +202,11 @@ export type FranchiseStatus = (typeof FRANCHISE_STATUSES)[number];
 
 export const LOYALTY_REDEMPTION_STATUSES = ["PENDING", "FULFILLED", "REJECTED"] as const;
 export type LoyaltyRedemptionStatus = (typeof LOYALTY_REDEMPTION_STATUSES)[number];
+
+// ─── Loyalty Milestone Completion Statuses ────────────────────────────────────
+// Ground truth: loyalty_milestone_completions.status check constraint
+// (migration 004_loyalty_milestones.sql). PENDING is set by the student's
+// claim; APPROVED/REJECTED are staff-only transitions via the CMS.
+
+export const LOYALTY_COMPLETION_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+export type LoyaltyCompletionStatus = (typeof LOYALTY_COMPLETION_STATUSES)[number];

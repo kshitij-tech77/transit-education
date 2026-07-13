@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X, Phone } from "lucide-react";
 
-export default function UtilityBar() {
-  const [phone, setPhone] = useState("+977-1-5906277");
+export default function UtilityBar({ phone: settingsPhone }: { phone?: string | null }) {
+  const phone = settingsPhone || "+977-1-5906277";
   const [show, setShow] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/cms/settings')
-      .then(res => res.json())
-      .then(data => { if (data.phone) setPhone(data.phone); })
-      .catch(() => {});
-  }, []);
 
   if (!show) return null;
 

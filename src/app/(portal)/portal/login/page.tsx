@@ -27,9 +27,15 @@ export default function PortalLogin() {
     setLoading(true);
     setError("");
     try {
+      const next = referralCode
+        ? `/portal/dashboard?ref=${encodeURIComponent(referralCode)}`
+        : "/portal/dashboard";
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
-        options: { shouldCreateUser: true },
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        },
       });
       if (otpError) throw otpError;
       setStep("otp");
