@@ -11,25 +11,25 @@ interface TierProgressRingProps {
 }
 
 export function TierProgressRing({ tier, nextTier, percentToNext, pointsToNext, lifetimePoints, hasLifetimeData }: TierProgressRingProps) {
-  const radius = 52;
+  const radius = 64;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentToNext / 100) * circumference;
   const Icon = tier === "GOLD" || tier === "PLATINUM" ? Crown : Medal;
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 flex items-center gap-8 flex-wrap">
-      <div className="relative w-[130px] h-[130px] shrink-0">
-        <svg width="130" height="130" viewBox="0 0 130 130">
-          <circle cx="65" cy="65" r={radius} fill="none" stroke="#F0EDEB" strokeWidth="11" />
+      <div className="relative w-32 h-32 md:w-40 md:h-40 shrink-0">
+        <svg width="100%" height="100%" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r={radius} fill="none" stroke="#F0EDEB" strokeWidth="13" />
           <circle
-            cx="65" cy="65" r={radius} fill="none" stroke="var(--brand)" strokeWidth="11"
+            cx="80" cy="80" r={radius} fill="none" stroke="var(--brand)" strokeWidth="13"
             strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round"
-            transform="rotate(-90 65 65)"
+            transform="rotate(-90 80 80)"
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[22px] font-extrabold text-[#111]">{Math.round(percentToNext)}%</span>
-          <span className="text-[9.5px] text-gray-400">{nextTier ? `to ${TIER_NAMES[nextTier]}` : "top tier"}</span>
+          <span className="text-2xl font-bold text-gray-900">{Math.round(percentToNext)}%</span>
+          <span className="text-xs text-gray-500">{nextTier ? `to ${TIER_NAMES[nextTier]}` : "top tier"}</span>
         </div>
       </div>
 

@@ -54,11 +54,24 @@ export function JourneySteps({ milestones }: JourneyStepsProps) {
       </div>
 
       {milestones.length === 0 ? (
-        <EmptyState
-          icon={Compass}
-          title="Your journey begins soon"
-          subtitle="Milestones will appear here as your study abroad journey progresses."
-        />
+        <div>
+          {/* Ghost stepper — ties the empty state visually to the real
+              stepper shape below, so it reads as "coming soon" rather than
+              a broken/missing section. */}
+          <div className="flex items-center justify-center gap-1 opacity-40" aria-hidden="true">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center">
+                <div className="w-11 h-11 rounded-full border-2 border-dashed border-gray-300 shrink-0" />
+                {i < 3 && <div className="w-8 border-t-2 border-dashed border-gray-300 mx-1" />}
+              </div>
+            ))}
+          </div>
+          <EmptyState
+            icon={Compass}
+            title="Your journey begins soon"
+            subtitle="Milestones will appear here as your study abroad journey progresses."
+          />
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <div className="flex items-start min-w-max px-1">

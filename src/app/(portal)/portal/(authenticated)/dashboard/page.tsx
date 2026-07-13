@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { computeTierProgress, type LoyaltyTier } from "@/lib/loyalty-tiers";
 import { usePortalUser } from "../layout";
 import { WelcomeHeader } from "@/components/portal/WelcomeHeader";
+import { InlineTierBadge } from "@/components/portal/InlineTierBadge";
 import { JourneySteps, type JourneyMilestone } from "@/components/portal/JourneySteps";
 import { TierProgressRing } from "@/components/portal/TierProgressRing";
 import { RewardsCarousel } from "@/components/portal/RewardsCarousel";
@@ -186,7 +187,10 @@ export default function PortalDashboard() {
     <div className="max-w-[1400px] mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
-          <WelcomeHeader email={email} />
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <WelcomeHeader email={email} />
+            <InlineTierBadge tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
+          </div>
 
           <JourneySteps milestones={journeyMilestones} />
 

@@ -8,9 +8,9 @@ interface MotivationalBannerProps {
 
 export function MotivationalBanner({ nextTier }: MotivationalBannerProps) {
   return (
-    <div className="bg-brand-surface rounded-2xl shadow-sm p-6 flex items-center justify-between gap-4 flex-wrap">
+    <div className="bg-amber-50 rounded-2xl shadow-sm p-6 flex items-center justify-between gap-4 flex-wrap">
       <div className="flex items-center gap-3">
-        <Trophy size={22} className="text-brand shrink-0" />
+        <Trophy size={22} className="text-amber-500 shrink-0" />
         <div>
           <p className="text-lg font-semibold text-gray-800">You&apos;re doing amazing!</p>
           <p className="text-sm text-gray-600">
