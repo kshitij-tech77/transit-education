@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
-  Loader2, Sparkles, LayoutDashboard, Flag, Coins, Gift, Users, Activity,
+  Loader2, Sparkles, Sparkle, LayoutDashboard, Flag, Coins, Gift, Users, Activity,
   User, Bell, ChevronDown, ArrowRight, HelpCircle, Menu, X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -107,17 +107,21 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       </nav>
 
       <div className="p-4">
-        <div className="bg-brand rounded-2xl p-5 text-white space-y-3">
-          <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand to-brand/75 rounded-2xl p-5 text-white space-y-3">
+          <Sparkle size={14} className="absolute top-3 right-4 text-white/30" aria-hidden="true" />
+          <Sparkle size={9} className="absolute top-9 right-11 text-white/20" aria-hidden="true" />
+          <Sparkle size={11} className="absolute bottom-14 right-6 text-white/20" aria-hidden="true" />
+
+          <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center relative">
             <Gift size={18} />
           </div>
-          <div>
+          <div className="relative">
             <p className="text-[13px] font-bold">Refer & Earn More!</p>
             <p className="text-[11px] opacity-80 mt-1 leading-snug">Refer your friends and earn bonus points when they complete milestones.</p>
           </div>
           <Link
             href="/portal/referrals"
-            className="w-full bg-white text-brand text-[12px] font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 hover:bg-white/90 transition-colors"
+            className="relative w-full bg-white text-brand text-[12px] font-bold py-2.5 rounded-full flex items-center justify-center gap-1.5 hover:bg-white/90 hover:shadow-md transition-all duration-200"
           >
             Refer a Friend <ArrowRight size={14} />
           </Link>
