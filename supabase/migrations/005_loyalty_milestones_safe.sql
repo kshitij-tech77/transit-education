@@ -77,3 +77,17 @@ begin
       for select using (auth.uid() = member_id);
   end if;
 end $$;
+
+-- One-time backfill: lifetime_points_earned defaults to 0 for every existing
+-- row, including members who already earned points pre-migration via
+-- REFERRAL_SIGNUP or other EARN transactions — without this they'd show as
+-- 0 lifetime / Bronze until they complete a new milestone. Safe to re-run:
+-- the WHERE clause only touches rows still at the default 0, so it will
+-- never clobber a member whose lifetime_points_earned already reflects
+-- real post-migration activity.
+update loyalty_members set lifetime_points_earned = (
+  select coalesce(sum(points), 0)
+  from loyalty_transactions
+  where loyalty_transactions.member_id = loyalty_members.id
+  and loyalty_transactions.type = 'EARN'
+) where lifetime_points_earned = 0;
