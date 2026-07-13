@@ -1,6 +1,5 @@
 import { Gift, Lock } from "lucide-react";
-import { tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
-import { TIER_NAMES } from "@/lib/tier-progress";
+import { tierRank, TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 export interface GridReward {
   id: string;

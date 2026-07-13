@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Settings2, Gift, Users, Activity as ActivityIcon, User } from "lucide-react";
+import { Loader2, Gift, Users, Activity as ActivityIcon, User } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { computeTierProgress } from "@/lib/tier-progress";
+import { computeTierProgress } from "@/lib/loyalty-tiers";
 import { usePortalUser } from "../layout";
 import { TierCard } from "@/components/portal/TierCard";
 import { PointsCard } from "@/components/portal/PointsCard";
@@ -162,27 +162,12 @@ export default function MilestonesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
           <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6">
-            <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
-              <div>
-                <p className="text-[14px] font-bold text-[#111]">Your Milestones Journey</p>
-                <p className="text-[11px] text-gray-400">Track your progress and complete milestones on your study abroad journey.</p>
-              </div>
-              <button className="shrink-0 flex items-center gap-1.5 text-[11.5px] font-semibold text-gray-500 border border-[#E5E4E0] px-3 py-2 rounded-lg hover:border-brand hover:text-brand transition-colors">
-                <Settings2 size={14} /> Customize Journey
-              </button>
+            <div className="mb-5">
+              <p className="text-[14px] font-bold text-[#111]">Your Milestones Journey</p>
+              <p className="text-[11px] text-gray-400">Track your progress and complete milestones on your study abroad journey.</p>
             </div>
 
             <MilestoneTimeline milestones={rows} claimingId={claimingId} onClaim={handleClaim} />
-
-            <div className="mt-2 border border-dashed border-[#E5E4E0] rounded-xl p-5 flex items-center justify-between gap-3 flex-wrap">
-              <div>
-                <p className="text-[12.5px] font-bold text-[#111]">Add Milestone</p>
-                <p className="text-[11.5px] text-gray-400">Don&apos;t see a milestone? Add a custom milestone to your journey.</p>
-              </div>
-              <button className="shrink-0 text-[11.5px] font-bold text-brand border border-brand px-4 py-2 rounded-lg hover:bg-brand hover:text-white transition-colors">
-                Add Milestone
-              </button>
-            </div>
           </div>
 
           <MilestoneProgress completedCount={completedCount} totalCount={rows.length} nextTier={nextTier} />

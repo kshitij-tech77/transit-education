@@ -1,6 +1,5 @@
 import { Check } from "lucide-react";
-import { LOYALTY_TIERS, tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
-import { TIER_NAMES } from "@/lib/tier-progress";
+import { LOYALTY_TIERS, tierRank, TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 interface TierLadderProps {
   tier: LoyaltyTier;

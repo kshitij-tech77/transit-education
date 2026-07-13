@@ -1,6 +1,5 @@
 import { Crown, Medal } from "lucide-react";
-import { TIER_NAMES } from "@/lib/tier-progress";
-import type { LoyaltyTier } from "@/lib/loyalty-tiers";
+import { TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 interface TierProgressRingProps {
   tier: LoyaltyTier;

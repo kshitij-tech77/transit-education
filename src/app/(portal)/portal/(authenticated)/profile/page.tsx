@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Mail, Calendar, Crown, Medal, KeyRound, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { computeTierProgress } from "@/lib/tier-progress";
-import { TIER_NAMES } from "@/lib/tier-progress";
+import { computeTierProgress, TIER_NAMES } from "@/lib/loyalty-tiers";
 import { usePortalUser, usePortalSignOut } from "../layout";
 import { TierCard } from "@/components/portal/TierCard";
 import { PointsCard } from "@/components/portal/PointsCard";

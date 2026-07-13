@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Share2, Copy, Check } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Users, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
-import { computeTierProgress } from "@/lib/tier-progress";
+import { computeTierProgress, type LoyaltyTier } from "@/lib/loyalty-tiers";
 import { usePortalUser } from "../layout";
 import { WelcomeHeader } from "@/components/portal/WelcomeHeader";
 import { JourneySteps, type JourneyMilestone } from "@/components/portal/JourneySteps";
@@ -18,7 +18,6 @@ import { QuickActions } from "@/components/portal/QuickActions";
 
 interface Member {
   id: string;
-  referral_code: string;
   points_balance: number;
   lifetime_points_earned: number;
 }
@@ -58,13 +57,12 @@ export default function PortalDashboard() {
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     let { data: memberRow, error: memberError } = await supabase
       .from("loyalty_members")
-      .select("id, referral_code, points_balance, lifetime_points_earned")
+      .select("id, points_balance, lifetime_points_earned")
       .eq("id", userId)
       .maybeSingle();
 
@@ -76,7 +74,7 @@ export default function PortalDashboard() {
     if (memberError) {
       const fallback = await supabase
         .from("loyalty_members")
-        .select("id, referral_code, points_balance")
+        .select("id, points_balance")
         .eq("id", userId)
         .maybeSingle();
       memberRow = fallback.data ? { ...fallback.data, lifetime_points_earned: 0 } : null;
@@ -94,7 +92,7 @@ export default function PortalDashboard() {
       });
       if (res.ok) {
         const created = await res.json();
-        memberRow = { id: created.id, referral_code: created.referralCode, points_balance: created.pointsBalance, lifetime_points_earned: 0 };
+        memberRow = { id: created.id, points_balance: created.pointsBalance, lifetime_points_earned: 0 };
       }
     }
 
@@ -158,13 +156,6 @@ export default function PortalDashboard() {
     }
   }
 
-  async function handleCopyReferral() {
-    if (!member) return;
-    await navigator.clipboard.writeText(`${window.location.origin}/portal/login?ref=${member.referral_code}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
@@ -208,23 +199,21 @@ export default function PortalDashboard() {
             hasLifetimeData={hasLifetimeData}
           />
 
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-3">
-            <div className="flex items-center gap-2">
-              <Share2 size={16} className="text-brand" />
-              <h2 className="text-[14px] font-bold text-[#111]">Invite a Friend</h2>
+          <Link
+            href="/portal/referrals"
+            className="flex items-center justify-between gap-3 bg-white rounded-2xl border border-[#E5E4E0] p-6 hover:border-brand transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0">
+                <Users size={18} />
+              </div>
+              <div>
+                <p className="text-[14px] font-bold text-[#111] group-hover:text-brand transition-colors">Refer a Friend</p>
+                <p className="text-[12px] text-gray-500">Share your referral code and earn bonus points together.</p>
+              </div>
             </div>
-            <p className="text-[12px] text-gray-500">Share your referral code — you&apos;ll earn points when they join.</p>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[14px] font-bold bg-brand-surface text-brand px-4 py-2.5 rounded-lg">{member?.referral_code}</span>
-              <button
-                onClick={handleCopyReferral}
-                className="flex items-center gap-1.5 text-[12px] font-semibold text-brand bg-brand-surface px-3 py-2.5 rounded-lg hover:bg-brand hover:text-white transition-colors"
-              >
-                {copied ? <Check size={14} /> : <Copy size={14} />}
-                {copied ? "Copied" : "Copy Link"}
-              </button>
-            </div>
-          </div>
+            <ArrowRight size={18} className="text-gray-300 group-hover:text-brand transition-colors shrink-0" />
+          </Link>
 
           <RewardsCarousel
             rewards={rewards}

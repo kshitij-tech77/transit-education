@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Gift, Lock, Loader2 } from "lucide-react";
-import { tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
-import { TIER_NAMES } from "@/lib/tier-progress";
+import { tierRank, TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 interface CarouselReward {
   id: string;

@@ -115,20 +115,23 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
             <p className="text-[13px] font-bold">Refer & Earn More!</p>
             <p className="text-[11px] opacity-80 mt-1 leading-snug">Refer your friends and earn bonus points when they complete milestones.</p>
           </div>
-          <button className="w-full bg-white text-brand text-[12px] font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 hover:bg-white/90 transition-colors">
+          <Link
+            href="/portal/referrals"
+            className="w-full bg-white text-brand text-[12px] font-bold py-2.5 rounded-lg flex items-center justify-center gap-1.5 hover:bg-white/90 transition-colors"
+          >
             Refer a Friend <ArrowRight size={14} />
-          </button>
+          </Link>
         </div>
       </div>
 
       <div className="px-4 pb-5 pt-3 border-t border-[#E5E4E0]">
-        <button className="w-full flex items-center gap-2.5 text-left hover:text-brand transition-colors group">
+        <a href="mailto:info@transiteducation.com.np" className="w-full flex items-center gap-2.5 text-left hover:text-brand transition-colors group">
           <HelpCircle size={16} className="text-gray-400 group-hover:text-brand shrink-0" />
           <span>
             <span className="block text-[12px] font-bold text-[#111] group-hover:text-brand">Need Help?</span>
             <span className="block text-[10.5px] text-gray-400">Contact our support team</span>
           </span>
-        </button>
+        </a>
       </div>
     </>
   );

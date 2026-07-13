@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Trophy } from "lucide-react";
-import { TIER_NAMES } from "@/lib/tier-progress";
-import type { LoyaltyTier } from "@/lib/loyalty-tiers";
+import { TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
 
 interface MotivationalBannerProps {
   nextTier: LoyaltyTier | null;
