@@ -17,9 +17,9 @@ interface ActivityFeedProps {
 
 export function ActivityFeed({ items }: ActivityFeedProps) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E4E0] p-5 space-y-3">
+    <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-[12px] font-bold text-[#111]">Recent Activity</p>
+        <p className="text-lg font-semibold text-gray-800">Recent Activity</p>
         <Link href="/portal/activity" className="text-[11px] font-semibold text-brand hover:underline">View All</Link>
       </div>
 

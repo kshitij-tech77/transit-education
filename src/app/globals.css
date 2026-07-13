@@ -25,6 +25,7 @@
 
   /* Extended brand surface (hover states, icon backgrounds, blockquotes) */
   --color-brand-surface: var(--brand-surface);
+  --color-brand-soft: var(--brand-soft);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -131,6 +132,9 @@
 
   /* Extended brand surface */
   --brand-surface: #FEF2F1;
+
+  /* 12% opacity tint of brand — subtle background fills (loyalty portal polish pass) */
+  --brand-soft: rgba(169, 50, 38, 0.12);
 
   /* Prose / blog typography — used in .blog-content only via var(), not Tailwind classes */
   --prose-body:        #374151;

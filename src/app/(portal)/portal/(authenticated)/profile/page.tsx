@@ -61,20 +61,20 @@ export default function ProfilePage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">Profile</h1>
-        <p className="text-[13px] text-gray-500 mt-1">Manage your account details.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Profile</h1>
+        <p className="text-sm text-gray-600 mt-1">Manage your account details.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-5">
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0">
                 <Mail size={16} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Email</p>
-                <p className="text-[13.5px] font-semibold text-[#111]">{email}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Email</p>
+                <p className="text-sm font-semibold text-gray-900">{email}</p>
               </div>
             </div>
 
@@ -83,8 +83,8 @@ export default function ProfilePage() {
                 <Calendar size={16} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Member Since</p>
-                <p className="text-[13.5px] font-semibold text-[#111]">
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Member Since</p>
+                <p className="text-sm font-semibold text-gray-900">
                   {member?.created_at
                     ? new Date(member.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
                     : "—"}
@@ -97,8 +97,8 @@ export default function ProfilePage() {
                 <TierIcon size={16} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Current Tier</p>
-                <p className="text-[13.5px] font-semibold text-[#111]">{TIER_NAMES[tier]}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Current Tier</p>
+                <p className="text-sm font-semibold text-gray-900">{TIER_NAMES[tier]}</p>
               </div>
             </div>
 
@@ -107,8 +107,8 @@ export default function ProfilePage() {
                 <KeyRound size={16} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Referral Code</p>
-                <p className="text-[13.5px] font-mono font-bold text-[#111]">{member?.referral_code ?? "—"}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Referral Code</p>
+                <p className="text-sm font-mono font-semibold text-gray-900">{member?.referral_code ?? "—"}</p>
               </div>
             </div>
 
@@ -123,7 +123,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

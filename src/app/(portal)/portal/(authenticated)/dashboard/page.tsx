@@ -201,15 +201,15 @@ export default function PortalDashboard() {
 
           <Link
             href="/portal/referrals"
-            className="flex items-center justify-between gap-3 bg-white rounded-2xl border border-[#E5E4E0] p-6 hover:border-brand transition-colors group"
+            className="flex items-center justify-between gap-3 bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 hover:border-brand hover:shadow-md hover:scale-[1.02] transition-all duration-200 group"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0">
                 <Users size={18} />
               </div>
               <div>
-                <p className="text-[14px] font-bold text-[#111] group-hover:text-brand transition-colors">Refer a Friend</p>
-                <p className="text-[12px] text-gray-500">Share your referral code and earn bonus points together.</p>
+                <p className="text-lg font-semibold text-gray-800 group-hover:text-brand transition-colors">Refer a Friend</p>
+                <p className="text-sm text-gray-600">Share your referral code and earn bonus points together.</p>
               </div>
             </div>
             <ArrowRight size={18} className="text-gray-300 group-hover:text-brand transition-colors shrink-0" />
@@ -226,7 +226,7 @@ export default function PortalDashboard() {
           <MotivationalBanner nextTier={nextTier} />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

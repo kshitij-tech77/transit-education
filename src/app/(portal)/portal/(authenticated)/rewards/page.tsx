@@ -101,8 +101,8 @@ export default function RewardsPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">Rewards</h1>
-        <p className="text-[13px] text-gray-500 mt-1">Redeem your points for exclusive rewards and experiences.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Rewards</h1>
+        <p className="text-sm text-gray-600 mt-1">Redeem your points for exclusive rewards and experiences.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
@@ -116,7 +116,7 @@ export default function RewardsPage() {
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

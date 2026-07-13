@@ -16,9 +16,9 @@ interface WelcomeHeaderProps {
 export function WelcomeHeader({ email }: WelcomeHeaderProps) {
   return (
     <div>
-      <p className="text-[13px] text-gray-400">Welcome back,</p>
-      <h1 className="text-[24px] font-extrabold text-[#111]">{firstNameFromEmail(email)}!</h1>
-      <p className="text-[13px] text-gray-500 mt-1">Keep going! You&apos;re doing great on your study abroad journey.</p>
+      <p className="text-sm text-gray-600">Welcome back,</p>
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{firstNameFromEmail(email)}!</h1>
+      <p className="text-sm text-gray-600 mt-1">Keep going! You&apos;re doing great on your study abroad journey.</p>
     </div>
   );
 }

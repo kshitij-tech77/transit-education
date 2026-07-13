@@ -155,16 +155,16 @@ export default function MilestonesPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">Milestones</h1>
-        <p className="text-[13px] text-gray-500 mt-1">Complete milestones to earn points and unlock amazing rewards.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Milestones</h1>
+        <p className="text-sm text-gray-600 mt-1">Complete milestones to earn points and unlock amazing rewards.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6">
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6">
             <div className="mb-5">
-              <p className="text-[14px] font-bold text-[#111]">Your Milestones Journey</p>
-              <p className="text-[11px] text-gray-400">Track your progress and complete milestones on your study abroad journey.</p>
+              <p className="text-lg font-semibold text-gray-800">Your Milestones Journey</p>
+              <p className="text-sm text-gray-600">Track your progress and complete milestones on your study abroad journey.</p>
             </div>
 
             <MilestoneTimeline milestones={rows} claimingId={claimingId} onClaim={handleClaim} />
@@ -173,7 +173,7 @@ export default function MilestonesPage() {
           <MilestoneProgress completedCount={completedCount} totalCount={rows.length} nextTier={nextTier} />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

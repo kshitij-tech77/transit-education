@@ -92,8 +92,8 @@ export default function ReferralsPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">Referrals</h1>
-        <p className="text-[13px] text-gray-500 mt-1">Invite friends and earn bonus points when they join and complete milestones.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Referrals</h1>
+        <p className="text-sm text-gray-600 mt-1">Invite friends and earn bonus points when they join and complete milestones.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
@@ -102,19 +102,19 @@ export default function ReferralsPage() {
 
           {friendsReferred !== null && totalBonusPoints !== null && (
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white rounded-2xl border border-[#E5E4E0] p-5 text-center">
-                <p className="text-[28px] font-extrabold text-[#111]">{friendsReferred}</p>
-                <p className="text-[11.5px] text-gray-400 mt-1">Friends Referred</p>
+              <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-5 text-center">
+                <p className="text-4xl font-bold text-gray-900">{friendsReferred}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Friends Referred</p>
               </div>
-              <div className="bg-white rounded-2xl border border-[#E5E4E0] p-5 text-center">
-                <p className="text-[28px] font-extrabold text-[#111]">{totalBonusPoints}</p>
-                <p className="text-[11.5px] text-gray-400 mt-1">Bonus Points Earned</p>
+              <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-5 text-center">
+                <p className="text-4xl font-bold text-gray-900">{totalBonusPoints}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Bonus Points Earned</p>
               </div>
             </div>
           )}
 
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6">
-            <p className="text-[14px] font-bold text-[#111] mb-4">How It Works</p>
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6">
+            <p className="text-lg font-semibold text-gray-800 mb-4">How It Works</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {STEPS.map((s, i) => {
                 const Icon = s.icon;
@@ -123,8 +123,8 @@ export default function ReferralsPage() {
                     <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand">
                       <Icon size={16} />
                     </div>
-                    <p className="text-[12.5px] font-bold text-[#111]">{i + 1}. {s.title}</p>
-                    <p className="text-[11.5px] text-gray-400 leading-snug">{s.desc}</p>
+                    <p className="text-sm font-medium text-gray-800">{i + 1}. {s.title}</p>
+                    <p className="text-sm text-gray-600 leading-snug">{s.desc}</p>
                   </div>
                 );
               })}
@@ -132,7 +132,7 @@ export default function ReferralsPage() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

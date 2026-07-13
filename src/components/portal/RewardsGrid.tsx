@@ -37,7 +37,7 @@ export function RewardsGrid({ rewards, tier, pointsBalance, redeemingId, onRedee
         const canAfford = pointsBalance >= r.points_cost;
 
         return (
-          <div key={r.id} className={`bg-white rounded-2xl border border-[#E5E4E0] p-5 space-y-3 ${locked ? "opacity-60" : ""}`}>
+          <div key={r.id} className={`bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-5 space-y-3 transition-all duration-200 ${locked ? "opacity-60" : "hover:shadow-md hover:scale-[1.02]"}`}>
             <div className="relative w-full aspect-[4/3] rounded-xl bg-brand-surface flex items-center justify-center text-brand overflow-hidden">
               {r.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element

@@ -84,8 +84,8 @@ export default function PointsPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">My Points</h1>
-        <p className="text-[13px] text-gray-500 mt-1">View your points balance and tier progress.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">My Points</h1>
+        <p className="text-sm text-gray-600 mt-1">View your points balance and tier progress.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
@@ -105,31 +105,31 @@ export default function PointsPage() {
             hasLifetimeData={hasLifetimeData}
           />
 
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-4">
-            <p className="text-[14px] font-bold text-[#111]">Tier Benefits</p>
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 space-y-4">
+            <p className="text-lg font-semibold text-gray-800">Tier Benefits</p>
             <TierLadder tier={tier} />
             <div className="space-y-2 pt-1">
               {Object.entries(TIER_BENEFITS).map(([t, benefit]) => (
-                <div key={t} className="flex items-center gap-2.5 text-[12.5px]">
+                <div key={t} className="flex items-center gap-2.5 text-sm">
                   <span className={`font-bold w-16 shrink-0 ${t === tier ? "text-brand" : "text-gray-400"}`}>
                     {t.charAt(0) + t.slice(1).toLowerCase()}
                   </span>
-                  <span className="text-gray-500">{benefit}</span>
+                  <span className="text-gray-600">{benefit}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-1">
+          <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 space-y-1">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[14px] font-bold text-[#111]">Points History</p>
+              <p className="text-lg font-semibold text-gray-800">Points History</p>
               <Link href="/portal/activity" className="text-[11px] font-semibold text-brand hover:underline">View All</Link>
             </div>
             <ActivityList items={activity} />
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <QuickActions />
         </div>
       </div>

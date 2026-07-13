@@ -117,12 +117,12 @@ export default function ActivityPage() {
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-[#111]">My Activity</h1>
-        <p className="text-[13px] text-gray-500 mt-1">Track your points history and milestone progress.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">My Activity</h1>
+        <p className="text-sm text-gray-600 mt-1">Track your points history and milestone progress.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
-        <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 min-w-0">
+        <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             {FILTERS.map(f => (
               <button
@@ -166,7 +166,7 @@ export default function ActivityPage() {
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <TierCard tier={tier} nextTier={nextTier} pointsToNext={pointsToNext} percentToNext={percentToNext} />
           <PointsCard
             pointsBalance={member?.points_balance ?? 0}

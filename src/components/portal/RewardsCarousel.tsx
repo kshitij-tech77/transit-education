@@ -45,9 +45,9 @@ export function RewardsCarousel({ rewards, tier, pointsBalance, redeemingId, onR
   const visible = rewards.slice(safePage * pageSize, safePage * pageSize + pageSize);
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-4">
+    <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[14px] font-bold text-[#111]">Featured Rewards</p>
+        <p className="text-lg font-semibold text-gray-800">Featured Rewards</p>
         <Link href="/portal/rewards" className="text-[11px] font-semibold text-brand hover:underline">View All</Link>
       </div>
 
@@ -66,7 +66,7 @@ export function RewardsCarousel({ rewards, tier, pointsBalance, redeemingId, onR
               const tierMet = !r.min_tier || tierRank(tier) >= tierRank(r.min_tier);
               const locked = !tierMet;
               return (
-                <div key={r.id} className="border border-[#E5E4E0] rounded-xl p-3 space-y-2 relative">
+                <div key={r.id} className="border border-[#E5E4E0] rounded-xl p-3 space-y-2 relative hover:shadow-md hover:scale-[1.02] transition-all duration-200">
                   {locked && (
                     <span className="absolute top-2 right-2 text-[8.5px] font-bold uppercase tracking-wide bg-gray-800/80 text-white px-1.5 py-0.5 rounded-full">
                       {TIER_NAMES[r.min_tier as LoyaltyTier]}

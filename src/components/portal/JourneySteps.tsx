@@ -43,11 +43,11 @@ const CONNECTOR_CLS: Record<JourneyMilestone["status"], string> = {
 
 export function JourneySteps({ milestones }: JourneyStepsProps) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-4">
+    <div className="bg-white rounded-2xl border border-[#E5E4E0] shadow-sm p-6 space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[14px] font-bold text-[#111]">My Journey</p>
-          <p className="text-[11px] text-gray-400">Track your progress and earn points at each milestone</p>
+          <p className="text-lg font-semibold text-gray-800">My Journey</p>
+          <p className="text-sm text-gray-600">Track your progress and earn points at each milestone</p>
         </div>
         <Link href="/portal/milestones" className="text-[11px] font-semibold text-brand hover:underline shrink-0">View All</Link>
       </div>
