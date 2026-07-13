@@ -17,6 +17,7 @@ const REASON_CODE_TITLES: Record<string, string> = {
   MILESTONE_COMPLETED: 'Milestone completed',
   REFERRAL_SIGNUP: 'Referral bonus earned',
   REFERRAL_MILESTONE_BONUS: 'Referral milestone bonus earned',
+  REFERRAL_CONVERSION: 'Referral converted to student',
   // Only reached for type=EARN rows (a rejected redemption's refund) — the
   // type=REDEEM row with this same reason_code is intentionally never
   // fetched here, see comment on getCachedActivity below.
