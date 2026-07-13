@@ -1,5 +1,6 @@
 import { Gift, Lock } from "lucide-react";
 import { tierRank, TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
+import { EmptyState } from "./EmptyState";
 
 export interface GridReward {
   id: string;
@@ -21,7 +22,14 @@ interface RewardsGridProps {
 
 export function RewardsGrid({ rewards, tier, pointsBalance, redeemingId, onRedeem }: RewardsGridProps) {
   if (rewards.length === 0) {
-    return <p className="text-[13px] text-gray-400 text-center py-16">No rewards available yet — check back soon.</p>;
+    return (
+      <EmptyState
+        icon={Gift}
+        title="Rewards coming soon"
+        subtitle="Exciting rewards are being prepared for you."
+        cta={{ label: "Check Back Later", onClick: () => {} }}
+      />
+    );
   }
 
   return (

@@ -1,4 +1,6 @@
+import { Compass } from "lucide-react";
 import { MilestoneRow, type MilestoneRowData } from "./MilestoneRow";
+import { EmptyState } from "./EmptyState";
 
 interface MilestoneTimelineProps {
   milestones: MilestoneRowData[];
@@ -9,9 +11,11 @@ interface MilestoneTimelineProps {
 export function MilestoneTimeline({ milestones, claimingId, onClaim }: MilestoneTimelineProps) {
   if (milestones.length === 0) {
     return (
-      <p className="text-[12px] text-gray-400 text-center py-12">
-        Your milestones journey will appear here once set up by the team.
-      </p>
+      <EmptyState
+        icon={Compass}
+        title="Your journey begins soon"
+        subtitle="Milestones will appear here as your study abroad journey progresses."
+      />
     );
   }
 

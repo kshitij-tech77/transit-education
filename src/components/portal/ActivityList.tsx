@@ -1,5 +1,6 @@
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Activity as ActivityIcon } from "lucide-react";
 import type { ActivityItem } from "./ActivityFeed";
+import { EmptyState } from "./EmptyState";
 
 interface ActivityListProps {
   items: ActivityItem[];
@@ -14,7 +15,13 @@ interface ActivityListProps {
 // a "compact vs full" difference this small.
 export function ActivityList({ items }: ActivityListProps) {
   if (items.length === 0) {
-    return <p className="text-[13px] text-gray-400 text-center py-16">No activity yet.</p>;
+    return (
+      <EmptyState
+        icon={ActivityIcon}
+        title="No activity yet"
+        subtitle="Your points history will show up here as you earn and redeem."
+      />
+    );
   }
 
   return (

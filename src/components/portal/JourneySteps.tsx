@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Flag, Check } from "lucide-react";
+import { Flag, Check, Compass } from "lucide-react";
+import { EmptyState } from "./EmptyState";
 
 export interface JourneyMilestone {
   id: string;
@@ -53,7 +54,11 @@ export function JourneySteps({ milestones }: JourneyStepsProps) {
       </div>
 
       {milestones.length === 0 ? (
-        <p className="text-[12px] text-gray-400 text-center py-8">Your journey milestones will appear here once set up.</p>
+        <EmptyState
+          icon={Compass}
+          title="Your journey begins soon"
+          subtitle="Milestones will appear here as your study abroad journey progresses."
+        />
       ) : (
         <div className="overflow-x-auto">
           <div className="flex items-start min-w-max px-1">

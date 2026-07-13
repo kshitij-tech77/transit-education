@@ -19,7 +19,7 @@ export function MilestoneProgress({ completedCount, totalCount, nextTier }: Mile
           <p className="text-lg font-semibold text-gray-800">Complete more milestones to level up!</p>
           <p className="text-sm text-gray-600">
             {totalCount === 0
-              ? "Your milestones will appear here once set up by the team."
+              ? "Your progress will be tracked here once milestones are available."
               : remaining > 0
               ? `You're doing great! Complete ${remaining} more milestone${remaining === 1 ? "" : "s"} to reach ${nextTier ? TIER_NAMES[nextTier] : "the next tier"}.`
               : "You've completed every milestone available right now!"}
@@ -28,12 +28,14 @@ export function MilestoneProgress({ completedCount, totalCount, nextTier }: Mile
       </div>
 
       <div className="flex items-center gap-4 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-28 h-2 bg-white rounded-full overflow-hidden">
-            <div className="h-full bg-brand rounded-full transition-all" style={{ width: `${percent}%` }} />
+        {totalCount > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="w-28 h-2 bg-white rounded-full overflow-hidden">
+              <div className="h-full bg-brand rounded-full transition-all" style={{ width: `${percent}%` }} />
+            </div>
+            <span className="text-[12px] font-bold text-[#111] whitespace-nowrap">{completedCount}/{totalCount}</span>
           </div>
-          <span className="text-[12px] font-bold text-[#111] whitespace-nowrap">{completedCount}/{totalCount}</span>
-        </div>
+        )}
         <span className="text-[11.5px] font-bold text-brand px-4 py-2.5 rounded-lg border border-brand whitespace-nowrap">View Benefits</span>
       </div>
     </div>

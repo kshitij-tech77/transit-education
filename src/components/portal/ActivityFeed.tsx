@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowUpRight, ArrowDownRight, Inbox } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Activity as ActivityIcon } from "lucide-react";
+import { EmptyState } from "./EmptyState";
 
 export interface ActivityItem {
   id: string;
@@ -24,10 +25,11 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-8 text-center">
-          <Inbox size={22} className="text-gray-300 mb-2" />
-          <p className="text-[12px] text-gray-400">No activity yet</p>
-        </div>
+        <EmptyState
+          icon={ActivityIcon}
+          title="No activity yet"
+          subtitle="Your points history will show up here as you earn and redeem."
+        />
       ) : (
         <div className="space-y-1">
           {items.map(item => (

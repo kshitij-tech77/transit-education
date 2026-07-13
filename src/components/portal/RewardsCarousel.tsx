@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Gift, Lock, Loader2 } from "lucide-react";
 import { tierRank, TIER_NAMES, type LoyaltyTier } from "@/lib/loyalty-tiers";
+import { EmptyState } from "./EmptyState";
 
 interface CarouselReward {
   id: string;
@@ -52,7 +53,11 @@ export function RewardsCarousel({ rewards, tier, pointsBalance, redeemingId, onR
       </div>
 
       {rewards.length === 0 ? (
-        <p className="text-[12px] text-gray-400 text-center py-8">No rewards available yet — check back soon.</p>
+        <EmptyState
+          icon={Gift}
+          title="Rewards coming soon"
+          subtitle="Exciting rewards are being prepared for you."
+        />
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
