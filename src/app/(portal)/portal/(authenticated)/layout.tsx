@@ -24,6 +24,17 @@ export function usePortalUser(): PortalUser {
   return ctx;
 }
 
+// Standalone (no context needed) so any page can trigger the exact same
+// sign-out flow the top bar uses, instead of re-implementing the two-call
+// sequence per page.
+export function usePortalSignOut() {
+  const router = useRouter();
+  return async function signOut() {
+    await supabase.auth.signOut();
+    router.push("/portal/login");
+  };
+}
+
 const NAV_ITEMS = [
   { href: "/portal/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/portal/milestones", label: "My Journey", icon: Flag },
@@ -38,6 +49,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<PortalUser | null>(null);
+  const signOut = usePortalSignOut();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -48,11 +60,6 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       setUser({ id: user.id, email: user.email ?? null });
     });
   }, [router]);
-
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    router.push("/portal/login");
-  }
 
   if (!user) {
     return (
@@ -129,7 +136,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               <Bell size={19} />
               <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">3</span>
             </button>
-            <button onClick={handleSignOut} className="flex items-center gap-2 group" title="Sign out">
+            <button onClick={signOut} className="flex items-center gap-2 group" title="Sign out">
               <div className="w-8 h-8 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0">
                 <User size={15} />
               </div>
