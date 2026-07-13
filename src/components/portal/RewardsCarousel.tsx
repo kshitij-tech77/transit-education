@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Gift, Lock, Loader2 } from "lucide-react";
 import { tierRank, type LoyaltyTier } from "@/lib/loyalty-tiers";
@@ -24,12 +24,26 @@ interface RewardsCarouselProps {
   onRedeem: (rewardId: string) => void;
 }
 
-const PAGE_SIZE = 4;
+const DESKTOP_PAGE_SIZE = 4;
+const MOBILE_PAGE_SIZE = 2;
 
 export function RewardsCarousel({ rewards, tier, pointsBalance, redeemingId, onRedeem }: RewardsCarouselProps) {
   const [page, setPage] = useState(0);
-  const pageCount = Math.max(1, Math.ceil(rewards.length / PAGE_SIZE));
-  const visible = rewards.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(DESKTOP_PAGE_SIZE);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    const update = () => setPageSize(mql.matches ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  const pageCount = Math.max(1, Math.ceil(rewards.length / pageSize));
+  // Clamp rather than reset to 0 — a resize shouldn't yank the user back to
+  // the first page if their current one is still in range at the new size.
+  const safePage = Math.min(page, pageCount - 1);
+  const visible = rewards.slice(safePage * pageSize, safePage * pageSize + pageSize);
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-4">
@@ -91,7 +105,7 @@ export function RewardsCarousel({ rewards, tier, pointsBalance, redeemingId, onR
                   key={i}
                   onClick={() => setPage(i)}
                   aria-label={`Page ${i + 1}`}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? "bg-brand" : "bg-gray-200"}`}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${i === safePage ? "bg-brand" : "bg-gray-200"}`}
                 />
               ))}
             </div>
