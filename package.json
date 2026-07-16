@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check-usage": "tsx scripts/check-supabase-usage.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

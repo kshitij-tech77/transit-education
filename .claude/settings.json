@@ -1,4 +1,38 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npx eslint *)",
+      "Bash(git stash *)",
+      "Bash(npx next *)",
+      "Bash(timeout 180 npm run build)",
+      "Bash(npm run *)",
+      "Bash(grep -o 'Nepal.\\\\{0,80\\\\}' /tmp/home.html)",
+      "Bash(curl -s -o /dev/null -w \"home: HTTP %{http_code}\\\\n\" http://localhost:3458/)",
+      "Bash(curl -s -o /dev/null -w \"blog: HTTP %{http_code}\\\\n\" http://localhost:3458/blog)",
+      "Bash(curl -s -o /dev/null -w \"about: HTTP %{http_code}\\\\n\" http://localhost:3458/about)",
+      "Bash(curl -s -o /dev/null -w \"locations/kathmandu: HTTP %{http_code}\\\\n\" http://localhost:3458/locations/kathmandu)",
+      "Bash(pkill -f \"next start\")",
+      "Bash(grep -E \"^\\\\S*\\\\s*\\(○|ƒ\\)\\\\s+/\\(\\\\s|$\\)\")",
+      "Bash(grep -E \"\\(○|ƒ\\)  /\\( |$\\)\")",
+      "Bash(curl -s -o /tmp/home2.html -w \"home: HTTP %{http_code}\\\\n\" http://localhost:3459/)",
+      "Bash(curl -s -o /tmp/blog2.html -w \"blog: HTTP %{http_code}\\\\n\" http://localhost:3459/blog)",
+      "Bash(curl -s -o /tmp/post2.html -w 'post: HTTP %{http_code}\\\\n' http://localhost:3459/blog/10-reasons-why-canada-is-the-best-study-destination-for-nepali-students)",
+      "Bash(curl -s -o /tmp/blogcat.html -w \"blog?category filter: HTTP %{http_code}\\\\n\" \"http://localhost:3459/blog?category=Canada\")",
+      "Bash(grep -o 'Showing:.\\\\{0,60\\\\}' /tmp/blogcat.html)",
+      "Bash(curl -s -D - -o /dev/null http://localhost:3459/)",
+      "Bash(grep -o 'Expert Advice.\\\\{0,20\\\\}' /tmp/home2.html)",
+      "Bash(curl -s -o /tmp/blogcat2.html -w \"blog?category=Study Abroad: HTTP %{http_code}\\\\n\" \"http://localhost:3459/blog?category=Study%20Abroad\")",
+      "Bash(grep -o 'Showing:.\\\\{0,60\\\\}' /tmp/blogcat2.html)",
+      "Bash(curl -s -o /dev/null -w \"kathmandu: HTTP %{http_code}\\\\n\" http://localhost:3460/locations/kathmandu)",
+      "Bash(curl -s -o /dev/null -w \"itahari: HTTP %{http_code}\\\\n\" http://localhost:3460/locations/itahari)",
+      "Bash(curl -s -o /dev/null -w \"damak: HTTP %{http_code}\\\\n\" http://localhost:3460/locations/damak)",
+      "Bash(curl -s -o /dev/null -w \"damauli: HTTP %{http_code}\\\\n\" http://localhost:3460/locations/damauli)",
+      "Bash(curl -s -o /tmp/sa-canada.html -w \"study-abroad/canada: HTTP %{http_code}\\\\n\" http://localhost:3460/study-abroad/canada)",
+      "Bash(curl -s -o /tmp/sa-australia.html -w \"study-abroad/australia: HTTP %{http_code}\\\\n\" http://localhost:3460/study-abroad/australia)",
+      "Bash(curl -s -o /tmp/sa-uk.html -w \"study-abroad/uk: HTTP %{http_code}\\\\n\" http://localhost:3460/study-abroad/uk)",
+      "Bash(curl -s -o /tmp/sa-fake.html -w \"study-abroad/nonexistent: HTTP %{http_code}\\\\n\" http://localhost:3460/study-abroad/nonexistent-country)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

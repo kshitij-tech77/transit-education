@@ -58,6 +58,7 @@ export default function Footer({ settings }: { settings?: any }) {
           <ul className="flex flex-col text-sm">
             <li><Link href="/careers" className="block py-2 hover:text-white transition-colors">Careers</Link></li>
             <li><Link href="/franchise" className="block py-2 hover:text-white transition-colors">Become a Partner</Link></li>
+            <li><Link href="/portal/login" className="block py-2 hover:text-white transition-colors">Student Rewards</Link></li>
             <li><Link href="/tools" className="block py-2 hover:text-white transition-colors">Free Tools & Calculators</Link></li>
             <li><a href="https://www.xe.com/currencyconverter/" rel="noopener nofollow" target="_blank" className="block py-2 hover:text-white transition-colors">Currency Converter</a></li>
             <li><a href="https://www.timeanddate.com/date/duration.html" rel="noopener nofollow" target="_blank" className="block py-2 hover:text-white transition-colors">Date Converter</a></li>

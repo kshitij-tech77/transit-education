@@ -25,6 +25,7 @@ export const CMS_SECTIONS = [
   "Events",
   "Careers",
   "Franchise Inquiries",
+  "Loyalty",
 ] as const;
 
 export type CmsSection = (typeof CMS_SECTIONS)[number];
@@ -42,6 +43,8 @@ export const CMS_MODAL_KEYS = [
   "Resource",
   "Event",
   "JobOpening",
+  "LoyaltyReward",
+  "LoyaltyMilestone",
 ] as const;
 
 export type CmsModalKey = (typeof CMS_MODAL_KEYS)[number];
@@ -68,6 +71,10 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   JobOpening: "job-openings",
   JobApplication: "job-applications",
   FranchiseInquiry: "franchise-inquiries",
+  LoyaltyReward: "loyalty/rewards",
+  LoyaltyRedemption: "loyalty/redemptions",
+  LoyaltyMilestone: "loyalty/milestones",
+  LoyaltyCompletion: "loyalty/completions",
 
   // Section name aliases (for direct section-level saves/deletes)
   "Blog Posts": "blog",
@@ -91,6 +98,10 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   "franchise-inquiries": "franchise-inquiries",
   settings: "settings",
   media: "media",
+  "loyalty/rewards": "loyalty/rewards",
+  "loyalty/redemptions": "loyalty/redemptions",
+  "loyalty/milestones": "loyalty/milestones",
+  "loyalty/completions": "loyalty/completions",
 } as const;
 
 // ─── Student Statuses ─────────────────────────────────────────────────────────
@@ -183,3 +194,19 @@ export type ResourceType = (typeof RESOURCE_TYPES)[number];
 
 export const FRANCHISE_STATUSES = ["new", "contacted", "in_progress", "closed"] as const;
 export type FranchiseStatus = (typeof FRANCHISE_STATUSES)[number];
+
+// ─── Loyalty Redemption Statuses ──────────────────────────────────────────────
+// Ground truth: loyalty_redemptions.status check constraint (migration
+// 20260707120000_loyalty_program.sql). PENDING is set by the loyalty_redeem()
+// RPC; FULFILLED/REJECTED are staff-only transitions via the CMS.
+
+export const LOYALTY_REDEMPTION_STATUSES = ["PENDING", "FULFILLED", "REJECTED"] as const;
+export type LoyaltyRedemptionStatus = (typeof LOYALTY_REDEMPTION_STATUSES)[number];
+
+// ─── Loyalty Milestone Completion Statuses ────────────────────────────────────
+// Ground truth: loyalty_milestone_completions.status check constraint
+// (migration 004_loyalty_milestones.sql). PENDING is set by the student's
+// claim; APPROVED/REJECTED are staff-only transitions via the CMS.
+
+export const LOYALTY_COMPLETION_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+export type LoyaltyCompletionStatus = (typeof LOYALTY_COMPLETION_STATUSES)[number];

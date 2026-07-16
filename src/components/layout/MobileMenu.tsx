@@ -61,6 +61,7 @@ const ABOUT_LINKS: NavLink[] = [
 const MORE_LINKS: NavLink[] = [
   { title: "Blog",          href: "/blog" },
   { title: "Resources",     href: "/resources" },
+  { title: "Student Rewards", href: "/portal/login" },
   { title: "Compliance",    href: "/compliance" },
   { title: "Accreditation", href: "/accreditation" },
 ];

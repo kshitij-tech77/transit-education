@@ -20,8 +20,122 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 
 export const dynamic = 'force-dynamic';
+
+// Homepage data changes rarely enough that a 5-minute cache is safe. Each
+// query is wrapped independently so the page keeps the same shape below.
+const getCachedFaqs = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('faqs')
+      .select('*')
+      .eq('is_featured', true)
+      .eq('status', 'published')
+      .order('display_order', { ascending: true })
+      .limit(6);
+    return { data: res.data };
+  },
+  ['homepage-faqs'],
+  { revalidate: 300, tags: ['faqs'] }
+);
+
+const getCachedTeamMembers = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('team_members')
+      .select(`
+        *,
+        branches (name)
+      `)
+      .order('name', { ascending: true })
+      .limit(4);
+    return { data: res.data };
+  },
+  ['homepage-team-members'],
+  { revalidate: 300, tags: ['team-members'] }
+);
+
+const getCachedHomeBlogPosts = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('status', 'published')
+      .order('publish_date', { ascending: false })
+      .limit(3);
+    return { data: res.data };
+  },
+  ['homepage-blog-posts'],
+  { revalidate: 300, tags: ['blog-posts'] }
+);
+
+const getCachedTestimonials = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(12);
+    return { data: res.data };
+  },
+  ['homepage-testimonials'],
+  { revalidate: 300, tags: ['testimonials'] }
+);
+
+const getCachedSuccessStories = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('success_stories')
+      .select('*')
+      .order('year', { ascending: false })
+      .limit(8);
+    return { data: res.data };
+  },
+  ['homepage-success-stories'],
+  { revalidate: 300, tags: ['success-stories'] }
+);
+
+const getCachedHomeSettings = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('site_settings')
+      .select('*')
+      .single();
+    return { data: res.data };
+  },
+  ['homepage-site-settings'],
+  { revalidate: 300, tags: ['site-settings'] }
+);
+
+const getCachedHomeCountries = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('countries')
+      .select('id, code, flag, name, status')
+      .eq('status', 'LIVE')
+      .order('name', { ascending: true });
+    return { data: res.data };
+  },
+  ['homepage-countries'],
+  { revalidate: 300, tags: ['countries'] }
+);
+
+const getCachedHomeEvents = unstable_cache(
+  async () => {
+    const res = await supabase
+      .from('events')
+      .select('*')
+      .eq('is_published', true)
+      .gte('event_date', new Date().toISOString())
+      .order('event_date', { ascending: true })
+      .limit(3);
+    return { data: res.data };
+  },
+  ['homepage-events'],
+  { revalidate: 300, tags: ['events'] }
+);
 
 export const metadata: Metadata = {
   title: { absolute: "Transit Education | Your Transit to Global Destinations" },
@@ -51,53 +165,14 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const [faqsRes, teamRes, postsRes, testimonialsRes, successStoriesRes, settingsRes, countriesRes, eventsRes] = await Promise.all([
-    supabase
-      .from('faqs')
-      .select('*')
-      .eq('is_featured', true)
-      .eq('status', 'published')
-      .order('display_order', { ascending: true })
-      .limit(6),
-    supabase
-      .from('team_members')
-      .select(`
-        *,
-        branches (name)
-      `)
-      .order('name', { ascending: true })
-      .limit(4),
-    supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('status', 'published')
-      .order('publish_date', { ascending: false })
-      .limit(3),
-    supabase
-      .from('testimonials')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(12),
-    supabase
-      .from('success_stories')
-      .select('*')
-      .order('year', { ascending: false })
-      .limit(8),
-    supabase
-      .from('site_settings')
-      .select('*')
-      .single(),
-    supabase
-      .from('countries')
-      .select('id, code, flag, name, status')
-      .eq('status', 'LIVE')
-      .order('name', { ascending: true }),
-    supabase
-      .from('events')
-      .select('*')
-      .eq('is_published', true)
-      .gte('event_date', new Date().toISOString())
-      .order('event_date', { ascending: true })
-      .limit(3),
+    getCachedFaqs(),
+    getCachedTeamMembers(),
+    getCachedHomeBlogPosts(),
+    getCachedTestimonials(),
+    getCachedSuccessStories(),
+    getCachedHomeSettings(),
+    getCachedHomeCountries(),
+    getCachedHomeEvents(),
   ]);
 
   const getFlagEmoji = (countryCode: string) => {

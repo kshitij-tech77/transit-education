@@ -21,6 +21,8 @@ import type {
   FranchiseStatus,
   FaqCategory,
   FaqPagePath,
+  LoyaltyRedemptionStatus,
+  LoyaltyCompletionStatus,
 } from "@/constants/cms";
 
 // ─── Auth / Profile ───────────────────────────────────────────────────────────
@@ -280,6 +282,63 @@ export interface FranchiseInquiry {
   created_at: string;
 }
 
+// ─── Loyalty Program ──────────────────────────────────────────────────────────
+// Shape: /api/cms/loyalty/{rewards,redemptions,members} GET transforms.
+
+export interface LoyaltyReward {
+  id: string;
+  title: string;
+  description: string | null;
+  pointsCost: number;
+  stock: number | null;
+  active: boolean;
+  imageUrl: string | null;
+  minTier: string | null;
+}
+
+export interface LoyaltyMilestone {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  icon: string | null;
+  points: number;
+  referrerBonusPoints: number | null;
+  sortOrder: number;
+  active: boolean;
+}
+
+export interface LoyaltyCompletion {
+  id: string;
+  memberId: string;
+  memberEmail: string | null;
+  milestoneId: string;
+  milestoneTitle: string;
+  status: LoyaltyCompletionStatus;
+  notes: string | null;
+  submittedAt: string;
+}
+
+export interface LoyaltyRedemption {
+  id: string;
+  memberId: string;
+  memberEmail: string | null;
+  rewardTitle: string;
+  pointsSpent: number;
+  status: LoyaltyRedemptionStatus;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface LoyaltyMember {
+  id: string;
+  email: string | null;
+  referralCode: string;
+  referredByCode: string | null;
+  pointsBalance: number;
+  createdAt: string;
+}
+
 // ─── Aggregate State ──────────────────────────────────────────────────────────
 
 export interface CmsDataState {
@@ -297,6 +356,11 @@ export interface CmsDataState {
   jobOpenings: JobOpening[];
   jobApplications: JobApplication[];
   franchiseInquiries: FranchiseInquiry[];
+  loyaltyRewards: LoyaltyReward[];
+  loyaltyRedemptions: LoyaltyRedemption[];
+  loyaltyMembers: LoyaltyMember[];
+  loyaltyMilestones: LoyaltyMilestone[];
+  loyaltyCompletions: LoyaltyCompletion[];
 }
 
 export const INITIAL_CMS_DATA: CmsDataState = {
@@ -314,4 +378,9 @@ export const INITIAL_CMS_DATA: CmsDataState = {
   jobOpenings: [],
   jobApplications: [],
   franchiseInquiries: [],
+  loyaltyRewards: [],
+  loyaltyRedemptions: [],
+  loyaltyMembers: [],
+  loyaltyMilestones: [],
+  loyaltyCompletions: [],
 };

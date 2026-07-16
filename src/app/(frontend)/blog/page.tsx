@@ -7,6 +7,7 @@ import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import NewsletterForm from "@/components/layout/NewsletterForm";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Study Abroad Blog | Visa Tips, University Guides — Transit Education",
@@ -22,29 +23,59 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
-  const { category: activeCategory } = await searchParams;
+// `category` (from searchParams) is passed as an argument, so it's
+// automatically part of the cache key — each category filter gets its own
+// cache entry, revalidated every 5 minutes.
+const getCachedBlogPosts = unstable_cache(
+  async (category?: string) => {
+    const postsQuery = supabase
+      .from('blog_posts')
+      .select('*, authors (name)')
+      .eq('status', 'published')
+      .order('publish_date', { ascending: false });
 
-  const postsQuery = supabase
-    .from('blog_posts')
-    .select('*, authors (name)')
-    .eq('status', 'published')
-    .order('publish_date', { ascending: false });
+    if (category) postsQuery.eq('category', category);
 
-  if (activeCategory) postsQuery.eq('category', activeCategory);
+    const res = await postsQuery;
+    return { data: res.data };
+  },
+  ['blog-posts-list'],
+  { revalidate: 300, tags: ['blog-posts'] }
+);
 
-  const [{ data: posts }, { data: categoriesRaw }, { data: faqs }] = await Promise.all([
-    postsQuery,
-    supabase
+const getCachedBlogCategories = unstable_cache(
+  async () => {
+    const res = await supabase
       .from('blog_posts')
       .select('category')
-      .eq('status', 'published'),
-    supabase
+      .eq('status', 'published');
+    return { data: res.data };
+  },
+  ['blog-categories'],
+  { revalidate: 300, tags: ['blog-posts'] }
+);
+
+const getCachedBlogPageFaqs = unstable_cache(
+  async () => {
+    const res = await supabase
       .from('faqs')
       .select('*')
       .eq('page_path', 'Blog')
       .eq('status', 'published')
-      .order('display_order', { ascending: true })
+      .order('display_order', { ascending: true });
+    return { data: res.data };
+  },
+  ['blog-page-faqs'],
+  { revalidate: 300, tags: ['faqs'] }
+);
+
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const { category: activeCategory } = await searchParams;
+
+  const [{ data: posts }, { data: categoriesRaw }, { data: faqs }] = await Promise.all([
+    getCachedBlogPosts(activeCategory),
+    getCachedBlogCategories(),
+    getCachedBlogPageFaqs(),
   ]);
 
   const blogPosts = posts?.map(p => ({
