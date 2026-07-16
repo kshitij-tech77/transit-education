@@ -8,6 +8,8 @@ Disallow: /cms
 Disallow: /cms/
 Disallow: /admin
 Disallow: /admin/
+Disallow: /portal
+Disallow: /portal/
 
 # Host
 Host: https://transiteducation.com.np

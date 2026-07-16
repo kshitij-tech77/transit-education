@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 2678400, // 31 days - these images rarely change; re-fetching from Supabase Storage every 60s was the dominant source of egress
     remotePatterns: [
       {
         protocol: 'https',

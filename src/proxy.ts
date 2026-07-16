@@ -39,6 +39,24 @@ export async function proxy(request: NextRequest) {
   const isCmsLoginRoute = pathname.startsWith('/cms/login')
   const isCmsApiRoute = pathname.startsWith('/api/cms')
 
+  // The loyalty portal (login, dashboard, rewards, referrals) merged into
+  // main alongside an unrelated Supabase-egress caching fix, but hasn't
+  // been reviewed/launched yet. Until PORTAL_ENABLED=true is set in Vercel,
+  // block public access so nobody can self-register via the magic-link
+  // flow - which would otherwise let any visitor obtain an authenticated
+  // Supabase session (the CMS loyalty API routes only check for *any*
+  // authenticated user, not an admin role, so this also closes off a
+  // privilege-escalation path until that's fixed properly).
+  const isPortalRoute = pathname === '/portal' || pathname.startsWith('/portal/')
+  const isPortalApiRoute = pathname.startsWith('/api/portal')
+
+  if (process.env.PORTAL_ENABLED !== 'true' && (isPortalRoute || isPortalApiRoute)) {
+    if (isPortalApiRoute) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
   if (user && isCmsLoginRoute) {
     return NextResponse.redirect(new URL('/cms', request.url))
   }
@@ -74,5 +92,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/cms/:path*', '/api/cms/:path*']
+  matcher: ['/cms/:path*', '/api/cms/:path*', '/portal', '/portal/:path*', '/api/portal/:path*']
 }

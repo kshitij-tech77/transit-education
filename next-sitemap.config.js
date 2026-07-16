@@ -10,12 +10,14 @@ module.exports = {
     '/cms/login',
     '/cms/blog',
     '/cms/blog/new',
+    '/portal',
+    '/portal/*',
   ],
   robotsTxtOptions: {
     additionalSitemaps: [],
     policies: [
       { userAgent: '*', allow: '/' },
-      { userAgent: '*', disallow: ['/cms', '/cms/', '/admin', '/admin/'] },
+      { userAgent: '*', disallow: ['/cms', '/cms/', '/admin', '/admin/', '/portal', '/portal/'] },
     ],
   },
 }
