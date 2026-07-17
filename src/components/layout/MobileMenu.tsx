@@ -173,7 +173,7 @@ export default function MobileMenu({
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                 <Link href="/" onClick={close}>
                   <Image
-                    src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+                    src="/logo.png"
                     alt="Transit Education"
                     width={130}
                     height={30}

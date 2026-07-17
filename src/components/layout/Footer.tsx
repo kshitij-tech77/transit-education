@@ -18,7 +18,7 @@ export default function Footer({ settings }: { settings?: any }) {
         <div>
           <Link href="/" className="inline-block mb-6">
             <img
-              src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+              src="/logo.png"
               alt={settings?.site_name || "Transit Education"}
               className="h-10 w-auto brightness-0 invert"
             />

@@ -294,7 +294,7 @@ export default function TestPreparationPage() {
       <section className="py-24 bg-black text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+            src="/logo.png"
             alt="Pattern"
             width={400}
             height={400}

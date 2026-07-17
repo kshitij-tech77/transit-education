@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "10+ years of expert study abroad consulting in Nepal. 2,000+ successful students, 50+ partner institutions worldwide.",
     url: "https://transiteducation.com.np/about",
     type: "website",
-    images: [{ url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png", width: 1200, height: 630 }],
+    images: [{ url: "https://transiteducation.com.np/logo.png", width: 1200, height: 630 }],
   },
 };
 

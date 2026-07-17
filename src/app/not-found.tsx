@@ -46,7 +46,7 @@ export default async function NotFound() {
             {/* Logo */}
             <Link href="/" className="inline-block mb-10">
               <Image
-                src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+                src="/logo.png"
                 alt="Transit Education"
                 width={160}
                 height={40}
