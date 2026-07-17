@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
-      .upload(storagePath, buffer, { contentType: file.type, upsert: false });
+      .upload(storagePath, buffer, { contentType: file.type, upsert: false, cacheControl: '86400' });
 
     if (uploadError) {
       console.error('Storage upload error:', uploadError);
