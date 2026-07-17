@@ -23,7 +23,7 @@ export const MEDIA_BASE = `${STORAGE_BASE}${MEDIA_BUCKET}/` as const;
 
 /**
  * Transit Education primary logo.
- * Used in: Header.tsx, Portal.tsx sidebar.
+ * Served locally from /public — not the Supabase Storage bucket.
+ * Used in: Portal.tsx sidebar.
  */
-export const TRANSIT_LOGO_URL =
-  `${MEDIA_BASE}2021/05/Logo-png_website.png` as const;
+export const TRANSIT_LOGO_URL = "/logo.png" as const;
