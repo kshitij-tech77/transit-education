@@ -103,7 +103,7 @@ export default function StudentVisaServicePage() {
             <div className="relative">
               <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
+                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.webp"
                   alt="Visa Guidance"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

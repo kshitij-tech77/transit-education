@@ -25,7 +25,7 @@ const BRANCHES = [
     phone: "01-5906277",
     email: "info@transiteducation.com.np",
     hours: "Sun – Fri • 9:00 AM – 6:00 PM",
-    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.png",
+    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.webp",
   },
   {
     slug: "itahari",
