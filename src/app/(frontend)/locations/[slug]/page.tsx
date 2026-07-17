@@ -16,7 +16,7 @@ const locationsData = {
     email: "info@transiteducation.com.np",
     hours: "Sunday – Friday • 9:00 AM – 6:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.5!2d85.3145!3d27.7041!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18fcb77fd4bd%3A0x58099b1a2b69a7e8!2sBagbazar%2C+Kathmandu!5e0!3m2!1sen!2snp!4v1000000000000",
-    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.png",
+    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.webp",
     gallery: [
       "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-2.png",
       "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-3-ktm.png"

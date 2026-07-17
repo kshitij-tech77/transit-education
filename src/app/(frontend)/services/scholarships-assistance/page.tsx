@@ -46,7 +46,7 @@ export default function ScholarshipsAssistancePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.webp"
             alt="Scholarships Assistance"
             fill
             sizes="100vw"

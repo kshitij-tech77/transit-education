@@ -47,7 +47,7 @@ export default async function ResourcesPage() {
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/04/lets-plan.png"
+            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/04/lets-plan.webp"
             alt="Student Resources"
             fill
             sizes="100vw"
