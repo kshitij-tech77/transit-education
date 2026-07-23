@@ -6,6 +6,7 @@ import { Calendar, MapPin, ArrowRight, Bell, Send, Loader2 } from "lucide-react"
 import SectionLabel from "@/components/shared/SectionLabel";
 import Link from "next/link";
 import { toast } from "sonner";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 interface Event {
   id: string;
@@ -141,7 +142,7 @@ export default function UpcomingEvents({ events }: { events: Event[] }) {
                 className="bg-[#F7F3F3] rounded-2xl p-6 border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group"
               >
                 {event.banner_image && (
-                  <img src={event.banner_image} alt={event.title} className="w-full h-36 object-cover rounded-xl mb-4" />
+                  <img src={proxiedMediaUrl(event.banner_image)} alt={event.title} className="w-full h-36 object-cover rounded-xl mb-4" />
                 )}
                 <div className="flex gap-4 items-start mb-4">
                   <div className="bg-brand text-white rounded-xl p-3 text-center min-w-14 shrink-0">

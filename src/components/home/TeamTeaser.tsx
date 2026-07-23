@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 export default function TeamTeaser({ members }: { members: any[] }) {
   // TODO: uncomment Kshitij Dhamala when ready
@@ -45,7 +45,7 @@ export default function TeamTeaser({ members }: { members: any[] }) {
             >
               <div className="relative aspect-[4/5] mb-6 overflow-hidden rounded-2xl bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-brand/10 group-hover:-translate-y-2">
                 <img
-                  src={resolveMediaUrl(member.photo)}
+                  src={proxiedMediaUrl(member.photo)}
                   alt={member.name} 
                   className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
                 />
