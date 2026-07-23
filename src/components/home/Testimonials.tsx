@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Star, Quote, ExternalLink } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 /* Fix #13 — normalize testimonial cards: photo, name, degree, university, flag, year, 5-star */
 function getYear(createdAt: string | null | undefined): string {
@@ -95,7 +95,7 @@ export default function Testimonials({ testimonials }: { testimonials: any[] }) 
                 <div className="border-t border-gray-100 pt-5 flex items-center gap-4 mt-auto">
                   {t.photo ? (
                     <img
-                      src={resolveMediaUrl(t.photo)}
+                      src={proxiedMediaUrl(t.photo)}
                       alt={t.name || "Student"}
                       className="w-11 h-11 rounded-full object-cover shrink-0"
                     />

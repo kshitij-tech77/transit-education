@@ -5,6 +5,7 @@ import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 interface Props {
   countryId: string;
@@ -77,7 +78,7 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
       {/* Hero */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
-          <img src={heroImage} alt={country.hero_title || countryId} className="w-full h-full object-cover" />
+          <img src={proxiedMediaUrl(heroImage)} alt={country.hero_title || countryId} className="w-full h-full object-cover" />
         </div>
         <div className="container relative z-10">
           <Breadcrumb items={[

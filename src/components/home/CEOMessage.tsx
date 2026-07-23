@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 
 interface CEOMessageProps {
@@ -32,7 +32,7 @@ export default function CEOMessage({ name, title, photoUrl, message }: CEOMessag
               <div className="w-72 h-80 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl bg-gray-800">
                 {photoUrl ? (
                   <img
-                    src={resolveMediaUrl(photoUrl)}
+                    src={proxiedMediaUrl(photoUrl)}
                     alt={name || "CEO"}
                     className="w-full h-full object-cover"
                   />

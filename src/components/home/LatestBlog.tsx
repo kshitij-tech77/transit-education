@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 import { Calendar, User } from "lucide-react";
 
 /* Fix #12 — topic-relevant fallback image when no thumbnail is set */
@@ -47,8 +47,8 @@ export default function LatestBlog({ posts }: { posts: any[] }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {postsData.map((post, i) => {
             const imageUrl = post.featuredImage
-              ? resolveMediaUrl(post.featuredImage)
-              : FALLBACK_IMAGE;
+              ? proxiedMediaUrl(post.featuredImage)
+              : proxiedMediaUrl(FALLBACK_IMAGE);
             const category = sanitizeCategory(post.category);
 
             return (

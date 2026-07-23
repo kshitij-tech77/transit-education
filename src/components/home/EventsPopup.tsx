@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 interface Event {
   id: string;
@@ -65,7 +66,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
               <div key={event.id} className="bg-[#F7F3F3] rounded-xl p-4 border border-gray-100">
                 {event.banner_image && (
                   <img
-                    src={event.banner_image}
+                    src={proxiedMediaUrl(event.banner_image)}
                     alt={event.title}
                     className="w-full h-28 object-cover rounded-lg mb-3"
                   />

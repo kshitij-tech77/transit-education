@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { proxiedMediaUrl } from "@/lib/media-url";
 
 const BASE = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media";
 
@@ -38,7 +39,7 @@ export default function UniversityLogos() {
                 className="mx-8 shrink-0 flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-500"
               >
                 <img
-                  src={logo.src}
+                  src={proxiedMediaUrl(logo.src)}
                   alt={logo.alt}
                   className="h-14 w-auto object-contain max-w-45 rounded-lg"
                   onError={(e) => {
@@ -57,7 +58,7 @@ export default function UniversityLogos() {
                 className="mx-8 shrink-0 flex items-center justify-center opacity-75 hover:opacity-100 transition-all duration-500"
               >
                 <img
-                  src={logo.src}
+                  src={proxiedMediaUrl(logo.src)}
                   alt={logo.alt}
                   className="h-14 w-auto object-contain max-w-45 rounded-lg"
                   onError={(e) => {

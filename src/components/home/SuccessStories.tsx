@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
 import useEmblaCarousel from "embla-carousel-react";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 import { useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -81,7 +81,7 @@ export default function SuccessStories({ stories }: { stories: any[] }) {
                   <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
                     {story.approvalImage ? (
                       <img
-                        src={resolveMediaUrl(story.approvalImage)}
+                        src={proxiedMediaUrl(story.approvalImage)}
                         alt={story.name}
                         className="w-full h-full object-cover"
                         onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
