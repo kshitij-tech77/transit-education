@@ -7,11 +7,12 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 //   https://...               →  returned as-is
 export function resolveMediaUrl(url: string | null | undefined): string {
   if (!url) return ''
-  if (url.startsWith('http')) return url
-  if (url.startsWith('/media/')) {
-    return `${SUPABASE_URL}/storage/v1/object/public/media/${url.slice('/media/'.length)}`
+  const trimmed = url.trim()
+  if (trimmed.startsWith('http')) return trimmed
+  if (trimmed.startsWith('/media/')) {
+    return `${SUPABASE_URL}/storage/v1/object/public/media/${trimmed.slice('/media/'.length)}`
   }
-  return url
+  return trimmed
 }
 
 // Supabase Storage ignores per-object Cache-Control and serves images as
