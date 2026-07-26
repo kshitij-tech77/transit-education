@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, MapPin, ArrowUpRight, Globe2, Sparkles, Loader2, ShieldCheck, Star, ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -216,7 +216,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
                 "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/311017882_1626736731054537_2485975926200975415_n-1.jpg",
               ].map((src, i) => (
                 <div key={i} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
-                   <Image src={src} alt="Student" fill sizes="56px" className="object-cover" />
+                   <Image src={proxiedMediaUrl(src)} alt="Student" fill sizes="56px" className="object-cover" />
                 </div>
               ))}
               <div className="w-14 h-14 rounded-full border-[3px] border-white bg-brand flex items-center justify-center text-[13px] font-black text-white shadow-lg z-10">+2k</div>
@@ -251,7 +251,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
                     {successStories[current].approvalImage ? (
                       <>
                         <Image
-                          src={resolveMediaUrl(successStories[current].approvalImage)}
+                          src={proxiedMediaUrl(successStories[current].approvalImage)}
                           alt={successStories[current].name}
                           fill
                           sizes="(max-width: 1024px) 100vw, 42vw"

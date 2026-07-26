@@ -1,7 +1,7 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { proxiedMediaUrl } from "@/lib/media-url";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Metadata } from "next";
 
@@ -79,7 +79,7 @@ export default async function TeamPage() {
               <div key={index} className="group">
                 <div className="relative h-[450px] w-full rounded-[2.5rem] overflow-hidden mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                   <Image
-                    src={resolveMediaUrl(member.photo)}
+                    src={proxiedMediaUrl(member.photo)}
                     alt={member.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -122,7 +122,7 @@ export default async function TeamPage() {
               <div key={index} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
                 <div className="relative h-64 w-full rounded-2xl overflow-hidden mb-6">
                   <Image
-                    src={resolveMediaUrl(member.photo)}
+                    src={proxiedMediaUrl(member.photo)}
                     alt={member.name}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
