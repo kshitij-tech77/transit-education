@@ -197,6 +197,21 @@ export interface Testimonial {
   photo: string | null;
 }
 
+// ─── Team ─────────────────────────────────────────────────────────────────────
+// Shape: /api/cms/team-members GET transform
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  branchId: string | null;
+  /** Resolved branch name (not branch_id). */
+  branch: string | null;
+  photo: string | null;
+  displayOrder: number;
+  isVisible: boolean;
+}
+
 // ─── Site Settings ────────────────────────────────────────────────────────────
 // Shape: /api/cms/settings GET response + CEO fields stored in site_settings.
 // All fields are optional because the API may return a partial object on
@@ -350,6 +365,7 @@ export interface CmsDataState {
   resources: Resource[];
   branches: Branch[];
   testimonials: Testimonial[];
+  teamMembers: TeamMember[];
   settings: SiteSettings;
   media: MediaLibrary;
   events: CmsEvent[];
@@ -372,6 +388,7 @@ export const INITIAL_CMS_DATA: CmsDataState = {
   resources: [],
   branches: [],
   testimonials: [],
+  teamMembers: [],
   settings: {},
   media: {},
   events: [],

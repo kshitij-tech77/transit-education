@@ -7,6 +7,7 @@ export { SuccessStoriesSection } from "./SuccessStoriesSection";
 export { ResourcesSection }      from "./ResourcesSection";
 export { MediaLibrarySection }   from "./MediaLibrarySection";
 export { TestimonialsSection }   from "./TestimonialsSection";
+export { TeamSection }           from "./TeamSection";
 export { EventsSection }         from "./EventsSection";
 export { CareersSection }        from "./CareersSection";
 export { FranchiseSection }      from "./FranchiseSection";

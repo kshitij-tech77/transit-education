@@ -20,6 +20,7 @@ export const CMS_SECTIONS = [
   "Resources",
   "Media Library",
   "Testimonials",
+  "Team",
   "Branches",
   "Settings",
   "Events",
@@ -45,6 +46,7 @@ export const CMS_MODAL_KEYS = [
   "JobOpening",
   "LoyaltyReward",
   "LoyaltyMilestone",
+  "TeamMember",
 ] as const;
 
 export type CmsModalKey = (typeof CMS_MODAL_KEYS)[number];
@@ -75,6 +77,7 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   LoyaltyRedemption: "loyalty/redemptions",
   LoyaltyMilestone: "loyalty/milestones",
   LoyaltyCompletion: "loyalty/completions",
+  TeamMember: "team-members",
 
   // Section name aliases (for direct section-level saves/deletes)
   "Blog Posts": "blog",
@@ -82,6 +85,7 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   "FAQ Manager": "faqs",
   "Success Stories": "success-stories",
   "Franchise Inquiries": "franchise-inquiries",
+  "Team": "team-members",
 
   // Lowercase passthrough keys (already-resolved values)
   students: "students",
@@ -92,6 +96,7 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   resources: "resources",
   branches: "branches",
   testimonials: "testimonials",
+  "team-members": "team-members",
   events: "events",
   "job-openings": "job-openings",
   "job-applications": "job-applications",

@@ -10,6 +10,7 @@ interface CountryPagesSectionProps {
   data: CmsDataState;
   actionsLoading: boolean;
   onSave: (section: string, item: Record<string, unknown>) => Promise<ActionResult>;
+  onDelete: (section: string, id: string) => Promise<ActionResult>;
   onToast: (msg: string) => void;
 }
 
@@ -29,11 +30,52 @@ function toEditState(c: Country): CountryEditState {
   };
 }
 
-export function CountryPagesSection({ data, actionsLoading, onSave, onToast }: CountryPagesSectionProps) {
+const BLANK_COUNTRY: CountryEditState = {
+  id: '', code: '', flag: '', name: '', status: 'DRAFT',
+  heroTitle: '', whyStudy: '', intakes: '', visaTime: '', tuition: '', universities: '',
+  majorIntakesDescription: '', metaTitle: '', metaDescription: '', lastEdited: null,
+  entryRequirements: { ug: [], pg: [] }, visaProcess: [], requiredDocuments: [],
+  costOfLiving: '', scholarshipData: '', cityGuides: '', universityList: '', visaExtended: '',
+};
+
+function slugify(raw: string): string {
+  return raw.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+export function CountryPagesSection({ data, actionsLoading, onSave, onDelete, onToast }: CountryPagesSectionProps) {
   const [editing, setEditing] = useState<CountryEditState | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [slugTouched, setSlugTouched] = useState(false);
+  // Kept separate from editing.id: useCmsActions.save() decides POST-vs-PUT by
+  // checking Boolean(item.id), so the new-country slug can't live on editing.id
+  // without every "Add Country" save being misrouted as a PUT to a row that
+  // doesn't exist yet.
+  const [newSlug, setNewSlug] = useState('');
 
   function set<K extends keyof CountryEditState>(key: K, value: CountryEditState[K]) {
     setEditing(prev => prev ? { ...prev, [key]: value } : null);
+  }
+
+  function openCreate() {
+    setEditing({ ...BLANK_COUNTRY });
+    setIsCreating(true);
+    setSlugTouched(false);
+    setNewSlug('');
+  }
+
+  function openEdit(c: Country) {
+    setEditing(toEditState(c));
+    setIsCreating(false);
+  }
+
+  function closeEditor() {
+    setEditing(null);
+    setIsCreating(false);
+  }
+
+  function handleNameChange(name: string) {
+    set('name', name);
+    if (!slugTouched) setNewSlug(slugify(name));
   }
 
   function setER(level: 'ug' | 'pg', items: string[]) {
@@ -48,9 +90,28 @@ export function CountryPagesSection({ data, actionsLoading, onSave, onToast }: C
 
   async function handleSave() {
     if (!editing) return;
-    const result = await onSave("Country Pages", editing as unknown as Record<string, unknown>);
+    if (isCreating && (!editing.name?.trim() || !newSlug.trim() || editing.code?.trim().length !== 2)) {
+      onToast("Name, a URL slug, and a 2-letter country code are required");
+      return;
+    }
+    // Creates must NOT carry an `id` — useCmsActions.save() routes to PUT
+    // whenever item.id is truthy, which would 404/400 against a row that
+    // doesn't exist yet. The new slug goes over as `slug`; the POST route
+    // derives the row's id from it.
+    const payload = isCreating
+      ? { ...editing, id: undefined, slug: newSlug }
+      : editing;
+    const result = await onSave("Country Pages", payload as unknown as Record<string, unknown>);
     onToast(result.message);
-    if (result.ok) setEditing(null);
+    if (result.ok) closeEditor();
+  }
+
+  async function handleDelete() {
+    if (!editing?.id) return;
+    if (!confirm(`Delete ${editing.name}? This removes the entire country page and cannot be undone.`)) return;
+    const result = await onDelete("countries", editing.id);
+    onToast(result.message);
+    if (result.ok) closeEditor();
   }
 
   if (editing) {
@@ -62,18 +123,53 @@ export function CountryPagesSection({ data, actionsLoading, onSave, onToast }: C
     return (
       <div className="animate-in slide-in-from-right duration-300 space-y-5 max-w-4xl pb-10">
         <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 sticky top-0 z-10">
-          <button onClick={() => setEditing(null)} className="p-1.5 hover:bg-brand-surface rounded-full text-brand">
+          <button onClick={closeEditor} className="p-1.5 hover:bg-brand-surface rounded-full text-brand">
             <ArrowLeft size={18} />
           </button>
           <div>
-            <h2 className="text-[15px] font-bold text-black">Edit {editing.name}</h2>
+            <h2 className="text-[15px] font-bold text-black">{isCreating ? 'New Country' : `Edit ${editing.name}`}</h2>
             <p className="text-[10px] text-gray-400">Changes saved to database and reflected live</p>
           </div>
           <div className="ml-auto flex gap-3">
-            <CmsButton variant="secondary" onClick={() => setEditing(null)}>Cancel</CmsButton>
+            {!isCreating && (
+              <CmsButton variant="destructive" onClick={handleDelete}><Trash2 size={13} /> Delete</CmsButton>
+            )}
+            <CmsButton variant="secondary" onClick={closeEditor}>Cancel</CmsButton>
             <CmsButton loading={actionsLoading} onClick={handleSave}><Save size={13} /> Save All</CmsButton>
           </div>
         </div>
+
+        {isCreating && (
+          <CmsCard>
+            <h3 className={`${CMS_LABEL_CLS} mb-4`}>Country Identity</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField label="Country Name">
+                <input className={CMS_INPUT_CLS} value={editing.name ?? ''} onChange={e => handleNameChange(e.target.value)} placeholder="e.g. Sweden" />
+              </FormField>
+              <FormField label="Flag Emoji">
+                <input className={CMS_INPUT_CLS} value={editing.flag ?? ''} onChange={e => set('flag', e.target.value)} placeholder="🇸🇪" />
+              </FormField>
+              <FormField label="URL Slug">
+                <input
+                  className={CMS_INPUT_CLS}
+                  value={newSlug}
+                  onChange={e => { setSlugTouched(true); setNewSlug(slugify(e.target.value)); }}
+                  placeholder="sweden"
+                />
+              </FormField>
+              <FormField label="Country Code (2 letters)">
+                <input
+                  className={CMS_INPUT_CLS}
+                  value={editing.code ?? ''}
+                  maxLength={2}
+                  onChange={e => set('code', e.target.value.toUpperCase())}
+                  placeholder="SE"
+                />
+              </FormField>
+            </div>
+            <p className="text-[11px] text-gray-400 mt-3">Will publish at transiteducation.com.np/study-abroad/{newSlug || '…'}</p>
+          </CmsCard>
+        )}
 
         <CmsCard>
           <h3 className={`${CMS_LABEL_CLS} mb-4`}>Basic Info</h3>
@@ -251,32 +347,39 @@ export function CountryPagesSection({ data, actionsLoading, onSave, onToast }: C
 
         <div className="flex gap-3">
           <CmsButton loading={actionsLoading} onClick={handleSave} className="px-8"><Save size={13} /> Save All Changes</CmsButton>
-          <CmsButton variant="secondary" onClick={() => setEditing(null)}>Cancel</CmsButton>
+          <CmsButton variant="secondary" onClick={closeEditor}>Cancel</CmsButton>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {data.countries.map((c, i) => (
-        <CmsCard
-          key={i}
-          className="hover:border-brand/30 transition-all cursor-pointer"
-          onClick={() => setEditing(toEditState(c))}
-        >
-          <div className="flex justify-between items-start mb-4">
-            <div className="text-[32px]">{c.flag}</div>
-            <StatusBadge status={c.status} />
-          </div>
-          <h3 className="text-[15px] font-semibold text-black mb-1">{c.name}</h3>
-          <p className="text-[11px] text-gray-400 mb-4">
-            {c.visaProcess?.length > 0 ? `${c.visaProcess.length} visa steps` : 'No visa steps'}{' · '}
-            {(c.entryRequirements?.ug?.length ?? 0) + (c.entryRequirements?.pg?.length ?? 0)} requirements
-          </p>
-          <CmsButton variant="ghost" className="w-full">Edit Content</CmsButton>
-        </CmsCard>
-      ))}
+    <div className="space-y-5">
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] font-bold text-black">Country Pages</h2>
+        <CmsButton onClick={openCreate}><Plus size={14} /> Add Country</CmsButton>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        {data.countries.map((c, i) => (
+          <CmsCard
+            key={i}
+            className="hover:border-brand/30 transition-all cursor-pointer"
+            onClick={() => openEdit(c)}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className="text-[32px]">{c.flag}</div>
+              <StatusBadge status={c.status} />
+            </div>
+            <h3 className="text-[15px] font-semibold text-black mb-1">{c.name}</h3>
+            <p className="text-[11px] text-gray-400 mb-4">
+              {c.visaProcess?.length > 0 ? `${c.visaProcess.length} visa steps` : 'No visa steps'}{' · '}
+              {(c.entryRequirements?.ug?.length ?? 0) + (c.entryRequirements?.pg?.length ?? 0)} requirements
+            </p>
+            <CmsButton variant="ghost" className="w-full">Edit Content</CmsButton>
+          </CmsCard>
+        ))}
+      </div>
     </div>
   );
 }
