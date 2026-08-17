@@ -50,10 +50,17 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const body = await req.json();
+
+    const id = (body.slug || body.id || body.name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!id) {
+      return NextResponse.json({ error: "A name or URL slug is required" }, { status: 400 });
+    }
+
     const { data: newItem, error } = await supabase
       .from('countries')
       .insert({
-        code: body.code,
+        id,
+        code: (body.code || '').toUpperCase().slice(0, 2),
         flag: body.flag,
         name: body.name,
         status: body.status || 'DRAFT',
@@ -73,7 +80,12 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json({ error: `A country page with the URL slug "${id}" already exists` }, { status: 409 });
+      }
+      throw error;
+    }
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {
     console.error('POST /api/cms/countries error:', error);

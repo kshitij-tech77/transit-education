@@ -5,6 +5,7 @@ import {
   LayoutDashboard, Users, FileText, HelpCircle, Globe, GraduationCap,
   FileDown, Image as ImageIcon, MessageSquare, CalendarDays, Briefcase,
   Handshake, MapPin, Settings, LogOut, Plus, Loader2, Gift,
+  Contact,
 } from "lucide-react";
 import { useCmsData }    from "@/hooks/useCmsData";
 import { useCmsActions } from "@/hooks/useCmsActions";
@@ -15,7 +16,7 @@ import type { CmsDataState } from "@/types/cms";
 import {
   DashboardSection, StudentsSection, BlogSection, FaqSection,
   CountryPagesSection, SuccessStoriesSection, ResourcesSection,
-  MediaLibrarySection, TestimonialsSection, EventsSection,
+  MediaLibrarySection, TestimonialsSection, TeamSection, EventsSection,
   CareersSection, FranchiseSection, BranchesSection, SettingsSection,
   LoyaltySection,
 } from "@/components/cms/sections";
@@ -73,6 +74,7 @@ export default function TransitPortal() {
       { id: "Resources"           as CmsSection, icon: FileDown,        badge: data.resources.length },
       { id: "Media Library"       as CmsSection, icon: ImageIcon,       badge: null },
       { id: "Testimonials"        as CmsSection, icon: MessageSquare,   badge: null },
+      { id: "Team"                as CmsSection, icon: Contact,         badge: data.teamMembers.length },
       { id: "Events"              as CmsSection, icon: CalendarDays,    badge: data.events.length },
     ]},
     { label: "MANAGE", items: [
@@ -187,11 +189,12 @@ export default function TransitPortal() {
           {activeSection === "Students"            && <StudentsSection {...sp} />}
           {activeSection === "Blog Posts"          && <BlogSection data={data} actionsLoading={actionLoading} onDelete={remove} onToast={onToast} />}
           {activeSection === "FAQ Manager"         && <FaqSection {...sp} />}
-          {activeSection === "Country Pages"       && <CountryPagesSection data={data} actionsLoading={actionLoading} onSave={save} onToast={onToast} />}
+          {activeSection === "Country Pages"       && <CountryPagesSection data={data} actionsLoading={actionLoading} onSave={save} onDelete={remove} onToast={onToast} />}
           {activeSection === "Success Stories"     && <SuccessStoriesSection {...sp} onUpload={uploadMedia} />}
           {activeSection === "Resources"           && <ResourcesSection {...sp} />}
           {activeSection === "Media Library"       && <MediaLibrarySection data={data} actionsLoading={actionLoading} onToast={onToast} onUpload={uploadMedia} onDeleteMedia={deleteMedia} />}
           {activeSection === "Testimonials"        && <TestimonialsSection {...sp} />}
+          {activeSection === "Team"                && <TeamSection {...sp} onUpload={uploadMedia} />}
           {activeSection === "Events"              && <EventsSection {...sp} onUpload={uploadMedia} />}
           {activeSection === "Careers"             && <CareersSection {...sp} />}
           {activeSection === "Franchise Inquiries" && <FranchiseSection {...sp} />}

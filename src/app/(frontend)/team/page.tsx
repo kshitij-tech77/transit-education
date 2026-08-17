@@ -24,17 +24,15 @@ export default async function TeamPage() {
       *,
       branches (name)
     `)
+    .eq('is_visible', true)
     .order('name', { ascending: true });
-
-  // TO SHOW: remove the filter below (or remove the name from the array)
-  const HIDDEN_MEMBERS = ['Kshitiz'];
 
   const teamData = (teamRaw?.map(m => ({
     ...m,
     role: m.role,
     photo: m.photo_url,
     branch: (m as any).branches?.name || 'N/A'
-  })) || []).filter(m => !HIDDEN_MEMBERS.includes(m.name));
+  })) || []);
 
   const leadership = teamData.filter(m => {
     const role = (m.role || '').toLowerCase();

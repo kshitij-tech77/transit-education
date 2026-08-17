@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const __impeccableLiveSrc =
   process.env.NODE_ENV === "development" ? " http://localhost:8400" : "";
@@ -29,6 +30,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  turbopack: {
+    root: path.join(__dirname),
+  },
   async headers() {
     return [
       {
