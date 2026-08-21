@@ -25,6 +25,7 @@ export default async function TeamPage() {
       branches (name)
     `)
     .eq('is_visible', true)
+    .order('display_order', { ascending: true })
     .order('name', { ascending: true });
 
   const teamData = (teamRaw?.map(m => ({

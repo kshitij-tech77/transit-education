@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Plus, Edit, Trash2, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash2, EyeOff, ArrowUp, ArrowDown } from "lucide-react";
 import type { CmsDataState } from "@/types/cms";
 import type { ActionResult, UploadResult } from "@/hooks/useCmsActions";
 import { CmsCard, CmsButton, CmsModal, FormField, CMS_INPUT_CLS, CMS_LABEL_CLS } from "@/components/cms/shared";
@@ -18,6 +18,7 @@ interface TeamSectionProps {
 export function TeamSection({ data, actionsLoading, onSave, onDelete, onToast, onUpload }: TeamSectionProps) {
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   function update(key: string, value: unknown) {
@@ -38,6 +39,35 @@ export function TeamSection({ data, actionsLoading, onSave, onDelete, onToast, o
   async function handleDelete(id: string) {
     const result = await onDelete("team-members", id);
     onToast(result.message);
+  }
+
+  // Renumbers the whole list by its new position and only persists the
+  // members whose displayOrder actually changed — normally just the two
+  // swapped, but on first use (when every row still shares the same
+  // default order) this cleanly assigns everyone a distinct rank.
+  async function move(index: number, direction: -1 | 1) {
+    const targetIndex = index + direction;
+    if (reordering || targetIndex < 0 || targetIndex >= data.teamMembers.length) return;
+
+    const reordered = [...data.teamMembers];
+    [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
+
+    const toUpdate = reordered
+      .map((m, i) => ({ member: m, newOrder: i }))
+      .filter(({ member, newOrder }) => member.displayOrder !== newOrder);
+
+    if (toUpdate.length === 0) return;
+
+    setReordering(true);
+    const results = await Promise.all(
+      toUpdate.map(({ member, newOrder }) =>
+        onSave("TeamMember", { ...member, displayOrder: newOrder } as unknown as Record<string, unknown>)
+      )
+    );
+    setReordering(false);
+
+    const failed = results.find(r => !r.ok);
+    onToast(failed ? failed.message : "Order updated");
   }
 
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -69,7 +99,7 @@ export function TeamSection({ data, actionsLoading, onSave, onDelete, onToast, o
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data.teamMembers.map(m => (
+              {data.teamMembers.map((m, i) => (
                 <tr key={m.id} className="text-[13px] hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -91,6 +121,8 @@ export function TeamSection({ data, actionsLoading, onSave, onDelete, onToast, o
                     }
                   </td>
                   <td className="px-6 py-4 flex gap-2">
+                    <CmsButton variant="ghost" disabled={reordering || i === 0} onClick={() => move(i, -1)}><ArrowUp size={14} /></CmsButton>
+                    <CmsButton variant="ghost" disabled={reordering || i === data.teamMembers.length - 1} onClick={() => move(i, 1)}><ArrowDown size={14} /></CmsButton>
                     <CmsButton variant="ghost" onClick={() => openEdit(m as unknown as Record<string, unknown>)}><Edit size={14} /></CmsButton>
                     <CmsButton variant="destructive" onClick={() => handleDelete(m.id)}><Trash2 size={14} /></CmsButton>
                   </td>

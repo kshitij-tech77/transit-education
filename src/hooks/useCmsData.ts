@@ -1,19 +1,22 @@
 "use client";
 
 /**
- * useCmsData — parallel-fetches all 14 CMS API endpoints.
- *
- * NOT yet wired into Portal.tsx. Drop-in replacement for Portal's
- * fetchData function once Phase 4 (section extraction) begins.
+ * useCmsData — fetches CMS API endpoints on demand, tracking which
+ * `CmsDataState` keys have been loaded so callers only ever fetch what a
+ * given section actually needs (see SECTION_DATA_KEYS in constants/cms.ts).
  *
  * Returns:
- *   data     — fully-typed CmsDataState (zero `any`)
- *   loading  — true during initial load and any refetch
- *   error    — last fetch error message, or null
- *   refetch  — stable callback; call after mutations to sync state
+ *   data        — fully-typed CmsDataState (zero `any`)
+ *   loading     — true while any fetch is in flight
+ *   error       — last fetch error message, or null
+ *   loadedKeys  — CmsDataState keys fetched at least once this session
+ *   refetch     — fetches all 20 endpoints; kept as an explicit "refresh
+ *                 everything" escape hatch, not used for routine loading
+ *   refetchKeys — force-refetches the given keys regardless of loadedKeys
+ *   ensureLoaded — fetches only the given keys not already in loadedKeys
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type {
   CmsDataState,
   Student,
@@ -133,16 +136,31 @@ interface UseCmsDataReturn {
   data: CmsDataState;
   loading: boolean;
   error: string | null;
+  loadedKeys: ReadonlySet<keyof CmsDataState>;
   refetch: () => Promise<void>;
-  /** Refetches only the given keys, leaving the rest of `data` untouched. */
+  /** Force-refetches the given keys, leaving the rest of `data` untouched. */
   refetchKeys: (keys: (keyof CmsDataState)[]) => Promise<void>;
+  /** Fetches only the keys not already in `loadedKeys`; no-ops if all are loaded. */
+  ensureLoaded: (keys: (keyof CmsDataState)[]) => Promise<void>;
 }
 
 export function useCmsData(): UseCmsDataReturn {
   const [data, setData] = useState<CmsDataState>(INITIAL_CMS_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadedKeys, setLoadedKeys] = useState<ReadonlySet<keyof CmsDataState>>(new Set());
 
+  // Read synchronously inside callbacks without making their identity depend
+  // on loadedKeys (which changes on every fetch) — keeps ensureLoaded stable
+  // across renders so effects that depend on it don't re-run needlessly.
+  const loadedKeysRef = useRef(loadedKeys);
+  useEffect(() => {
+    loadedKeysRef.current = loadedKeys;
+  });
+
+  // Explicit "refresh everything" escape hatch — not used for routine
+  // section loading (see ensureLoaded/refetchKeys below), only kept for
+  // callers that genuinely need every endpoint re-synced at once.
   const refetch = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -165,6 +183,7 @@ export function useCmsData(): UseCmsDataReturn {
       );
 
       setData(parseResults(results));
+      setLoadedKeys(new Set(ENDPOINTS.map(e => e.key)));
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown fetch error";
       setError(message);
@@ -174,10 +193,12 @@ export function useCmsData(): UseCmsDataReturn {
     }
   }, []);
 
-  // Targeted refetch for mutations that only affect a couple of sections
-  // (e.g. a loyalty edit) — avoids re-fetching all 19 endpoints. Falls back
-  // to the previous value per key on error, instead of blanking it out, so a
-  // transient failure on one endpoint doesn't wipe already-loaded data.
+  // Targeted refetch for mutations/section loads that only need a couple of
+  // endpoints — avoids re-fetching all 20. Falls back to the previous value
+  // per key on error, instead of blanking it out, so a transient failure on
+  // one endpoint doesn't wipe already-loaded data. Always fetches the given
+  // keys, regardless of whether they're already in loadedKeys — use
+  // ensureLoaded instead when a stale-but-loaded key should be left alone.
   const refetchKeys = useCallback(async (keys: (keyof CmsDataState)[]) => {
     const targets = ENDPOINTS.filter(e => (keys as string[]).includes(e.key));
     if (targets.length === 0) return;
@@ -210,6 +231,11 @@ export function useCmsData(): UseCmsDataReturn {
         });
         return next;
       });
+      setLoadedKeys(prev => {
+        const next = new Set(prev);
+        targets.forEach(t => next.add(t.key));
+        return next;
+      });
     } catch (err) {
       console.error("[useCmsData] refetchKeys failed:", err);
     } finally {
@@ -217,5 +243,11 @@ export function useCmsData(): UseCmsDataReturn {
     }
   }, []);
 
-  return { data, loading, error, refetch, refetchKeys };
+  const ensureLoaded = useCallback(async (keys: (keyof CmsDataState)[]) => {
+    const missing = keys.filter(k => !loadedKeysRef.current.has(k));
+    if (missing.length === 0) return;
+    await refetchKeys(missing);
+  }, [refetchKeys]);
+
+  return { data, loading, error, loadedKeys, refetch, refetchKeys, ensureLoaded };
 }

@@ -11,8 +11,7 @@ import { useCmsData }    from "@/hooks/useCmsData";
 import { useCmsActions } from "@/hooks/useCmsActions";
 import { useCmsAuth }    from "@/hooks/useCmsAuth";
 import { TRANSIT_LOGO_URL } from "@/constants/assets";
-import type { CmsSection } from "@/constants/cms";
-import type { CmsDataState } from "@/types/cms";
+import { SECTION_DATA_KEYS, API_PATH_REFETCH_KEYS, type CmsSection } from "@/constants/cms";
 import {
   DashboardSection, StudentsSection, BlogSection, FaqSection,
   CountryPagesSection, SuccessStoriesSection, ResourcesSection,
@@ -21,27 +20,19 @@ import {
   LoyaltySection,
 } from "@/components/cms/sections";
 
-// Loyalty mutations only need to refresh the section(s) they can actually
-// affect, instead of all 19 CMS endpoints. Redemption/completion decisions
-// also touch loyaltyMembers (points are credited/refunded as a side effect),
-// so those two refetch the members list too; pure catalog edits don't.
-const LOYALTY_REFETCH_KEYS: Partial<Record<string, (keyof CmsDataState)[]>> = {
-  "loyalty/rewards":     ["loyaltyRewards"],
-  "loyalty/milestones":  ["loyaltyMilestones"],
-  "loyalty/redemptions": ["loyaltyRedemptions", "loyaltyMembers"],
-  "loyalty/completions": ["loyaltyCompletions", "loyaltyMembers"],
-};
-
 export default function TransitPortal() {
-  const { data, loading: dataLoading, refetch, refetchKeys } = useCmsData();
+  const { data, loadedKeys, refetch, refetchKeys, ensureLoaded } = useCmsData();
 
-  // Every non-loyalty section keeps calling the full refetch exactly as
-  // before; only loyalty mutations get routed to a targeted refetch.
+  // Every mutation only ever targets a key its own section already loaded to
+  // render its form, so this is always a targeted refresh, never a full
+  // 20-endpoint refetch. `refetch()` is kept only as a defensive fallback for
+  // an apiPath that isn't in the map (e.g. a future section not yet wired in).
   const handleMutationSuccess = useCallback((apiPath: string) => {
-    const keys = LOYALTY_REFETCH_KEYS[apiPath];
+    const keys = API_PATH_REFETCH_KEYS[apiPath];
     if (keys) {
       void refetchKeys(keys);
     } else {
+      console.error(`[Portal] no API_PATH_REFETCH_KEYS entry for "${apiPath}" — falling back to a full refetch`);
       void refetch();
     }
   }, [refetch, refetchKeys]);
@@ -53,7 +44,14 @@ export default function TransitPortal() {
   const [toast, setToast]                   = useState<string | null>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  useEffect(() => { void refetch(); }, [refetch]);
+  // Lazily load only the data the active section needs, the first time it's
+  // visited — replaces the old unconditional "fetch all 20 endpoints on
+  // mount" that ran regardless of which section (if any) was actually shown.
+  useEffect(() => {
+    void ensureLoaded(SECTION_DATA_KEYS[activeSection]);
+  }, [activeSection, ensureLoaded]);
+
+  const sectionReady = SECTION_DATA_KEYS[activeSection].every(k => loadedKeys.has(k));
 
   useEffect(() => {
     if (!toast) return;
@@ -64,23 +62,25 @@ export default function TransitPortal() {
   const sidebarGroups = [
     { label: "MAIN", items: [
       { id: "Dashboard"           as CmsSection, icon: LayoutDashboard, badge: null },
-      { id: "Students"            as CmsSection, icon: Users,           badge: data.students.length },
+      { id: "Students"            as CmsSection, icon: Users,           badge: loadedKeys.has("students") ? data.students.length : null },
     ]},
     { label: "CONTENT", items: [
-      { id: "Blog Posts"          as CmsSection, icon: FileText,        badge: data.posts.length },
-      { id: "FAQ Manager"         as CmsSection, icon: HelpCircle,      badge: data.faqs.length },
+      { id: "Blog Posts"          as CmsSection, icon: FileText,        badge: loadedKeys.has("posts") ? data.posts.length : null },
+      { id: "FAQ Manager"         as CmsSection, icon: HelpCircle,      badge: loadedKeys.has("faqs") ? data.faqs.length : null },
       { id: "Country Pages"       as CmsSection, icon: Globe,           badge: null },
-      { id: "Success Stories"     as CmsSection, icon: GraduationCap,   badge: data.successStories.length },
-      { id: "Resources"           as CmsSection, icon: FileDown,        badge: data.resources.length },
+      { id: "Success Stories"     as CmsSection, icon: GraduationCap,   badge: loadedKeys.has("successStories") ? data.successStories.length : null },
+      { id: "Resources"           as CmsSection, icon: FileDown,        badge: loadedKeys.has("resources") ? data.resources.length : null },
       { id: "Media Library"       as CmsSection, icon: ImageIcon,       badge: null },
       { id: "Testimonials"        as CmsSection, icon: MessageSquare,   badge: null },
-      { id: "Team"                as CmsSection, icon: Contact,         badge: data.teamMembers.length },
-      { id: "Events"              as CmsSection, icon: CalendarDays,    badge: data.events.length },
+      { id: "Team"                as CmsSection, icon: Contact,         badge: loadedKeys.has("teamMembers") ? data.teamMembers.length : null },
+      { id: "Events"              as CmsSection, icon: CalendarDays,    badge: loadedKeys.has("events") ? data.events.length : null },
     ]},
     { label: "MANAGE", items: [
-      { id: "Careers"             as CmsSection, icon: Briefcase,       badge: data.jobApplications.length },
-      { id: "Franchise Inquiries" as CmsSection, icon: Handshake,       badge: data.franchiseInquiries.length },
-      { id: "Loyalty"             as CmsSection, icon: Gift,            badge: data.loyaltyRedemptions.filter(r => r.status === "PENDING").length + data.loyaltyCompletions.filter(c => c.status === "PENDING").length },
+      { id: "Careers"             as CmsSection, icon: Briefcase,       badge: loadedKeys.has("jobApplications") ? data.jobApplications.length : null },
+      { id: "Franchise Inquiries" as CmsSection, icon: Handshake,       badge: loadedKeys.has("franchiseInquiries") ? data.franchiseInquiries.length : null },
+      { id: "Loyalty"             as CmsSection, icon: Gift,            badge: (loadedKeys.has("loyaltyRedemptions") && loadedKeys.has("loyaltyCompletions"))
+        ? data.loyaltyRedemptions.filter(r => r.status === "PENDING").length + data.loyaltyCompletions.filter(c => c.status === "PENDING").length
+        : null },
       { id: "Branches"            as CmsSection, icon: MapPin,          badge: null },
       { id: "Settings"            as CmsSection, icon: Settings,        badge: null },
     ]},
@@ -181,26 +181,26 @@ export default function TransitPortal() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-7 pt-6 scrollbar-hide">
-          {dataLoading && data.students.length === 0 && (
+          {!sectionReady && (
             <div className="flex items-center justify-center py-20 text-brand"><Loader2 className="animate-spin" size={40} /></div>
           )}
 
-          {activeSection === "Dashboard"           && <DashboardSection data={data} onNavigate={s => setActiveSection(s)} />}
-          {activeSection === "Students"            && <StudentsSection {...sp} />}
-          {activeSection === "Blog Posts"          && <BlogSection data={data} actionsLoading={actionLoading} onDelete={remove} onToast={onToast} />}
-          {activeSection === "FAQ Manager"         && <FaqSection {...sp} />}
-          {activeSection === "Country Pages"       && <CountryPagesSection data={data} actionsLoading={actionLoading} onSave={save} onDelete={remove} onToast={onToast} />}
-          {activeSection === "Success Stories"     && <SuccessStoriesSection {...sp} onUpload={uploadMedia} />}
-          {activeSection === "Resources"           && <ResourcesSection {...sp} />}
-          {activeSection === "Media Library"       && <MediaLibrarySection data={data} actionsLoading={actionLoading} onToast={onToast} onUpload={uploadMedia} onDeleteMedia={deleteMedia} />}
-          {activeSection === "Testimonials"        && <TestimonialsSection {...sp} />}
-          {activeSection === "Team"                && <TeamSection {...sp} onUpload={uploadMedia} />}
-          {activeSection === "Events"              && <EventsSection {...sp} onUpload={uploadMedia} />}
-          {activeSection === "Careers"             && <CareersSection {...sp} />}
-          {activeSection === "Franchise Inquiries" && <FranchiseSection {...sp} />}
-          {activeSection === "Loyalty"             && <LoyaltySection {...sp} />}
-          {activeSection === "Branches"            && <BranchesSection {...sp} />}
-          {activeSection === "Settings"            && <SettingsSection data={data} actionsLoading={actionLoading} onSave={save} onToast={onToast} />}
+          {sectionReady && activeSection === "Dashboard"           && <DashboardSection data={data} onNavigate={s => setActiveSection(s)} />}
+          {sectionReady && activeSection === "Students"            && <StudentsSection {...sp} />}
+          {sectionReady && activeSection === "Blog Posts"          && <BlogSection data={data} actionsLoading={actionLoading} onDelete={remove} onToast={onToast} />}
+          {sectionReady && activeSection === "FAQ Manager"         && <FaqSection {...sp} />}
+          {sectionReady && activeSection === "Country Pages"       && <CountryPagesSection data={data} actionsLoading={actionLoading} onSave={save} onDelete={remove} onToast={onToast} />}
+          {sectionReady && activeSection === "Success Stories"     && <SuccessStoriesSection {...sp} onUpload={uploadMedia} />}
+          {sectionReady && activeSection === "Resources"           && <ResourcesSection {...sp} />}
+          {sectionReady && activeSection === "Media Library"       && <MediaLibrarySection data={data} actionsLoading={actionLoading} onToast={onToast} onUpload={uploadMedia} onDeleteMedia={deleteMedia} />}
+          {sectionReady && activeSection === "Testimonials"        && <TestimonialsSection {...sp} />}
+          {sectionReady && activeSection === "Team"                && <TeamSection {...sp} onUpload={uploadMedia} />}
+          {sectionReady && activeSection === "Events"              && <EventsSection {...sp} onUpload={uploadMedia} />}
+          {sectionReady && activeSection === "Careers"             && <CareersSection {...sp} />}
+          {sectionReady && activeSection === "Franchise Inquiries" && <FranchiseSection {...sp} />}
+          {sectionReady && activeSection === "Loyalty"             && <LoyaltySection {...sp} />}
+          {sectionReady && activeSection === "Branches"            && <BranchesSection {...sp} />}
+          {sectionReady && activeSection === "Settings"            && <SettingsSection data={data} actionsLoading={actionLoading} onSave={save} onToast={onToast} />}
 
         </main>
       </div>
