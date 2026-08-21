@@ -21,6 +21,7 @@ import TiptapEditor from "@/components/cms/TiptapEditor";
 import { cn } from "@/lib/utils";
 import { BlogPost, FAQItem } from "@/lib/types/blog";
 import { toast } from "sonner";
+import { useCmsAuth } from "@/hooks/useCmsAuth";
 
 type BlogEditorProps = {
   initialData?: BlogPost;
@@ -29,6 +30,7 @@ type BlogEditorProps = {
 
 export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const router = useRouter();
+  const { profile } = useCmsAuth();
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
   const [tagsInput, setTagsInput] = useState((initialData?.tags || []).join(", "));
@@ -44,7 +46,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       category: "Visa Tips",
       status: "draft",
       tags: [],
-      authorName: "Kshitij Dhamala",
+      authorName: "",
       metaTitle: "",
       metaDescription: "",
       faqItems: [],
@@ -60,6 +62,17 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       ogDescription: "",
     }
   );
+
+  // ─── DEFAULT AUTHOR TO THE LOGGED-IN USER ───
+  // Profile loads asynchronously after this component mounts, so it can't be
+  // read at useState-initializer time; fill it in once it arrives, but only
+  // for a brand-new post the user hasn't already typed an author name into.
+  useEffect(() => {
+    const defaultAuthorName = profile?.full_name;
+    if (!isEdit && !formData.authorName && defaultAuthorName) {
+      setFormData(prev => ({ ...prev, authorName: defaultAuthorName }));
+    }
+  }, [isEdit, formData.authorName, profile?.full_name]);
 
   // ─── AUTO-GENERATE SLUG ───
   useEffect(() => {

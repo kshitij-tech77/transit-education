@@ -43,5 +43,8 @@ next-env.d.ts
 # archive
 /_archive/
 
+# local-only production data backups (may contain user data)
+/backups/
+
 # supabase
 .env.*

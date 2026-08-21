@@ -34,7 +34,10 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
   const { data: country } = countryRes;
   let { data: faqsRaw } = faqsRes;
 
-  if (!country) notFound();
+  // The CMS's Draft/Live toggle (CountryPagesSection) is meaningless if this
+  // page renders regardless of `status` — a Draft country would stay fully
+  // live here even though the CMS tells editors otherwise.
+  if (!country || country.status !== 'LIVE') notFound();
 
   if (!faqsRaw || faqsRaw.length === 0) {
     const { data: globalFaqs } = await supabase

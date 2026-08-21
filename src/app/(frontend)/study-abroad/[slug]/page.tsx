@@ -11,12 +11,19 @@ import { unstable_cache } from "next/cache";
 // revalidated every 5 minutes. Uses the anon client (not the cookie-aware
 // server client) since `unstable_cache` can't access request-time APIs like
 // cookies, and these are public, unauthenticated reads either way.
+// The URL segment is the country's `id` (the slug the CMS derives from the
+// name, e.g. "germany") — not `code` (the 2-letter field, e.g. "DE"). Every
+// other place that resolves a country by URL (the countries API, the
+// POST-create route, CountryDestinationPage, FaqSection's page paths) treats
+// it as `id`; this used to be the only place using the wrong column, which
+// made any CMS-created country (without a static override page) permanently
+// unreachable here regardless of status.
 const getCachedCountryBySlug = unstable_cache(
   async (slug: string) => {
     const res = await supabase
       .from('countries')
       .select('*')
-      .eq('code', slug)
+      .eq('id', slug)
       .eq('status', 'LIVE')
       .single();
     return { data: res.data };

@@ -6,7 +6,10 @@
  *  - Section/modal routing  → CMS_API_PATH[key]
  *  - Status badge colors    → CONTENT_STATUS or STUDENT_STATUS values
  *  - Filter/select options  → FAQ_CATEGORIES, FAQ_PAGES, JOB_TYPES, etc.
+ *  - Lazy data loading      → SECTION_DATA_KEYS[activeSection]
  */
+
+import type { CmsDataState } from "@/types/cms";
 
 // ─── Sidebar Section Names ────────────────────────────────────────────────────
 
@@ -30,6 +33,32 @@ export const CMS_SECTIONS = [
 ] as const;
 
 export type CmsSection = (typeof CMS_SECTIONS)[number];
+
+// ─── Section → Data Dependency Map ───────────────────────────────────────────
+// Every CmsDataState key a section's component (including its Add/Edit modal
+// dropdowns) actually reads — derived by grepping `data\.` in each section
+// file, not guessed. Drives useCmsData's lazy per-section loading: a section
+// only fetches these keys the first time it's visited, instead of the portal
+// eagerly fetching all 20 endpoints on every page load.
+
+export const SECTION_DATA_KEYS: Record<CmsSection, (keyof CmsDataState)[]> = {
+  "Dashboard":            ["students", "posts", "successStories", "branches"],
+  "Students":             ["students", "branches", "countries"],
+  "Blog Posts":           ["posts"],
+  "FAQ Manager":          ["faqs", "countries"],
+  "Country Pages":        ["countries"],
+  "Success Stories":      ["successStories"],
+  "Resources":            ["resources"],
+  "Media Library":        ["media"],
+  "Testimonials":         ["testimonials"],
+  "Team":                 ["teamMembers", "branches"],
+  "Branches":             ["branches"],
+  "Settings":             ["settings"],
+  "Events":               ["events"],
+  "Careers":              ["jobOpenings", "jobApplications", "branches"],
+  "Franchise Inquiries":  ["franchiseInquiries"],
+  "Loyalty":              ["loyaltyRewards", "loyaltyRedemptions", "loyaltyMembers", "loyaltyMilestones", "loyaltyCompletions"],
+};
 
 // ─── Modal Keys ───────────────────────────────────────────────────────────────
 // These match the string values stored in Portal.tsx's `showModal` state.
@@ -107,6 +136,38 @@ export const CMS_API_PATH: Readonly<Record<string, string>> = {
   "loyalty/redemptions": "loyalty/redemptions",
   "loyalty/milestones": "loyalty/milestones",
   "loyalty/completions": "loyalty/completions",
+} as const;
+
+// ─── Resolved API Path → Data Keys To Refetch After A Mutation ──────────────
+// useCmsActions.save()/remove() report the *resolved* apiPath (the right-hand
+// side of CMS_API_PATH above, e.g. "students", "loyalty/redemptions") back to
+// the caller. This says which CmsDataState key(s) a save/delete against that
+// path should refresh — almost always just the entity's own key, except
+// redemption/completion decisions, which also credit/refund loyaltyMembers
+// points as a side effect and so need that list refreshed too. Every mutation
+// only ever targets a key its own section already loaded to render its form,
+// so this always operates on already-loaded data — no separate invalidation
+// bookkeeping is needed on top of it.
+export const API_PATH_REFETCH_KEYS: Readonly<Record<string, (keyof CmsDataState)[]>> = {
+  students: ["students"],
+  blog: ["posts"],
+  faqs: ["faqs"],
+  countries: ["countries"],
+  "success-stories": ["successStories"],
+  resources: ["resources"],
+  branches: ["branches"],
+  testimonials: ["testimonials"],
+  "team-members": ["teamMembers"],
+  events: ["events"],
+  "job-openings": ["jobOpenings"],
+  "job-applications": ["jobApplications"],
+  "franchise-inquiries": ["franchiseInquiries"],
+  settings: ["settings"],
+  media: ["media"],
+  "loyalty/rewards": ["loyaltyRewards"],
+  "loyalty/redemptions": ["loyaltyRedemptions", "loyaltyMembers"],
+  "loyalty/milestones": ["loyaltyMilestones"],
+  "loyalty/completions": ["loyaltyCompletions", "loyaltyMembers"],
 } as const;
 
 // ─── Student Statuses ─────────────────────────────────────────────────────────

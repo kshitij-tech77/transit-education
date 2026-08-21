@@ -18,6 +18,20 @@ interface StudentsSectionProps {
 export function StudentsSection({ data, actionsLoading, onSave, onDelete, onToast }: StudentsSectionProps) {
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const filteredStudents = data.students.filter(s => {
+    const q = search.trim().toLowerCase();
+    const matchesSearch = !q
+      || s.name?.toLowerCase().includes(q)
+      || s.phone?.toLowerCase().includes(q)
+      || s.email?.toLowerCase().includes(q);
+    const matchesBranch = !branchFilter || s.branch === branchFilter;
+    const matchesStatus = !statusFilter || s.status === statusFilter;
+    return matchesSearch && matchesBranch && matchesStatus;
+  });
 
   function update(key: string, value: unknown) {
     setEditingItem(prev => ({ ...(prev ?? {}), [key]: value }));
@@ -46,15 +60,21 @@ export function StudentsSection({ data, actionsLoading, onSave, onDelete, onToas
           <div className="flex gap-3 flex-1 max-w-2xl">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-              <input type="text" placeholder="Search students..." className={`${CMS_INPUT_CLS} pl-10`} />
+              <input
+                type="text"
+                placeholder="Search students..."
+                className={`${CMS_INPUT_CLS} pl-10`}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
             </div>
-            <select className={`${CMS_INPUT_CLS} bg-white w-40`}>
-              <option>All Branches</option>
-              {data.branches.map(b => <option key={b.id}>{b.name}</option>)}
+            <select className={`${CMS_INPUT_CLS} bg-white w-40`} value={branchFilter} onChange={e => setBranchFilter(e.target.value)}>
+              <option value="">All Branches</option>
+              {data.branches.map(b => <option key={b.id} value={b.name}>{b.name}</option>)}
             </select>
-            <select className={`${CMS_INPUT_CLS} bg-white w-40`}>
-              <option>All Status</option>
-              {Object.values(STUDENT_STATUS).map(s => <option key={s}>{s}</option>)}
+            <select className={`${CMS_INPUT_CLS} bg-white w-40`} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+              <option value="">All Status</option>
+              {Object.values(STUDENT_STATUS).map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <CmsButton onClick={openCreate}><Plus size={14} /> Add Student</CmsButton>
@@ -74,7 +94,12 @@ export function StudentsSection({ data, actionsLoading, onSave, onDelete, onToas
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data.students.map((s, i) => (
+              {filteredStudents.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-6 py-10 text-center text-gray-400 text-[13px]">No students match your filters.</td>
+                </tr>
+              )}
+              {filteredStudents.map((s, i) => (
                 <tr key={i} className="text-[13px] hover:bg-gray-50">
                   <td className="px-6 py-4 font-semibold text-black">{s.name}</td>
                   <td className="px-6 py-4 text-gray-600">{s.phone}</td>

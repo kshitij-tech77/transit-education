@@ -1,8 +1,10 @@
 "use client";
 
+import { useId, useRef } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CmsButton } from "./CmsButton";
+import { useModalA11y } from "./useModalA11y";
 
 interface CmsModalProps {
   title: string;
@@ -22,6 +24,11 @@ export function CmsModal({
   loading = false,
   className,
 }: CmsModalProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
+  useModalA11y(panelRef, onClose);
+
   return (
     // Overlay — z-[100] is intentional layering for CMS modals above portal chrome
     <div
@@ -30,16 +37,21 @@ export function CmsModal({
     >
       {/* Panel — stop propagation so clicks inside don't close the modal */}
       <div
+        ref={panelRef}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className={cn(
-          "bg-white w-120 rounded-2xl shadow-2xl border border-gray-200",
+          "bg-white w-120 rounded-2xl shadow-2xl border border-gray-200 outline-none",
           "animate-in fade-in zoom-in duration-200",
           className,
         )}
       >
         {/* Header */}
         <div className="px-7 pt-7 pb-4 flex justify-between items-center">
-          <h2 className="text-base font-bold text-black">{title}</h2>
+          <h2 id={titleId} className="text-base font-bold text-black">{title}</h2>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-brand-surface rounded-full text-brand transition-colors"

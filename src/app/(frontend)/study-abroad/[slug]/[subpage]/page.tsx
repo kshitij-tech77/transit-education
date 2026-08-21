@@ -356,9 +356,16 @@ type SubPage = (typeof VALID_SUBPAGES)[number];
 // own cache entry, revalidated every 5 minutes. Uses the anon client (not the
 // cookie-aware server client) since `unstable_cache` can't access
 // request-time APIs like cookies, and these are public, unauthenticated reads.
+//
+// `country` is the URL segment, which is the country's `id` (the CMS-derived
+// slug, e.g. "germany") — not `code` (the 2-letter field, e.g. "DE"). This
+// used to filter on `code`, which made any CMS-created country's subpages
+// permanently unreachable here. Both queries also select `status` now so the
+// page below can 404 (and Next.js auto-noindexes 404s) instead of rendering
+// a Draft country's subpage as if it were live.
 const getCachedCountryMeta = unstable_cache(
   async (country: string) => {
-    const res = await supabase.from("countries").select("name, meta_title").eq("code", country).single();
+    const res = await supabase.from("countries").select("name, meta_title, status").eq("id", country).single();
     return { data: res.data };
   },
   ['study-abroad-subpage-country-meta'],
@@ -369,8 +376,8 @@ const getCachedCountryDetail = unstable_cache(
   async (country: string) => {
     const res = await supabase
       .from("countries")
-      .select("name, code, cost_of_living, scholarship_data, university_list, visa_extended")
-      .eq("code", country)
+      .select("name, code, status, cost_of_living, scholarship_data, university_list, visa_extended")
+      .eq("id", country)
       .single();
     return { data: res.data };
   },
@@ -402,7 +409,8 @@ export async function generateMetadata({
   if (!VALID_SUBPAGES.includes(subpage as SubPage)) return {};
 
   const { data } = await getCachedCountryMeta(country);
-  const countryName = data?.name || country.charAt(0).toUpperCase() + country.slice(1);
+  if (!data || data.status !== 'LIVE') return {};
+  const countryName = data.name || country.charAt(0).toUpperCase() + country.slice(1);
 
   const titles: Record<SubPage, string> = {
     visa: `${countryName} Student Visa from Nepal | Step-by-Step Guide — Transit Education`,
@@ -441,6 +449,8 @@ export default async function CountrySubPage({
   if (!VALID_SUBPAGES.includes(subpage as SubPage)) notFound();
 
   const { data: countryData } = await getCachedCountryDetail(country);
+  if (!countryData || countryData.status !== 'LIVE') notFound();
+
   const { data: faqsRaw } = await getCachedSubpageFaqs(country, subpage);
 
   const faqs = faqsRaw?.map((f) => ({ ...f, featured: f.is_featured, status: "Published" })) || [];

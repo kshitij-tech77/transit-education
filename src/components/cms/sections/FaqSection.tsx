@@ -18,6 +18,19 @@ interface FaqSectionProps {
 export function FaqSection({ data, actionsLoading, onSave, onDelete, onToast }: FaqSectionProps) {
   const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [pageFilter, setPageFilter] = useState("");
+
+  const filteredFaqs = data.faqs.filter(f => {
+    const q = search.trim().toLowerCase();
+    const matchesSearch = !q
+      || f.question?.toLowerCase().includes(q)
+      || f.answer?.toLowerCase().includes(q);
+    const matchesCategory = !categoryFilter || f.category === categoryFilter;
+    const matchesPage = !pageFilter || f.page === pageFilter;
+    return matchesSearch && matchesCategory && matchesPage;
+  });
 
   function update(key: string, value: unknown) {
     setEditingItem(prev => ({ ...(prev ?? {}), [key]: value }));
@@ -51,17 +64,25 @@ export function FaqSection({ data, actionsLoading, onSave, onDelete, onToast }: 
           <div className="flex gap-3 flex-1 max-w-2xl">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-              <input type="text" placeholder="Search FAQs..." className={`${CMS_INPUT_CLS} pl-10`} />
+              <input
+                type="text"
+                placeholder="Search FAQs..."
+                className={`${CMS_INPUT_CLS} pl-10`}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
             </div>
-            <select className={`${CMS_INPUT_CLS} bg-white w-44`}>
-              <option>All Categories</option>
-              {FAQ_CATEGORIES.map(c => <option key={c}>{c}</option>)}
+            <select className={`${CMS_INPUT_CLS} bg-white w-44`} value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
+              <option value="">All Categories</option>
+              {FAQ_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            <select className={`${CMS_INPUT_CLS} bg-white w-44`}>
-              <option>All Pages</option>
+            <select className={`${CMS_INPUT_CLS} bg-white w-44`} value={pageFilter} onChange={e => setPageFilter(e.target.value)}>
+              <option value="">All Pages</option>
               {FAQ_STATIC_PAGES.map(p => <option key={p} value={p}>{p}</option>)}
               {data.countries.map(c => (
-                <option key={c.id} value={`study-abroad/${c.id}`}>study-abroad/{c.id}</option>
+                <option key={c.id} value={`study-abroad/${c.id}`}>
+                  study-abroad/{c.id}{c.status === 'DRAFT' ? ' (Draft — not live)' : ''}
+                </option>
               ))}
             </select>
           </div>
@@ -82,7 +103,12 @@ export function FaqSection({ data, actionsLoading, onSave, onDelete, onToast }: 
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data.faqs.map((f, i) => (
+              {filteredFaqs.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-6 py-10 text-center text-gray-400 text-[13px]">No FAQs match your filters.</td>
+                </tr>
+              )}
+              {filteredFaqs.map((f, i) => (
                 <tr key={i} className="text-[13px] hover:bg-gray-50">
                   <td className="px-6 py-4 font-bold text-gray-400">#{f.order}</td>
                   <td className="px-6 py-4 font-semibold text-black max-w-md truncate">{f.question}</td>
@@ -136,7 +162,9 @@ export function FaqSection({ data, actionsLoading, onSave, onDelete, onToast }: 
               <select className={`${CMS_INPUT_CLS} bg-white`} value={(editingItem?.page as string) ?? 'Homepage'} onChange={e => update('page', e.target.value)}>
                 {FAQ_STATIC_PAGES.map(p => <option key={p} value={p}>{p}</option>)}
                 {data.countries.map(c => (
-                  <option key={c.id} value={`study-abroad/${c.id}`}>study-abroad/{c.id}</option>
+                  <option key={c.id} value={`study-abroad/${c.id}`}>
+                    study-abroad/{c.id}{c.status === 'DRAFT' ? ' (Draft — not live)' : ''}
+                  </option>
                 ))}
               </select>
             </FormField>
