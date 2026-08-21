@@ -7,7 +7,11 @@ import { proxiedMediaUrl } from "@/lib/media-url";
 
 export default function TeamTeaser({ members }: { members: any[] }) {
   // TODO: uncomment Kshitij Dhamala when ready
-  const teamData = (members || []).filter(m => m.name !== 'Kshitij Dhamala');
+  // Arjun Uprety is kept off the homepage teaser but still shows on /team.
+  const HOMEPAGE_EXCLUDED_NAMES = ['Kshitij Dhamala', 'Arjun Uprety'];
+  const teamData = (members || [])
+    .filter(m => !HOMEPAGE_EXCLUDED_NAMES.includes(m.name))
+    .slice(0, 4);
   return (
     <section className="py-20 bg-white">
       <div className="container">

@@ -50,7 +50,8 @@ const getCachedTeamMembers = unstable_cache(
         branches (name)
       `)
       .order('name', { ascending: true })
-      .limit(4);
+      // Fetched extra: TeamTeaser excludes a couple of names and slices to 4.
+      .limit(6);
     return { data: res.data };
   },
   ['homepage-team-members'],
