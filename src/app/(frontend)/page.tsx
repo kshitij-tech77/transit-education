@@ -49,9 +49,9 @@ const getCachedTeamMembers = unstable_cache(
         *,
         branches (name)
       `)
-      .order('name', { ascending: true })
-      // Fetched extra: TeamTeaser excludes a couple of names and slices to 4.
-      .limit(6);
+      .eq('is_visible', true)
+      .order('display_order', { ascending: true })
+      .order('name', { ascending: true });
     return { data: res.data };
   },
   ['homepage-team-members'],
@@ -191,12 +191,21 @@ export default async function Home() {
     status: 'Published'
   })) || [];
 
-  const teamMembers = teamRes.data?.map(m => ({
+  // Homepage teaser: leadership only (same rule as /team's "Visionary
+  // Leadership" bucket), minus Arjun Uprety, who stays on /team but not here.
+  const HOMEPAGE_TEASER_EXCLUDED_NAMES = ['Arjun Uprety'];
+  const teamMembers = (teamRes.data?.map(m => ({
     ...m,
     role: m.role,
     photo: m.photo_url,
     branch: (m as any).branches?.name || 'N/A'
-  })) || [];
+  })) || [])
+    .filter(m => {
+      const role = (m.role || '').toLowerCase();
+      return role.includes('ceo') || role.includes('director') || role.includes('founder');
+    })
+    .filter(m => !HOMEPAGE_TEASER_EXCLUDED_NAMES.includes(m.name))
+    .slice(0, 4);
 
   const blogPosts = postsRes.data?.map(p => ({
     ...p,
