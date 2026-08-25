@@ -34,6 +34,8 @@ function extractMediaPath(url: string): string | null {
 // Resolves every media URL shape found in the database to a Cloudinary
 // delivery URL (the migration's new source of truth):
 //   ''/null                                          →  ''
+//   a root-relative path outside /media/ (e.g.
+//     /logo.png — a /public asset, not a bucket path) →  returned as-is
 //   a path in SUPABASE_ONLY_PATHS                    →  kept on Supabase
 //   already a Cloudinary URL                         →  returned as-is
 //   full Supabase Storage URL (.../public/media/...) →  rewritten to Cloudinary
@@ -44,6 +46,11 @@ export function resolveMediaUrl(url: string | null | undefined): string {
   if (!url) return ''
   const trimmed = url.trim()
   if (!trimmed) return ''
+
+  // A root-relative path that isn't under /media/ points at a static file in
+  // /public (e.g. "/logo.png"), not the media bucket — leave it alone rather
+  // than mangling it into a nonexistent media/ Cloudinary path below.
+  if (trimmed.startsWith('/') && !trimmed.startsWith('/media/')) return trimmed
 
   const mediaPath = extractMediaPath(trimmed)
   if (mediaPath && SUPABASE_ONLY_PATHS.includes(mediaPath)) {
