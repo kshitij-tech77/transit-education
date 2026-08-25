@@ -13,6 +13,13 @@ export async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // Matches the login route's cookieOptions — this middleware re-sets
+      // the same session cookie on every token refresh, so it needs the
+      // same explicit `secure` flag or a refreshed cookie would silently
+      // lose it again on the next request after login.
+      cookieOptions: {
+        secure: process.env.NODE_ENV === 'production',
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll()

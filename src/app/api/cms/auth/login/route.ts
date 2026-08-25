@@ -44,6 +44,14 @@ export async function POST(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // @supabase/ssr's own defaults (path: '/', sameSite: 'lax') omit
+      // `secure` entirely, so the session cookie was being set without it —
+      // gated on NODE_ENV rather than always-on because a Secure cookie is
+      // silently rejected by the browser when set from a plain-HTTP origin
+      // (local `next dev`, which never runs behind HTTPS).
+      cookieOptions: {
+        secure: process.env.NODE_ENV === 'production',
+      },
       cookies: {
         getAll() { return cookieStore.getAll() },
         setAll(cookiesToSet) {
