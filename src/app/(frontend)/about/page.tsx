@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "10+ years of expert study abroad consulting in Nepal. 2,000+ successful students, 50+ partner institutions worldwide.",
     url: "https://transiteducation.com.np/about",
     type: "website",
-    images: [{ url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png", width: 1200, height: 630 }],
+    images: [{ url: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png", width: 1200, height: 630 }],
   },
 };
 
@@ -57,7 +57,7 @@ export default async function AboutPage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.jpg"
             alt="About Transit Education"
             fill
             sizes="100vw"
@@ -87,7 +87,7 @@ export default async function AboutPage() {
             <div className="relative">
               <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/04/lets-plan.png"
+                  src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/04/lets-plan.png"
                   alt="Our Mission"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

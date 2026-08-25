@@ -148,7 +148,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png",
+        url: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png",
         width: 512,
         height: 512,
         alt: "Transit Education",
@@ -159,7 +159,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Transit Education | Your Transit to Global Destinations",
     description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
-    images: ["https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"],
+    images: ["https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png"],
   },
 };
 

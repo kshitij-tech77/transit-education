@@ -25,7 +25,7 @@ const BRANCHES = [
     phone: "01-5906277",
     email: "info@transiteducation.com.np",
     hours: "Sun – Fri • 9:00 AM – 6:00 PM",
-    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.png",
+    image: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-ktm-1.png",
   },
   {
     slug: "itahari",
@@ -35,7 +35,7 @@ const BRANCHES = [
     phone: "025-590570",
     email: "itahari@transiteducation.com.np",
     hours: "Sun – Fri • 9:00 AM – 6:00 PM",
-    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ithari.png",
+    image: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-ithari.png",
   },
   {
     slug: "damak",
@@ -45,7 +45,7 @@ const BRANCHES = [
     phone: "023-577162",
     email: "damak@transiteducation.com.np",
     hours: "Sun – Fri • 9:00 AM – 5:00 PM",
-    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-Consultancy-Damak-.png",
+    image: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-Consultancy-Damak-.png",
   },
   {
     slug: "damauli",
@@ -55,7 +55,7 @@ const BRANCHES = [
     phone: "065-590110",
     email: "damauli@transiteducation.com.np",
     hours: "Sun – Fri • 10:00 AM – 5:00 PM",
-    image: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-Education-Damauli-.png",
+    image: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-Education-Damauli-.png",
   },
 ];
 

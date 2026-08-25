@@ -102,7 +102,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"
             alt="Transit Education Blog"
             fill
             sizes="100vw"
@@ -138,7 +138,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                   <Link href={`/blog/${post.slug}`} className="block relative h-[400px] rounded-[2.5rem] overflow-hidden mb-8 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                     {/* Fix #12 — always render an image; fallback when no thumbnail */}
                     <Image
-                      src={post.featuredImage ? resolveMediaUrl(post.featuredImage) : "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"}
+                      src={post.featuredImage ? resolveMediaUrl(post.featuredImage) : "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg"}
                       alt={post.title}
                       fill
                       sizes="(max-width: 1024px) 100vw, 66vw"

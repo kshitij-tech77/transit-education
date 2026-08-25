@@ -7,7 +7,7 @@ import { resolveMediaUrl } from "@/lib/media-url";
 import { Calendar, User } from "lucide-react";
 
 /* Fix #12 — topic-relevant fallback image when no thumbnail is set */
-const FALLBACK_IMAGE = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg";
+const FALLBACK_IMAGE = "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.jpg";
 
 /* Fix #19 — replace UNCATEGORIZED with a sensible label */
 function sanitizeCategory(cat: string | null | undefined): string {

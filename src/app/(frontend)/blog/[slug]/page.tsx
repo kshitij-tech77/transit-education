@@ -61,7 +61,7 @@ const getCachedRelatedBlogPosts = unstable_cache(
 );
 
 const TRANSIT_LOGO =
-  "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
+  "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png";
 
 // ── Inject heading IDs + extract TOC ────────────────────────────
 function processBody(html: string): { html: string; toc: TOCItem[] } {

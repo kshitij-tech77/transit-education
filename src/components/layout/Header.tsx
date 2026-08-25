@@ -116,7 +116,7 @@ export default function Header({
         {/* Logo */}
         <Link href="/" className="flex items-center shrink-0 group">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png"
             alt="Transit Education"
             width={200}
             height={54}

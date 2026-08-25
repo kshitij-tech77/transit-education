@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const title = country.meta_title || `Study in ${country.name} | Transit Education`;
   const description = country.meta_description || `Everything you need to know about studying in ${country.name}. Visa requirements, tuition, and intakes.`;
-  const image = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
+  const image = "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png";
 
   return {
     title,
@@ -155,7 +155,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
         title={formattedCountry.heroTitle || `Study in ${formattedCountry.name}`}
         subtitle="Study Abroad"
         description={formattedCountry.whyStudy || `Comprehensive guide to studying in ${formattedCountry.name}.`}
-        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Web-banner-Canada.png"
+        image="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Web-banner-Canada.png"
       />
 
       <section className="py-24 bg-[#F7F3F3]">

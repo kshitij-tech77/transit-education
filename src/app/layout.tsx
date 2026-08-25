@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const tagline = settings?.tagline || "Global Education";
   const defaultTitle = `${siteName} | ${tagline}`;
   const defaultDescription = settings?.seo_description || "Expert study abroad consultancy in Nepal.";
-  const defaultOgImage = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
+  const defaultOgImage = "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png";
 
   return {
     title: {
@@ -60,7 +60,7 @@ export default async function RootLayout({
     .single();
 
   const siteName = settings?.site_name || "Transit Education";
-  const defaultOgImage = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Logo-png_website.png";
+  const defaultOgImage = "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Logo-png_website.png";
 
   const orgSchema = {
     name: siteName,
@@ -80,7 +80,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://vlrhwdcqzpfqpbqeaqyr.supabase.co" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <Schema type="Organization" data={orgSchema} />
       </head>
