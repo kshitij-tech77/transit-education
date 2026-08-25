@@ -70,14 +70,17 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-// Cloudinary API rejections aren't Error instances — they're plain objects
-// shaped like { error: { message, http_code } } (see node_modules/cloudinary/
-// lib/api_client/execute_request.js). Handle both that shape and real Errors.
+// Cloudinary API rejections aren't Error instances, and their shape differs
+// by call site: Admin API rejections nest as { error: { message, http_code } }
+// (lib/api_client/execute_request.js), while upload_stream's callback passes
+// the flat { message, name, http_code } object directly (lib/uploader.js).
+// Handle real Errors plus both of those shapes.
 function errorMessage(err: unknown): string {
   if (err instanceof Error) return err.message
-  if (err && typeof err === 'object' && 'error' in err) {
-    const inner = (err as any).error
-    if (inner?.message) return String(inner.message)
+  if (err && typeof err === 'object') {
+    const obj = err as any
+    if (typeof obj.message === 'string') return obj.message
+    if (obj.error?.message) return String(obj.error.message)
   }
   return String(err)
 }

@@ -4,9 +4,11 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_MEDIA_PREFIX = `${SUPABASE_URL}/storage/v1/object/public/media/`
 const CLOUDINARY_MEDIA_PREFIX = `${CLOUDINARY_BASE}/media/`
 
-// Temporary workaround: too large for Cloudinary's free-tier upload limit,
-// so this file stays Supabase-only. Remove once it's compressed/re-uploaded
-// or the plan limit is addressed.
+// Media paths that stay on Supabase instead of Cloudinary. As of this
+// migration, that's a single file: 2025/02/Office-1.png is 10.93 MB, over
+// Cloudinary's 10 MB free-tier upload limit, so it was never migrated.
+// TEMPORARY: remove this once that file is compressed and re-uploaded to
+// Cloudinary, or the Cloudinary plan is upgraded past the 10 MB cap.
 const SUPABASE_ONLY_PATHS = ['2025/02/Office-1.png']
 
 // Extracts the path relative to media/ from any URL shape resolveMediaUrl
