@@ -46,5 +46,8 @@ next-env.d.ts
 # local-only production data backups (may contain user data)
 /backups/
 
+# orphaned pre-Cloudinary-migration media (200MB, unreferenced — files stay on disk, just untracked)
+/public/media/
+
 # supabase
 .env.*
