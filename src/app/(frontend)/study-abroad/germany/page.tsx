@@ -12,7 +12,7 @@ export default function GermanyPage() {
   return (
     <CountryDestinationPage
       countryId="germany"
-      heroImage="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
+      heroImage="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/student-library-books-3500990.jpg"
     />
   );
 }

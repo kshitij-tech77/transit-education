@@ -209,11 +209,11 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
           <div className="mt-12 flex flex-col sm:flex-row items-center lg:items-start gap-8">
             <div className="flex -space-x-4">
               {[
-                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/testimonial4-free-img.jpg",
-                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2025/02/testimonial3-free-img.jpg",
-                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/Suraj-Photo.jpeg",
-                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/Photo-Nayesha.jpg",
-                "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2023/05/311017882_1626736731054537_2485975926200975415_n-1.jpg",
+                "https://res.cloudinary.com/xgpct4gs/image/upload/media/2025/02/testimonial4-free-img.jpg",
+                "https://res.cloudinary.com/xgpct4gs/image/upload/media/2025/02/testimonial3-free-img.jpg",
+                "https://res.cloudinary.com/xgpct4gs/image/upload/media/2023/05/Suraj-Photo.jpeg",
+                "https://res.cloudinary.com/xgpct4gs/image/upload/media/2023/05/Photo-Nayesha.jpg",
+                "https://res.cloudinary.com/xgpct4gs/image/upload/media/2023/05/311017882_1626736731054537_2485975926200975415_n-1.jpg",
               ].map((src, i) => (
                 <div key={i} className="w-14 h-14 rounded-full border-[3px] border-white overflow-hidden shadow-lg relative bg-gray-100">
                    <Image src={proxiedMediaUrl(src)} alt="Student" fill sizes="56px" className="object-cover" />

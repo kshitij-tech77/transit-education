@@ -162,7 +162,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
         title={formattedCountry.heroTitle || `Study in ${formattedCountry.name}`}
         subtitle="Study Abroad"
         description={formattedCountry.whyStudy || `Comprehensive guide to studying in ${formattedCountry.name}.`}
-        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Web-banner-Canada.png"
+        image="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Web-banner-Canada.png"
       />
 
       <section className="py-24 bg-[#F7F3F3]">

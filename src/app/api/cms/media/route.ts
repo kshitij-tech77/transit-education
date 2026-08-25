@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import cloudinary from '@/lib/cloudinary';
+import type { ResourceApiResponse, UploadApiResponse } from 'cloudinary';
 
 const BUCKET = 'media';
 const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
@@ -15,12 +16,10 @@ const ALLOWED_MIME_TYPES = new Set([
 
 const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'pdf']);
 
-function serviceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+// Cloudinary requires a concrete resource_type for admin/destroy calls (no
+// "auto"). Our uploads use resource_type: 'auto', which classifies images as
+// "image" and PDFs as "raw" — both are checked wherever a lookup is needed.
+const LOOKUP_RESOURCE_TYPES = ['image', 'raw'] as const;
 
 function buildSafeName(originalName: string): string | null {
   const lastDot = originalName.lastIndexOf('.');
@@ -39,69 +38,77 @@ function buildSafeName(originalName: string): string | null {
   return `${safeBase}.${ext}`;
 }
 
-// Extract storage path (e.g. "2025/02/image.png") from either:
-//   - old format:  /media/2025/02/image.png
-//   - new format:  https://*.supabase.co/storage/v1/object/public/media/2025/02/image.png
-function toStoragePath(filePath: string): string | null {
-  if (filePath.startsWith('/media/')) {
-    return filePath.slice('/media/'.length);
+function stripExtension(name: string): string {
+  const lastDot = name.lastIndexOf('.');
+  return lastDot > 0 ? name.slice(0, lastDot) : name;
+}
+
+// Extracts a Cloudinary public_id (e.g. "media/2025/02/image") from either:
+//   - a Cloudinary delivery URL (optionally versioned):
+//       https://res.cloudinary.com/<cloud>/image/upload/media/2025/02/image.png
+//       https://res.cloudinary.com/<cloud>/raw/upload/v169.../media/2025/02/doc.pdf
+//   - a full Supabase Storage URL (old data not yet cleaned up):
+//       https://*.supabase.co/storage/v1/object/public/media/2025/02/image.png
+//   - the old relative format: /media/2025/02/image.png
+function extractCloudinaryPublicId(filePath: string): string | null {
+  let relativePath: string | null = null;
+
+  const uploadMarker = '/upload/';
+  const uploadIdx = filePath.indexOf(uploadMarker);
+  if (uploadIdx !== -1) {
+    const rest = filePath.slice(uploadIdx + uploadMarker.length).replace(/^v\d+\//, '');
+    const bucketMarker = `${BUCKET}/`;
+    relativePath = rest.startsWith(bucketMarker) ? rest.slice(bucketMarker.length) : rest;
+  } else {
+    const supabaseMarker = `/object/public/${BUCKET}/`;
+    const supabaseIdx = filePath.indexOf(supabaseMarker);
+    if (supabaseIdx !== -1) {
+      relativePath = filePath.slice(supabaseIdx + supabaseMarker.length);
+    } else if (filePath.startsWith(`/${BUCKET}/`)) {
+      relativePath = filePath.slice(`/${BUCKET}/`.length);
+    }
   }
-  const marker = `/object/public/${BUCKET}/`;
-  const idx = filePath.indexOf(marker);
-  if (idx !== -1) {
-    return filePath.slice(idx + marker.length);
-  }
-  return null;
+
+  if (!relativePath) return null;
+
+  return `${BUCKET}/${stripExtension(relativePath)}`;
 }
 
 export async function GET() {
   try {
-    const supabase = serviceClient();
-
-    const { data: topLevel, error: topError } = await supabase.storage
-      .from(BUCKET)
-      .list('', { limit: 100 });
-
-    if (topError) throw topError;
-
     const mediaFiles: Record<string, any[]> = {};
 
-    for (const yearEntry of topLevel ?? []) {
-      if (yearEntry.id !== null) continue; // skip files at root, only folders
-      const year = yearEntry.name;
-      mediaFiles[year] = [];
+    for (const resourceType of LOOKUP_RESOURCE_TYPES) {
+      let nextCursor: string | undefined;
 
-      const { data: monthLevel } = await supabase.storage
-        .from(BUCKET)
-        .list(year, { limit: 100 });
+      do {
+        const page = (await cloudinary.api.resources({
+          type: 'upload',
+          resource_type: resourceType,
+          prefix: `${BUCKET}/`,
+          max_results: 500,
+          next_cursor: nextCursor,
+        })) as ResourceApiResponse;
 
-      for (const monthEntry of monthLevel ?? []) {
-        if (monthEntry.id !== null) continue;
-        const month = monthEntry.name;
+        for (const resource of page.resources ?? []) {
+          // public_id shape: "media/<year>/<month>/<name-without-ext>"
+          const parts = resource.public_id.slice(BUCKET.length + 1).split('/');
+          if (parts.length !== 3) continue;
+          const [year, month, nameWithoutExt] = parts;
 
-        const { data: files } = await supabase.storage
-          .from(BUCKET)
-          .list(`${year}/${month}`, { limit: 1000 });
-
-        for (const file of files ?? []) {
-          if (file.id === null) continue; // skip sub-folders
-
-          const { data: urlData } = supabase.storage
-            .from(BUCKET)
-            .getPublicUrl(`${year}/${month}/${file.name}`);
-
+          if (!mediaFiles[year]) mediaFiles[year] = [];
           mediaFiles[year].push({
-            name: file.name,
-            size: file.metadata?.size
-              ? (file.metadata.size / 1024 / 1024).toFixed(2) + ' MB'
-              : 'unknown',
-            path: urlData.publicUrl,
+            name: `${nameWithoutExt}.${resource.format}`,
+            size: resource.bytes ? (resource.bytes / 1024 / 1024).toFixed(2) + ' MB' : 'unknown',
+            path: resource.secure_url,
             year,
             month,
-            mtimeMs: file.updated_at ? new Date(file.updated_at).getTime() : 0,
+            mtimeMs: resource.created_at ? new Date(resource.created_at).getTime() : 0,
           });
         }
-      }
+
+        nextCursor = page.next_cursor;
+      } while (nextCursor);
     }
 
     return NextResponse.json(mediaFiles);
@@ -109,6 +116,19 @@ export async function GET() {
     console.error('Media list error:', error);
     return NextResponse.json({ error: 'Failed to read media' }, { status: 500 });
   }
+}
+
+function uploadToCloudinary(buffer: Buffer, publicId: string): Promise<UploadApiResponse> {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { public_id: publicId, resource_type: 'auto', overwrite: false },
+      (error, result) => {
+        if (error || !result) reject(error ?? new Error('Cloudinary upload returned no result'));
+        else resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -133,24 +153,20 @@ export async function POST(req: NextRequest) {
     const now = new Date();
     const year = now.getFullYear().toString();
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    const storagePath = `${year}/${month}/${safeName}`;
+    const publicId = `${BUCKET}/${year}/${month}/${stripExtension(safeName)}`;
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const supabase = serviceClient();
 
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET)
-      .upload(storagePath, buffer, { contentType: file.type, upsert: false, cacheControl: '86400' });
-
-    if (uploadError) {
-      console.error('Storage upload error:', uploadError);
+    let result: UploadApiResponse;
+    try {
+      result = await uploadToCloudinary(buffer, publicId);
+    } catch (uploadError) {
+      console.error('Cloudinary upload error:', uploadError);
       return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
     }
 
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
-
     return NextResponse.json({
-      path: urlData.publicUrl,
+      path: result.secure_url,
       name: safeName,
       size: (buffer.length / 1024 / 1024).toFixed(2) + ' MB',
     }, { status: 201 });
@@ -165,16 +181,22 @@ export async function DELETE(req: NextRequest) {
     const { filePath } = await req.json();
     if (!filePath) return NextResponse.json({ error: 'No file path provided' }, { status: 400 });
 
-    const storagePath = toStoragePath(filePath);
-    if (!storagePath) {
+    const publicId = extractCloudinaryPublicId(filePath);
+    if (!publicId) {
       return NextResponse.json({ error: 'Invalid file path' }, { status: 400 });
     }
 
-    const supabase = serviceClient();
-    const { error } = await supabase.storage.from(BUCKET).remove([storagePath]);
+    // Try each resource_type the route can upload (image, then raw/PDF) until
+    // one reports the asset was actually there. Not found under either is
+    // still treated as success below — the end state (file gone) is the same.
+    let destroyResult: { result: string } = { result: 'not found' };
+    for (const resourceType of LOOKUP_RESOURCE_TYPES) {
+      destroyResult = await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+      if (destroyResult.result === 'ok') break;
+    }
 
-    if (error) {
-      console.error('Storage delete error:', error);
+    if (destroyResult.result !== 'ok' && destroyResult.result !== 'not found') {
+      console.error('Cloudinary destroy error:', destroyResult);
       return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
     }
 

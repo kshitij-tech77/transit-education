@@ -18,7 +18,7 @@ export default function ContactPage() {
   return (
     <main className="pt-20">
       <section className="bg-black pt-32 pb-24 md:py-32 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('/api/images/2021/04/lets-plan.webp')] bg-cover bg-center" />
+        <div className="absolute inset-0 opacity-20 bg-[url('https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/04/lets-plan.webp')] bg-cover bg-center" />
         <div className="container relative z-10 text-center">
           <SectionLabel className="text-white border-white/20 bg-white/10 mx-auto">Get in Touch</SectionLabel>
           <h1 className="text-4xl md:text-6xl font-extrabold mt-6 mb-8">

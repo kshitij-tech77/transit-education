@@ -46,7 +46,7 @@ export default function ScholarshipsAssistancePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.webp"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.webp"
             alt="Scholarships Assistance"
             fill
             sizes="100vw"
@@ -80,7 +80,7 @@ export default function ScholarshipsAssistancePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
               <Image
-                src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/young-student-woman-looking-her-world-globe-sitting-cloud-scaled.jpg"
+                src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/young-student-woman-looking-her-world-globe-sitting-cloud-scaled.jpg"
                 alt="Scholarship Opportunities"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"

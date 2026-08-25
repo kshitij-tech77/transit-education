@@ -12,7 +12,7 @@ export default function UKPage() {
   return (
     <CountryDestinationPage
       countryId="uk"
-      heroImage="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/web-banner-UK.png"
+      heroImage="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/web-banner-UK.png"
     />
   );
 }

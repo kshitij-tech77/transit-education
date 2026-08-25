@@ -46,7 +46,7 @@ export default function StudentVisaServicePage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/happy-young-teenage-lady-holds-her-passport-documents-with-ticket-her-hands-isolated-green-studio-wall-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/happy-young-teenage-lady-holds-her-passport-documents-with-ticket-her-hands-isolated-green-studio-wall-scaled.jpg"
             alt="Student Visa Service"
             fill
             sizes="100vw"
@@ -103,7 +103,7 @@ export default function StudentVisaServicePage() {
             <div className="relative">
               <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.webp"
+                  src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/amy-hirschi-JaoVGh5aJ3E-unsplash-scaled.webp"
                   alt="Visa Guidance"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

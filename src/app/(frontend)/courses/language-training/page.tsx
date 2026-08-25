@@ -46,7 +46,7 @@ export default function LanguageTrainingPage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/annie-spratt-pbrQvuKJQf8-unsplash-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/annie-spratt-pbrQvuKJQf8-unsplash-scaled.jpg"
             alt="Language Training"
             fill
             sizes="100vw"
@@ -100,7 +100,7 @@ export default function LanguageTrainingPage() {
             <div className="relative">
               <div className="relative h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
                 <Image
-                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/woman-laptop-business-3190829.jpg"
+                  src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/woman-laptop-business-3190829.jpg"
                   alt="Learning English"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

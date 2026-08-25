@@ -2,8 +2,9 @@
 
 import React from "react";
 import { proxiedMediaUrl } from "@/lib/media-url";
+import { CLOUDINARY_BASE } from "@/constants/assets";
 
-const BASE = "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media";
+const BASE = `${CLOUDINARY_BASE}/media`;
 
 /* Fix #4 — removed slot where Transit Education logo was used as a placeholder */
 const logos = [

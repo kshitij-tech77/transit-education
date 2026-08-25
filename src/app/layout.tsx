@@ -80,7 +80,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://vlrhwdcqzpfqpbqeaqyr.supabase.co" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <Schema type="Organization" data={orgSchema} />
       </head>

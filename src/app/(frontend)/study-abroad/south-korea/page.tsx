@@ -53,7 +53,7 @@ export default function SouthKoreaPage() {
         title="Study in South Korea"
         subtitle="Study Abroad"
         description="South Korea has emerged as one of Asia's fastest-rising study destinations, backed by world-class universities and a strong post-graduation job market in technology."
-        image="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Web-banner-South-Korea.png"
+        image="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Web-banner-South-Korea.png"
       />
 
       <section className="py-24 bg-off-white">

@@ -12,7 +12,7 @@ export default function AustraliaPage() {
   return (
     <CountryDestinationPage
       countryId="australia"
-      heroImage="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/05/Wwb-banner-Australia.png"
+      heroImage="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Wwb-banner-Australia.png"
     />
   );
 }

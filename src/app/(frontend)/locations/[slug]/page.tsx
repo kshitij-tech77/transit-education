@@ -16,10 +16,10 @@ const locationsData = {
     email: "info@transiteducation.com.np",
     hours: "Sunday – Friday • 9:00 AM – 6:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.5!2d85.3145!3d27.7041!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18fcb77fd4bd%3A0x58099b1a2b69a7e8!2sBagbazar%2C+Kathmandu!5e0!3m2!1sen!2snp!4v1000000000000",
-    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-1.webp",
+    heroImage: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-ktm-1.webp",
     gallery: [
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ktm-2.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-3-ktm.png"
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-ktm-2.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-3-ktm.png"
     ],
     whyChooseUs: [
       { num: "01", title: "Free, Honest Counselling", text: "Walk into Level 2, Purple House, Bagbazar without an appointment. No consultation fee. Our advisors match you to the right country based on your profile." },
@@ -46,11 +46,11 @@ const locationsData = {
     email: "itahari@transiteducation.com.np",
     hours: "Sunday – Friday • 9:00 AM – 6:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3573.2!2d87.2718!3d26.6651!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6c4b1d1d1d1d%3A0x1a1a1a1a1a1a1a1a!2sSangit+Chowk%2C+Itahari!5e0!3m2!1sen!2snp!4v1000000000001",
-    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-ithari.png",
+    heroImage: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-ithari.png",
     gallery: [
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-consultancy-ithari-front-desk.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-education-ithari-team.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-consultancy-ithari-front-desk-2.png"
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-consultancy-ithari-front-desk.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-education-ithari-team.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-consultancy-ithari-front-desk-2.png"
     ],
     whyChooseUs: [
       { num: "01", title: "Free, Honest Counselling", text: "Walk into Rano Complex, Sangit Chowk without an appointment. Our advisors match you to the right country based on your profile." },
@@ -75,11 +75,11 @@ const locationsData = {
     email: "damak@transiteducation.com.np",
     hours: "Sunday – Friday • 9:00 AM – 5:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.5!2d87.6975!3d26.6553!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18fcb77fd4bd%3A0x58099b1a2b69a7e8!2sDamak%2C+Jhapa!5e0!3m2!1sen!2snp!4v1000000000000",
-    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-Consultancy-Damak-.png",
+    heroImage: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-Consultancy-Damak-.png",
     gallery: [
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transite-consultancy-damak-frontedsk.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-consultancy-damak-team.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-consultancy-Damak-gate.png"
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transite-consultancy-damak-frontedsk.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-consultancy-damak-team.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-consultancy-Damak-gate.png"
     ],
     whyChooseUs: [
       { num: "01", title: "Jhapa's Trusted Partner", text: "The most trusted study abroad consultancy in Damak. Expert guidance for students in Jhapa region." }
@@ -97,12 +97,12 @@ const locationsData = {
     email: "damauli@transiteducation.com.np",
     hours: "Sunday – Friday • 10:00 AM – 5:00 PM",
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3515.8!2d84.2721!3d27.9821!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x39ef4f1d1d1d1d1d%3A0x1a1a1a1a1a1a1a1a!2sDamauli%2C+Tanahun!5e0!3m2!1sen!2snp!4v1000000000002",
-    heroImage: "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-Education-Damauli-.png",
+    heroImage: "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-Education-Damauli-.png",
     gallery: [
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-education-damauli-office.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-education-damauli-class.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-education-damauli-wwaiting.png",
-      "https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2026/04/Transit-education-damauli.png"
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-education-damauli-office.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-education-damauli-class.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-education-damauli-wwaiting.png",
+      "https://res.cloudinary.com/xgpct4gs/image/upload/media/2026/04/Transit-education-damauli.png"
     ],
     whyChooseUs: [
       { num: "01", title: "Tanahun's Gateway", text: "Expert study abroad guidance for students in Damauli and surrounding Gandaki region." }

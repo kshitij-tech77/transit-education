@@ -46,7 +46,7 @@ export default function AdmissionCounsellingPage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/neonbrand-y_6rqStQBYQ-unsplash-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/neonbrand-y_6rqStQBYQ-unsplash-scaled.jpg"
             alt="Admission Counselling"
             fill
             sizes="100vw"
@@ -107,7 +107,7 @@ export default function AdmissionCounsellingPage() {
             <div className="sticky top-32">
               <div className="relative h-[500px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl mb-8">
                 <Image
-                  src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/paper-business-finance-3309829.jpg"
+                  src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/paper-business-finance-3309829.jpg"
                   alt="Documentation"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"

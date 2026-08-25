@@ -51,7 +51,7 @@ export default function TestPreparationPage() {
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">
           <Image
-            src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/clay-banks-GX8KBbVmC6c-unsplash-scaled.jpg"
+            src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/clay-banks-GX8KBbVmC6c-unsplash-scaled.jpg"
             alt="Test Preparation"
             fill
             sizes="100vw"
@@ -306,7 +306,7 @@ export default function TestPreparationPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative h-[500px] rounded-[3rem] overflow-hidden">
               <Image
-                src="https://vlrhwdcqzpfqpbqeaqyr.supabase.co/storage/v1/object/public/media/2021/03/student-library-books-3500990.jpg"
+                src="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/student-library-books-3500990.jpg"
                 alt="State of the art classroom"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
