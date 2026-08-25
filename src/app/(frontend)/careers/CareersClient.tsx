@@ -3,13 +3,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, MapPin, Clock, Upload, Send, CheckCircle, Users, TrendingUp, Heart } from "lucide-react";
-import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import SectionLabel from "@/components/shared/SectionLabel";
-
-const anonClient = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const WHY_JOIN = [
   { icon: TrendingUp, title: "Grow With Us", desc: "Transit Education has been helping students since 2015. Join a team with proven track record and ambitious growth plans." },
@@ -65,14 +59,21 @@ export default function CareersClient() {
     try {
       if (cvFile) {
         setUploading(true);
-        const ext = cvFile.name.split(".").pop();
-        const filename = `cv_${Date.now()}.${ext}`;
-        const { data: uploadData, error: uploadErr } = await anonClient.storage
-          .from("career-uploads")
-          .upload(filename, cvFile, { contentType: cvFile.type });
+        const uploadForm = new FormData();
+        uploadForm.append("file", cvFile);
 
-        if (uploadErr) throw new Error("CV upload failed: " + uploadErr.message);
-        cv_url = uploadData.path;
+        const uploadRes = await fetch("/api/careers/upload", {
+          method: "POST",
+          body: uploadForm,
+        });
+
+        if (!uploadRes.ok) {
+          const d = await uploadRes.json();
+          throw new Error(d.error || "CV upload failed");
+        }
+
+        const uploadData = await uploadRes.json();
+        cv_url = uploadData.url;
         setUploading(false);
       }
 
