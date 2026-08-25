@@ -22,6 +22,13 @@ export const MEDIA_BUCKET = "media" as const;
 export const MEDIA_BASE = `${STORAGE_BASE}${MEDIA_BUCKET}/` as const;
 
 /**
+ * Cloudinary delivery base URL — the primary host for media as of the
+ * Supabase → Cloudinary migration. Kept alongside the Supabase constants
+ * above (not replacing them) for rollback safety.
+ */
+export const CLOUDINARY_BASE = (process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL ?? "") as string;
+
+/**
  * Transit Education primary logo.
  * Used in: Header.tsx, Portal.tsx sidebar.
  */
