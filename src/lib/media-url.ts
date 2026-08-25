@@ -11,6 +11,8 @@ const CLOUDINARY_MEDIA_PREFIX = `${CLOUDINARY_BASE}/media/`
 // Cloudinary, or the Cloudinary plan is upgraded past the 10 MB cap.
 const SUPABASE_ONLY_PATHS = ['2025/02/Office-1.png']
 
+let warnedMissingCloudinaryBase = false
+
 // Extracts the path relative to media/ from any URL shape resolveMediaUrl
 // accepts, or null if it's not a media/ URL at all (e.g. some other origin).
 function extractMediaPath(url: string): string | null {
@@ -48,10 +50,24 @@ export function resolveMediaUrl(url: string | null | undefined): string {
     return `${SUPABASE_MEDIA_PREFIX}${mediaPath}`
   }
 
-  // Guard against the empty-string fallback in CLOUDINARY_BASE: `"".startsWith("")`
-  // is true for every string, which would otherwise make this branch swallow
-  // every URL as a silent passthrough if the env var were ever unset.
-  if (CLOUDINARY_BASE && trimmed.startsWith(CLOUDINARY_BASE)) return trimmed
+  // If NEXT_PUBLIC_CLOUDINARY_BASE_URL isn't set in this environment (e.g. it
+  // was added to .env.local but never to the deploy platform's env vars),
+  // fall back to Supabase instead of emitting a broken relative "/media/..."
+  // path — images still work (from Supabase) rather than silently 404ing.
+  // Logged once so a misconfigured environment is easy to spot in the logs.
+  if (!CLOUDINARY_BASE) {
+    if (!warnedMissingCloudinaryBase) {
+      console.error(
+        '[media-url] NEXT_PUBLIC_CLOUDINARY_BASE_URL is not set — falling back to Supabase Storage URLs. ' +
+        'Set it in this environment to serve images from Cloudinary.'
+      )
+      warnedMissingCloudinaryBase = true
+    }
+    if (mediaPath) return `${SUPABASE_MEDIA_PREFIX}${mediaPath}`
+    return trimmed
+  }
+
+  if (trimmed.startsWith(CLOUDINARY_BASE)) return trimmed
 
   if (trimmed.startsWith(SUPABASE_MEDIA_PREFIX)) {
     return `${CLOUDINARY_BASE}/media/${trimmed.slice(SUPABASE_MEDIA_PREFIX.length)}`
