@@ -8,13 +8,13 @@ import Footer from "@/components/layout/Footer";
 export default async function NotFound() {
   const [{ data: settings }, { data: countries }, { data: branches }] = await Promise.allSettled([
     supabase.from("site_settings").select("*").single(),
-    supabase.from("countries").select("name, code").eq("status", "LIVE"),
+    supabase.from("countries").select("name, id").eq("status", "LIVE"),
     supabase.from("branches").select("id, name"),
   ]).then(results => results.map(r => (r.status === "fulfilled" ? r.value : { data: null })));
 
   const studyAbroadLinks = countries?.map((c: any) => ({
     title: c.name,
-    href: `/study-abroad/${c.code}`,
+    href: `/study-abroad/${c.id}`,
   })) ?? undefined;
 
   const locationsLinks = branches?.map((b: any) => ({

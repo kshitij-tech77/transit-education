@@ -16,7 +16,7 @@ const getCachedCountries = unstable_cache(
   async () => {
     const { data } = await supabase
       .from('countries')
-      .select('name, code')
+      .select('name, id')
       .eq('status', 'LIVE');
     return data;
   },
@@ -71,7 +71,7 @@ export default async function FrontendLayout({
 
   const studyAbroadLinks = countries?.map(c => ({
     title: c.name,
-    href: `/study-abroad/${c.code}`
+    href: `/study-abroad/${c.id}`
   })) || [];
 
   const locationsLinks = sortedBranches.map(b => ({
