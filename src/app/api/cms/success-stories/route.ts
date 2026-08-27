@@ -17,8 +17,6 @@ export async function GET() {
 
     if (error) throw error;
 
-    if (data.length > 0) console.log('[success-stories GET] first raw row keys:', Object.keys(data[0]), 'id value:', (data[0] as any).id);
-
     const formattedData = data.map(s => {
       const countryData = (s as any).countries;
       const flag = countryData?.flag || '';
