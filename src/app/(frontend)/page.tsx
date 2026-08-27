@@ -22,7 +22,7 @@ import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 // Homepage data changes rarely enough that a 5-minute cache is safe. Each
 // query is wrapped independently so the page keeps the same shape below.
