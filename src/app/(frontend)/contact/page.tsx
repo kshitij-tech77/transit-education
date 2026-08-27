@@ -38,6 +38,7 @@ export default function ContactPage() {
 
       <section className="h-125 w-full bg-gray-200">
         <iframe
+          title="Transit Education office location on Google Maps"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.4829241908044!2d85.32168931506191!3d27.702302982793264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1907b22a0001%3A0x6b876d750a9840!2sTransit%20Education%20Network!5e0!3m2!1sen!2snp!4v1620000000000!5m2!1sen!2snp"
           width="100%"
           height="100%"

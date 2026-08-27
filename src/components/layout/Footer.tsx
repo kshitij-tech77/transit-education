@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MessageCircle } from "lucide-react";
 import NewsletterForm from "./NewsletterForm";
 
@@ -17,9 +18,11 @@ export default function Footer({ settings }: { settings?: any }) {
         {/* Column 1 */}
         <div>
           <Link href="/" className="inline-block mb-6">
-            <img
+            <Image
               src="/logo.png"
               alt={settings?.site_name || "Transit Education"}
+              width={200}
+              height={54}
               className="h-10 w-auto brightness-0 invert"
             />
           </Link>

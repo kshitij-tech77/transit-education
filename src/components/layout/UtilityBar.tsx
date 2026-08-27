@@ -10,7 +10,7 @@ export default function UtilityBar({ phone: settingsPhone }: { phone?: string | 
   if (!show) return null;
 
   return (
-    <div className="bg-[#18181B] text-white text-[11px] font-semibold hidden md:block relative">
+    <div className="bg-black text-white text-[11px] font-semibold hidden md:block relative">
       <div className="container flex items-center justify-between h-9 pr-10">
         <span className="text-gray-300 tracking-tight">
           Nepal&apos;s most trusted study abroad consultancy — Est. 2015
