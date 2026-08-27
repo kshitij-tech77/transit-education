@@ -1,7 +1,7 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
-import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { supabase } from "@/lib/supabase";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { notFound } from "next/navigation";
 import {
