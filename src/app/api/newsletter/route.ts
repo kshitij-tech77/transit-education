@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { rateLimit } from '@/lib/rate-limit'
+import { z } from 'zod'
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const NewsletterSchema = z.object({
+  email: z.string().email().max(200).trim().toLowerCase(),
+})
 
 export async function POST(request: Request) {
   try {
@@ -11,11 +14,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
-    const { email } = await request.json()
-
-    if (!email || !EMAIL_REGEX.test(email)) {
+    const parsed = NewsletterSchema.safeParse(await request.json().catch(() => ({})))
+    if (!parsed.success) {
       return NextResponse.json({ error: 'Valid email is required' }, { status: 400 })
     }
+    const { email } = parsed.data
 
     const supabase = await createClient()
 

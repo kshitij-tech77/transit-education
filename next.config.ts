@@ -16,6 +16,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com${__impeccableLiveSrc}`,
+      "object-src 'none'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://transiteducation.com.np https://images.unsplash.com https://flagcdn.com https://i.pravatar.cc https://res.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com",
