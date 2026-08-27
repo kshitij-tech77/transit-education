@@ -20,7 +20,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://transiteducation.com.np https://images.unsplash.com https://flagcdn.com https://i.pravatar.cc https://res.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com",
-      `connect-src 'self' https://res.cloudinary.com https://maps.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net${__impeccableLiveSrc}`,
+      `connect-src 'self' https://vlrhwdcqzpfqpbqeaqyr.supabase.co wss://vlrhwdcqzpfqpbqeaqyr.supabase.co https://res.cloudinary.com https://maps.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net${__impeccableLiveSrc}`,
       "frame-src https://www.google.com https://maps.google.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
