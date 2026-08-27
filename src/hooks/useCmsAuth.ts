@@ -79,8 +79,31 @@ export function useCmsAuth(): UseCmsAuthReturn {
   }, [router]);
 
   const handleLogout = useCallback(async () => {
-    await supabase.auth.signOut();
-    router.push("/cms/login");
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      // A failed global sign-out (offline, already-invalid token) must not
+      // block the redirect — we still clear local state below.
+      console.error("[useCmsAuth] signOut error:", err);
+    }
+
+    // Belt-and-suspenders: expire any lingering Supabase auth cookies. The
+    // browser client and the server login route disagree on cookie options
+    // (Secure in prod, chunked `sb-…auth-token.0/.1`), so signOut() alone
+    // can leave a still-valid cookie that bounces the user back into /cms.
+    if (typeof document !== "undefined") {
+      document.cookie.split(";").forEach((cookie) => {
+        const name = cookie.split("=")[0].trim();
+        if (name.startsWith("sb-")) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+        }
+      });
+    }
+
+    router.refresh();
+    // Hard redirect (not router.push) — forces a full reload so all client
+    // state is dropped and middleware re-evaluates against the cleared session.
+    window.location.href = "/cms/login";
   }, [router]);
 
   return { user, profile, loading, handleLogout };

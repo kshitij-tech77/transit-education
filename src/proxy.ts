@@ -64,11 +64,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (user && isCmsLoginRoute) {
-    return NextResponse.redirect(new URL('/cms', request.url))
-  }
-
-  if (!user && (isCmsRoute || isCmsApiRoute) && !isCmsLoginRoute) {
+  // ── CMS access control ──────────────────────────────────────────────
+  // The session check above only proves there's *a* Supabase user. The CMS
+  // additionally requires an admin/editor row in `profiles`. Page routes are
+  // gated here; API routes are gated here AND re-checked in requireCmsAuth.
+  if (isCmsRoute || isCmsApiRoute) {
     const isPublicGet = isCmsApiRoute &&
       request.method === 'GET' &&
       [
@@ -85,13 +85,39 @@ export async function proxy(request: NextRequest) {
       '/api/cms/franchise-inquiries',
     ].includes(pathname)
 
-    const isLoginRoute = pathname === '/api/cms/auth/login' && request.method === 'POST'
+    const isLoginApiRoute = pathname === '/api/cms/auth/login' && request.method === 'POST'
 
-    if (!isPublicGet && !isPublicPost && !isLoginRoute) {
-      if (isCmsApiRoute) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Public lead-capture endpoints and the login endpoint need no session.
+    if (!isPublicGet && !isPublicPost && !isLoginApiRoute) {
+      if (!user) {
+        if (isCmsApiRoute) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+        if (!isCmsLoginRoute) {
+          return NextResponse.redirect(new URL('/cms/login', request.url))
+        }
+        // Unauthenticated visitor on /cms/login — let the form render.
+      } else {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle()
+        const isCmsStaff = profile?.role === 'admin' || profile?.role === 'editor'
+
+        if (isCmsLoginRoute) {
+          // Logged-in staff skip the login form; a non-staff session stays
+          // on it (redirecting to /cms would just bounce straight back).
+          if (isCmsStaff) {
+            return NextResponse.redirect(new URL('/cms', request.url))
+          }
+        } else if (!isCmsStaff) {
+          if (isCmsApiRoute) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+          }
+          return NextResponse.redirect(new URL('/cms/login', request.url))
+        }
       }
-      return NextResponse.redirect(new URL('/cms/login', request.url))
     }
   }
 
