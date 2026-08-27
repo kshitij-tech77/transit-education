@@ -85,7 +85,7 @@ export default function GoogleReviews() {
           {REVIEWS.map((r, i) => (
             <div
               key={i}
-              className="bg-off-white border border-gray-100 rounded-[2rem] p-6 flex flex-col gap-4 hover:shadow-lg transition-all"
+              className="bg-off-white border border-gray-100 rounded-3xl p-6 flex flex-col gap-4 hover:shadow-lg transition-all"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-black text-lg">

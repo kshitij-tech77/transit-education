@@ -72,7 +72,7 @@ export default function AccreditationPage() {
       {/* ICEF Certificate Feature */}
       <section className="py-24 bg-brand-surface">
         <div className="container">
-          <div className="bg-white rounded-[2rem] border border-brand/20 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-brand/20 shadow-sm overflow-hidden">
             <div className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
               <div className="w-28 h-28 md:w-40 md:h-40 rounded-3xl bg-brand flex items-center justify-center shrink-0 shadow-xl">
                 <ShieldCheck className="w-16 h-16 md:w-24 md:h-24 text-white" />

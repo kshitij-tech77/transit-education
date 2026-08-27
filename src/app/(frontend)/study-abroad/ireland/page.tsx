@@ -80,7 +80,7 @@ export default function IrelandPage() {
               </div>
             </div>
 
-            <div className="bg-white p-10 rounded-[2rem] border border-gray-100 shadow-xl">
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-xl">
               <h3 className="text-2xl font-bold text-black mb-6 flex items-center gap-3">
                 <ListChecks className="w-7 h-7 text-brand" /> Major Intakes
               </h3>

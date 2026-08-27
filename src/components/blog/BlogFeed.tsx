@@ -115,7 +115,7 @@ export default function BlogFeed({ posts, activeCategory, categories }: BlogFeed
       {/* Sidebar */}
       <aside className="space-y-12">
         {/* Search */}
-        <div className="bg-off-white p-8 rounded-[2rem] border border-gray-100">
+        <div className="bg-off-white p-8 rounded-3xl border border-gray-100">
           <h3 className="text-xl font-bold text-black mb-6">Search Blog</h3>
           <div className="relative">
             <input
@@ -130,7 +130,7 @@ export default function BlogFeed({ posts, activeCategory, categories }: BlogFeed
         </div>
 
         {/* Categories */}
-        <div className="bg-off-white p-8 rounded-[2rem] border border-gray-100">
+        <div className="bg-off-white p-8 rounded-3xl border border-gray-100">
           <h3 className="text-xl font-bold text-black mb-6">Categories</h3>
           <ul className="space-y-4">
             <li>

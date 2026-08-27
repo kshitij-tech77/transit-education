@@ -108,7 +108,7 @@ export default async function ResourcesPage() {
       {/* Need Help Section */}
       <section className="py-24 bg-off-white">
         <div className="container">
-          <div className="bg-white rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row items-center gap-12 border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-3xl p-12 md:p-20 flex flex-col md:flex-row items-center gap-12 border border-gray-100 shadow-sm">
             <div className="w-20 h-20 rounded-3xl bg-brand/10 text-brand flex items-center justify-center shrink-0">
               <Info className="w-10 h-10" />
             </div>

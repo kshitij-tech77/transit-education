@@ -80,7 +80,7 @@ export default function LanguageTrainingPage() {
               </h2>
               <div className="space-y-6">
                 {languages.map((lang, index) => (
-                  <div key={index} className="flex gap-6 p-8 rounded-[2rem] bg-off-white border border-gray-100 hover:border-brand/20 transition-all group">
+                  <div key={index} className="flex gap-6 p-8 rounded-3xl bg-off-white border border-gray-100 hover:border-brand/20 transition-all group">
                     <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 shadow-sm group-hover:bg-brand group-hover:text-white transition-all">
                       {lang.icon}
                     </div>

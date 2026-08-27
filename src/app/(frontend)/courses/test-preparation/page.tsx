@@ -74,7 +74,7 @@ export default function TestPrepCoursePage() {
 
           <div className="grid md:grid-cols-2 gap-12">
             {courseDetails.map((course, index) => (
-              <div key={index} className="bg-off-white p-12 rounded-[3rem] border border-gray-100 hover:shadow-xl transition-all duration-500">
+              <div key={index} className="bg-off-white p-12 rounded-3xl border border-gray-100 hover:shadow-xl transition-all duration-500">
                 <div className="flex items-center gap-6 mb-8">
                   <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand">
                     {course.icon}

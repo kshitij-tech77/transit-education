@@ -524,7 +524,7 @@ export default async function CountrySubPage({
 
             <aside className="space-y-8">
               {/* CTA Card */}
-              <div className="bg-brand rounded-[2rem] p-8 text-white sticky top-28">
+              <div className="bg-brand rounded-3xl p-8 text-white sticky top-28">
                 <h3 className="text-xl font-bold mb-4">Get Expert Guidance</h3>
                 <p className="text-white/80 text-sm mb-6 leading-relaxed">
                   Our certified counsellors guide you through every step — from profile evaluation to visa approval.
@@ -538,7 +538,7 @@ export default async function CountrySubPage({
               </div>
 
               {/* Related links */}
-              <div className="bg-off-white border border-gray-100 rounded-[2rem] p-6">
+              <div className="bg-off-white border border-gray-100 rounded-3xl p-6">
                 <h4 className="font-bold text-black mb-4">{countryName} Guides</h4>
                 <ul className="space-y-2">
                   <li>

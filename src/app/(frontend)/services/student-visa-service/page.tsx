@@ -129,7 +129,7 @@ export default function StudentVisaServicePage() {
             <h2 className="text-3xl md:text-4xl font-bold text-black mt-4">Typical Visa Checklist</h2>
           </div>
 
-          <div className="bg-white rounded-[2rem] p-12 border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-3xl p-12 border border-gray-100 shadow-sm">
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
               {[
                 "Valid Passport",

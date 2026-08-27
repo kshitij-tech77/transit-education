@@ -150,7 +150,7 @@ export default function TestPreparationPage() {
                 tagColor: "bg-green-600",
               },
             ].map((b, i) => (
-              <div key={i} className={`${b.color} border rounded-[2rem] p-8 relative`}>
+              <div key={i} className={`${b.color} border rounded-3xl p-8 relative`}>
                 {b.tag && (
                   <span className={`absolute -top-3 left-6 ${b.tagColor} text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest`}>{b.tag}</span>
                 )}
@@ -271,7 +271,7 @@ export default function TestPreparationPage() {
                 score: "⭐⭐⭐⭐⭐",
               },
             ].map((trainer, i) => (
-              <div key={i} className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all">
+              <div key={i} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all">
                 <div className="w-16 h-16 rounded-full bg-brand/10 text-brand flex items-center justify-center text-2xl font-black mb-6">
                   {trainer.name.charAt(0)}
                 </div>
