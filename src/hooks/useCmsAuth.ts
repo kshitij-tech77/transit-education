@@ -63,6 +63,15 @@ export function useCmsAuth(): UseCmsAuthReturn {
 
         if (!profileError && profileData) {
           setProfile(profileData as Profile);
+        } else {
+          // No profiles row (or the read was blocked) — the header will fall
+          // back to the "USER" placeholder and the CMS API calls will 403.
+          console.error(
+            "[useCmsAuth] could not load profiles row for",
+            authUser.id,
+            "-",
+            profileError?.message ?? "query returned no data"
+          );
         }
       } catch (err) {
         console.error("[useCmsAuth] init error:", err);
