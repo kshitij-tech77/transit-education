@@ -41,6 +41,9 @@ export function BlogSection({ data, onDelete, onToast }: BlogSectionProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
+            {data.posts.length === 0 && (
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-400 text-[13px]">No posts yet.</td></tr>
+            )}
             {data.posts.map((p, i) => (
               <tr key={i} className="text-[13px] hover:bg-gray-50">
                 <td className="px-6 py-4 font-semibold text-black max-w-xs truncate">{p.title}</td>
