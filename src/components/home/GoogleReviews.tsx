@@ -60,7 +60,7 @@ export default function GoogleReviews() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
           <div>
             <SectionLabel>Google Reviews</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-bold text-black mt-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">
               What Students Say About Us
             </h2>
           </div>

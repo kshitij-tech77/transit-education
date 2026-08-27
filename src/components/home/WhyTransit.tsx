@@ -43,7 +43,7 @@ export default function WhyTransit() {
           className="mb-14"
         >
           <SectionLabel>Why us</SectionLabel>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-black leading-tight">
             Why Nepali students choose <span className="text-brand">Transit</span>
           </h2>
         </motion.div>

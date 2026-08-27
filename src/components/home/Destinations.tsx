@@ -28,7 +28,7 @@ export default function Destinations() {
           className="text-center mb-16"
         >
           <SectionLabel>Global Opportunities</SectionLabel>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mt-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">
             Where do you want to study?
           </h2>
           <p className="text-slate-500 mt-4 max-w-2xl mx-auto text-lg">

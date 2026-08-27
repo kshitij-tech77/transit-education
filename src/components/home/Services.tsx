@@ -58,7 +58,7 @@ export default function Services() {
             className="lg:sticky lg:top-32 lg:self-start"
           >
             <SectionLabel>What we do</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#111111] leading-tight mb-6">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-black leading-tight mb-6">
               Everything you need,<br />under one roof
             </h2>
             <p className="text-[#6B6966] text-[15px] leading-relaxed max-w-sm">

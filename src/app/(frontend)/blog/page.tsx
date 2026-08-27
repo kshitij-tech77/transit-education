@@ -131,7 +131,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16">
                 <SectionLabel>Blog FAQ</SectionLabel>
-                <h2 className="text-3xl font-bold text-black mt-4">Frequently Asked Questions</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Frequently Asked Questions</h2>
               </div>
               <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
                 <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />

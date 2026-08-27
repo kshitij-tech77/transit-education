@@ -299,7 +299,7 @@ export default async function Home() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
               <SectionLabel>Got Questions?</SectionLabel>
-              <h2 className="text-4xl font-bold text-black mt-4">Expert Advice & FAQ</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Expert Advice & FAQ</h2>
               <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
                 Everything you need to know about studying abroad, visa processes, and life in global destinations.
               </p>

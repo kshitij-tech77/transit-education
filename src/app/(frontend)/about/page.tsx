@@ -103,7 +103,7 @@ export default async function AboutPage() {
             <div className="space-y-8">
               <div>
                 <SectionLabel>Our Story</SectionLabel>
-                <h2 className="text-3xl md:text-4xl font-bold text-black mt-4 mb-6">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4 mb-6">
                   A Legacy of Trust and Excellence
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
@@ -173,7 +173,7 @@ export default async function AboutPage() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16">
                 <SectionLabel>FAQ</SectionLabel>
-                <h2 className="text-3xl font-bold text-black mt-4">Questions about Transit?</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Questions about Transit?</h2>
               </div>
               <div className="bg-off-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
                 <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />
