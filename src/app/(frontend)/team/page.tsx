@@ -1,9 +1,11 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { proxiedMediaUrl } from "@/lib/media-url";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Metadata } from "next";
+import { buttonVariants } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Our Team | Expert Study Abroad Counsellors — Transit Education Nepal",
@@ -156,12 +158,12 @@ export default async function TeamPage() {
             </div>
             
             <div className="relative z-10 shrink-0">
-              <a 
-                href="/contact" 
-                className="inline-block bg-brand text-white px-10 py-5 rounded-full font-bold hover:bg-white hover:text-brand transition-all shadow-xl"
+              <Link
+                href="/contact"
+                className={buttonVariants({ variant: "brand", size: "lg", className: "px-10 py-5 rounded-full shadow-xl hover:bg-white hover:text-brand" })}
               >
                 Work With Us
-              </a>
+              </Link>
             </div>
           </div>
         </div>
