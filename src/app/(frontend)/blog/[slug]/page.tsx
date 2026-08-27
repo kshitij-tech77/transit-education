@@ -14,7 +14,16 @@ import TableOfContents, { type TOCItem } from "@/components/blog/TableOfContents
 import ShareButtons from "@/components/blog/ShareButtons";
 import { unstable_cache } from "next/cache";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const { data } = await supabase
+    .from("blog_posts")
+    .select("slug")
+    .eq("status", "published");
+
+  return (data ?? []).map((post) => ({ slug: post.slug }));
+}
 
 // `slug` is passed as an argument, so each post gets its own cache entry,
 // revalidated every 5 minutes.

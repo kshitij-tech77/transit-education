@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 // `category` (from searchParams) is passed as an argument, so it's
 // automatically part of the cache key — each category filter gets its own
