@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
+// GET is public (see proxy.ts's isPublicGet whitelist) — Hero.tsx reads it
+// for homepage country data — so it deliberately has no guard.
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -48,6 +51,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const supabase = await createClient();
     const body = await req.json();
 

@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getUserEmailMap } from '@/lib/loyalty-admin';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
 
 export async function GET(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error: authError } = await requireCmsAuth();
+  if (authError) return authError;
 
   // Bounded + paginated: this list grows without limit across all members,
   // so default to the most recent page instead of fetching every row ever.

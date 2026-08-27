@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { rateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 const FranchiseSchema = z.object({
   full_name: z.string().min(2).max(100).trim(),
@@ -14,10 +15,10 @@ const FranchiseSchema = z.object({
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
 
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('franchise_inquiries')
       .select('*')
@@ -31,6 +32,8 @@ export async function GET() {
   }
 }
 
+// POST is public (see proxy.ts's isPublicPost whitelist) — the franchise
+// inquiry form — so it deliberately has no guard, just rate limiting.
 export async function POST(req: NextRequest) {
   try {
     const ip = (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim();

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
 import { unstable_cache, revalidateTag } from 'next/cache';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 const RewardSchema = z.object({
   title: z.string().min(1).max(100).trim(),
@@ -31,9 +31,8 @@ const getCachedRewards = unstable_cache(
 );
 
 export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error: authError } = await requireCmsAuth();
+  if (authError) return authError;
 
   let data;
   try {
@@ -58,9 +57,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error: authError } = await requireCmsAuth();
+  if (authError) return authError;
 
   const parsed = RewardSchema.safeParse(await req.json());
   if (!parsed.success) {

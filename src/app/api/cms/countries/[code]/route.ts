@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 function parseJsonField(value: unknown): unknown {
   if (!value) return null;
@@ -21,6 +22,9 @@ export async function GET(
   { params }: { params: Promise<{ code: string }> }
 ) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { code } = await params;
 
     if (!isValidCode(code)) {
@@ -49,6 +53,9 @@ export async function PUT(
   { params }: { params: Promise<{ code: string }> }
 ) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { code } = await params;
 
     if (!isValidCode(code)) {
@@ -102,6 +109,9 @@ export async function DELETE(
   { params }: { params: Promise<{ code: string }> }
 ) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { code } = await params;
 
     if (!isValidCode(code)) {

@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { id } = await params;
     const supabase = await createClient();
     const body = await req.json();
@@ -38,6 +42,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { id } = await params;
     const supabase = await createClient();
     const { error } = await supabase

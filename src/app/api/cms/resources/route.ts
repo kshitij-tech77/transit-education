@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 export async function GET() {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('resources')
@@ -20,6 +24,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const supabase = await createClient();
     const body = await req.json();
     const { data: newItem, error } = await supabase

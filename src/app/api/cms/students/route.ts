@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { rateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 // Public lead form — no auth. Tight limits, status never accepted from caller.
 const PublicLeadSchema = z.object({
@@ -25,6 +26,9 @@ const AdminStudentSchema = z.object({
 
 export async function GET() {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('students')
@@ -58,10 +62,17 @@ export async function GET() {
   }
 }
 
+// POST is public (see proxy.ts's isPublicPost whitelist) — the site-wide
+// lead capture form — so it deliberately has no blanket guard. It still
+// requires an actual admin/editor role (not just any authenticated session)
+// to take the permissive admin path; any other caller, including a
+// logged-in loyalty member, falls through to the rate-limited public path.
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
+    const { data: role } = user ? await supabase.rpc('get_my_role') : { data: null };
+    const isStaff = !!user && (role === 'admin' || role === 'editor');
     const body = await req.json();
 
     let name: string;
@@ -73,8 +84,8 @@ export async function POST(req: NextRequest) {
     let status: string;
     let notes: string | undefined;
 
-    if (user) {
-      // Authenticated CMS admin — validate with permissive schema
+    if (isStaff) {
+      // Authenticated CMS admin/editor — validate with permissive schema
       const parsed = AdminStudentSchema.safeParse(body);
       if (!parsed.success) {
         return NextResponse.json({ error: 'Invalid input', details: parsed.error.flatten().fieldErrors }, { status: 400 });

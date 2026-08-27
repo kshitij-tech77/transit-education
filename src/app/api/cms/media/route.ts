@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
 import type { ResourceApiResponse, UploadApiResponse } from 'cloudinary';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 const BUCKET = 'media';
 const MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
@@ -76,6 +77,9 @@ function extractCloudinaryPublicId(filePath: string): string | null {
 
 export async function GET() {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const mediaFiles: Record<string, any[]> = {};
 
     for (const resourceType of LOOKUP_RESOURCE_TYPES) {
@@ -133,6 +137,9 @@ function uploadToCloudinary(buffer: Buffer, publicId: string): Promise<UploadApi
 
 export async function POST(req: NextRequest) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
     if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -178,6 +185,9 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const { error: authError } = await requireCmsAuth();
+    if (authError) return authError;
+
     const { filePath } = await req.json();
     if (!filePath) return NextResponse.json({ error: 'No file path provided' }, { status: 400 });
 

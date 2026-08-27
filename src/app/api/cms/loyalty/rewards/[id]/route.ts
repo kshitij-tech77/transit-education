@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { z } from 'zod';
 import { revalidateTag } from 'next/cache';
+import { requireCmsAuth } from '@/lib/cms-auth-guard';
 
 const RewardSchema = z.object({
   title: z.string().min(1).max(100).trim(),
@@ -18,9 +18,8 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error: authError } = await requireCmsAuth();
+  if (authError) return authError;
 
   const { id } = await params;
   const parsed = RewardSchema.safeParse(await req.json());
@@ -56,9 +55,8 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error: authError } = await requireCmsAuth();
+  if (authError) return authError;
 
   const { id } = await params;
   const { error } = await supabaseAdmin.from('loyalty_rewards').delete().eq('id', id);
