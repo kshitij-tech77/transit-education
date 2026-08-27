@@ -38,4 +38,5 @@ export interface BlogPost {
   // Extended SEO
   secondaryKeywords?: string[];
   ogDescription?: string;
+  noindex?: boolean;
 }

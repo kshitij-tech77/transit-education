@@ -53,6 +53,7 @@ export async function GET(
       readingTime: post.reading_time,
       secondaryKeywords: post.secondary_keywords || [],
       ogDescription: post.og_description || '',
+      noindex: post.noindex || false,
     };
 
     return NextResponse.json(formattedPost);
@@ -100,7 +101,8 @@ export async function PUT(
         sources: data.sources ?? [],
         last_reviewed_at: data.lastReviewed || null,
         secondary_keywords: data.secondaryKeywords ?? [],
-        og_description: data.ogDescription || null
+        og_description: data.ogDescription || null,
+        noindex: data.noindex ?? false
       })
       .eq('id', id)
       .select()

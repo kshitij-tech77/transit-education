@@ -109,6 +109,9 @@ export async function generateMetadata({
       canonical:
         post.canonical_url || `https://transiteducation.com.np/blog/${post.slug}`,
     },
+    robots: post.noindex
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
     openGraph: {
       title: post.meta_title || post.title,
       description: (post as any).og_description || post.meta_description,
@@ -187,6 +190,7 @@ export default async function BlogPostPage({
     author: {
       "@type": author ? "Person" : "Organization",
       name: formattedPost.authorName,
+      ...(formattedPost.authorCredential && { jobTitle: formattedPost.authorCredential }),
     },
     datePublished: formattedPost.publishDate,
     dateModified: formattedPost.lastReviewed || formattedPost.publishDate,

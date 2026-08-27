@@ -66,6 +66,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       featuredImage: "",
       secondaryKeywords: [],
       ogDescription: "",
+      noindex: false,
     }
   );
 
@@ -608,6 +609,15 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
                 />
               </div>
+              <label className="flex items-center gap-2 pt-2 border-t border-[#EDE8E8] cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!formData.noindex}
+                  onChange={(e) => handleChange("noindex", e.target.checked)}
+                  className="w-4 h-4 accent-[#A93226]"
+                />
+                <span className="text-[12px] text-[#555]">Hide from search engines (noindex)</span>
+              </label>
             </div>
           </div>
 

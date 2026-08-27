@@ -87,7 +87,8 @@ export async function POST(req: Request) {
         sources: data.sources || [],
         last_reviewed_at: data.lastReviewed || null,
         secondary_keywords: data.secondaryKeywords || [],
-        og_description: data.ogDescription || null
+        og_description: data.ogDescription || null,
+        noindex: data.noindex ?? false
       })
       .select()
       .single();
