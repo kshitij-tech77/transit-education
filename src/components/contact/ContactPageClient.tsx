@@ -150,7 +150,7 @@ export default function ContactPageClient() {
 
       {/* ─── RIGHT: Form ─── */}
       <div className="lg:col-span-7">
-        <div className="bg-off-white p-10 md:p-14 rounded-[3rem] border border-gray-100 shadow-sm">
+        <div className="bg-off-white p-10 md:p-14 rounded-3xl border border-gray-100 shadow-sm">
           {done ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center mx-auto mb-6">

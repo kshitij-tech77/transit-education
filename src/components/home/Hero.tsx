@@ -163,7 +163,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
             }}
           >
             Dream. Apply.<br />
-            <span className="text-[#111111]">Fly.</span>
+            <span className="text-black">Fly.</span>
           </motion.h1>
 
           <motion.p className="text-[#6B6966] text-lg lg:text-xl max-w-145 mb-12 leading-relaxed">
