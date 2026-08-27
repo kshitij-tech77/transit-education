@@ -53,11 +53,27 @@ export function useCmsAuth(): UseCmsAuthReturn {
 
         setUser(authUser);
 
-        const { data: profileData, error: profileError } = await supabase
+        console.log("[useCmsAuth] auth user:", {
+          id: authUser.id,
+          email: authUser.email,
+          role: authUser.role,
+        });
+
+        const profileRes = await supabase
           .from("profiles")
           .select("id, full_name, role")
           .eq("id", authUser.id)
           .single();
+
+        const { data: profileData, error: profileError } = profileRes;
+
+        console.log("[useCmsAuth] profiles query result:", {
+          data: profileData,
+          error: profileError,
+          status: profileRes.status,
+          statusText: profileRes.statusText,
+          queriedId: authUser.id,
+        });
 
         if (cancelled) return;
 
