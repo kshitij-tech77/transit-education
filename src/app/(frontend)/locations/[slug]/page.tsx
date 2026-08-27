@@ -164,87 +164,89 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       <LocationClient location={location} slug={slug} />
 
       {/* ─── BRANCH DETAIL ─── */}
-      <section className="py-[100px] bg-off-white" id="branch">
-        <div className="container max-w-[1180px] mx-auto px-10">
-          <div className="grid lg:grid-cols-2 gap-[72px] items-start">
-            <div className="grid grid-cols-2 grid-rows-[280px_170px] gap-[6px] rounded-xl overflow-hidden">
+      <section className="py-24 bg-off-white" id="branch">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-18 items-start">
+            {/* Photo mosaic — asymmetric row heights are a deliberate layout choice
+                without a clean single-utility equivalent, so kept as an arbitrary value. */}
+            <div className="grid grid-cols-2 grid-rows-[280px_170px] gap-1.5 rounded-xl overflow-hidden">
               <div className="col-span-2 overflow-hidden">
-                <Image src={location.heroImage} alt="Main office" width={600} height={400} className="w-full h-full object-cover object-top hover:scale-[1.04] transition-transform duration-500" />
+                <Image src={location.heroImage} alt="Main office" width={600} height={400} className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="overflow-hidden">
-                <Image src={location.gallery[0]} alt="Office interior" width={300} height={200} className="w-full h-full object-cover object-top hover:scale-[1.04] transition-transform duration-500" />
+                <Image src={location.gallery[0]} alt="Office interior" width={300} height={200} className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="overflow-hidden relative group">
-                <Image src={location.gallery[1]} alt="Team" width={300} height={200} className="w-full h-full object-cover object-top hover:scale-[1.04] transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/48 flex items-center justify-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase cursor-pointer opacity-100 group-hover:bg-brand/65 transition-colors">View All Photos</div>
+                <Image src={location.gallery[1]} alt="Team" width={300} height={200} className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/48 flex items-center justify-center text-white text-xs font-semibold tracking-widest uppercase cursor-pointer opacity-100 group-hover:bg-brand/65 transition-colors">View All Photos</div>
               </div>
             </div>
 
             <div>
-              <div className="flex items-center gap-[10px] mb-4">
+              <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-6 h-0.5 bg-brand rounded-full" />
-                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">{slug} Branch</span>
+                <span className="text-xs font-bold tracking-widest uppercase text-brand">{slug} Branch</span>
               </div>
-              <h2 className="text-[clamp(26px,3vw,38px)] font-extrabold leading-[1.12] text-[#111] mb-[6px] tracking-[-0.02em]">{location.address.split(',')[0]},<br />{location.address.split(',')[1]}</h2>
-              <p className="text-xs font-medium text-brand tracking-[0.06em] uppercase mb-6">Nepal's Study Abroad Office</p>
-              
-              <div className="inline-flex items-center gap-[7px] bg-[#E8F5E9] text-[#2E7D32] text-[10px] font-bold tracking-[0.1em] uppercase px-[14px] py-[6px] rounded-full mb-7">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32] animate-pulse" />
+              <h2 className="text-3xl md:text-4xl font-extrabold leading-[1.12] text-black mb-1.5 tracking-tight">{location.address.split(',')[0]},<br />{location.address.split(',')[1]}</h2>
+              <p className="text-xs font-medium text-brand tracking-wider uppercase mb-6">Nepal's Study Abroad Office</p>
+
+              <div className="inline-flex items-center gap-1.75 bg-green-50 text-green-700 text-xs font-bold tracking-widest uppercase px-3.5 py-1.5 rounded-full mb-7">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-700 animate-pulse" />
                 Open Now
               </div>
 
-              <div className="flex flex-col gap-4 mb-7 pb-7 border-b border-[#E5E4E0]">
-                <div className="flex items-start gap-[14px] p-2.5 rounded-lg hover:bg-[#F3F3F1] transition-colors group">
-                  <div className="w-[38px] h-[38px] bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
+              <div className="flex flex-col gap-4 mb-7 pb-7 border-b border-gray-200">
+                <div className="flex items-start gap-3.5 p-2.5 rounded-lg hover:bg-gray-100 transition-colors group">
+                  <div className="w-10 h-10 bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
                     <MapPin className="w-4 h-4 text-brand group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <div className="text-[9px] font-bold tracking-[0.13em] uppercase text-[#9A9895] mb-[3px]">Address</div>
-                    <div className="text-[13px] font-medium text-[#111] leading-[1.6]">{location.address}</div>
+                    <div className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-0.75">Address</div>
+                    <div className="text-sm font-medium text-black leading-[1.6]">{location.address}</div>
                   </div>
                 </div>
-                <div className="flex items-start gap-[14px] p-2.5 rounded-lg hover:bg-[#F3F3F1] transition-colors group">
-                  <div className="w-[38px] h-[38px] bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
+                <div className="flex items-start gap-3.5 p-2.5 rounded-lg hover:bg-gray-100 transition-colors group">
+                  <div className="w-10 h-10 bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
                     <Phone className="w-4 h-4 text-brand group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <div className="text-[9px] font-bold tracking-[0.13em] uppercase text-[#9A9895] mb-[3px]">Phone</div>
-                    <div className="text-[13px] font-medium text-brand">{location.phone}</div>
+                    <div className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-0.75">Phone</div>
+                    <div className="text-sm font-medium text-brand">{location.phone}</div>
                   </div>
                 </div>
-                <div className="flex items-start gap-[14px] p-2.5 rounded-lg hover:bg-[#F3F3F1] transition-colors group">
-                  <div className="w-[38px] h-[38px] bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
+                <div className="flex items-start gap-3.5 p-2.5 rounded-lg hover:bg-gray-100 transition-colors group">
+                  <div className="w-10 h-10 bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
                     <MessageSquare className="w-4 h-4 text-brand group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <div className="text-[9px] font-bold tracking-[0.13em] uppercase text-[#9A9895] mb-[3px]">WhatsApp</div>
-                    <div className="text-[13px] font-medium text-brand"><a href={`https://wa.me/977${location.whatsapp}`} target="_blank">+977 {location.whatsapp}</a></div>
+                    <div className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-0.75">WhatsApp</div>
+                    <div className="text-sm font-medium text-brand"><a href={`https://wa.me/977${location.whatsapp}`} target="_blank">+977 {location.whatsapp}</a></div>
                   </div>
                 </div>
-                <div className="flex items-start gap-[14px] p-2.5 rounded-lg hover:bg-[#F3F3F1] transition-colors group">
-                  <div className="w-[38px] h-[38px] bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
+                <div className="flex items-start gap-3.5 p-2.5 rounded-lg hover:bg-gray-100 transition-colors group">
+                  <div className="w-10 h-10 bg-brand-light rounded-lg flex items-center justify-center group-hover:bg-brand transition-colors">
                     <Mail className="w-4 h-4 text-brand group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <div className="text-[9px] font-bold tracking-[0.13em] uppercase text-[#9A9895] mb-[3px]">Email</div>
-                    <div className="text-[13px] font-medium text-brand"><a href={`mailto:${location.email}`}>{location.email}</a></div>
+                    <div className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-0.75">Email</div>
+                    <div className="text-sm font-medium text-brand"><a href={`mailto:${location.email}`}>{location.email}</a></div>
                   </div>
                 </div>
               </div>
 
-              <div className="text-[9px] font-bold tracking-[0.13em] uppercase text-[#9A9895] mb-[10px]">Office Hours</div>
-              <div className="flex justify-between py-2.5 border-b border-[#E5E4E0] text-[13px]">
-                <span className="text-[#6B6966] font-medium">Sunday – Friday</span>
-                <span className="text-[#111] font-semibold">{location.hours.split('•')[1]}</span>
+              <div className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2.5">Office Hours</div>
+              <div className="flex justify-between py-2.5 border-b border-gray-200 text-sm">
+                <span className="text-gray-600 font-medium">Sunday – Friday</span>
+                <span className="text-black font-semibold">{location.hours.split('•')[1]}</span>
               </div>
-              <div className="flex justify-between py-2.5 border-b border-[#E5E4E0] text-[13px]">
-                <span className="text-[#6B6966] font-medium">Saturday</span>
-                <span className="text-[#9A9895]">Closed</span>
+              <div className="flex justify-between py-2.5 border-b border-gray-200 text-sm">
+                <span className="text-gray-600 font-medium">Saturday</span>
+                <span className="text-gray-400">Closed</span>
               </div>
 
               <div className="flex gap-3 mt-7 flex-wrap">
-                <button className="bg-brand text-white text-[13px] font-semibold px-[30px] py-[15px] rounded-[10px] hover:bg-brand-dark hover:-translate-y-0.5 transition-all">Download Free Guide</button>
-                <a href={`https://wa.me/977${location.whatsapp}`} target="_blank" className="bg-transparent text-[#111] text-[13px] font-medium px-[26px] py-[13px] border-[1.5px] border-[#E5E4E0] rounded-[10px] hover:border-brand hover:bg-brand hover:text-white transition-all">WhatsApp Us →</a>
+                <button className="bg-brand text-white text-sm font-semibold px-7.5 py-3.75 rounded-lg hover:bg-brand-dark hover:-translate-y-0.5 transition-all">Download Free Guide</button>
+                <a href={`https://wa.me/977${location.whatsapp}`} target="_blank" className="bg-transparent text-black text-sm font-medium px-6.5 py-3.25 border border-gray-200 rounded-lg hover:border-brand hover:bg-brand hover:text-white transition-all">WhatsApp Us →</a>
               </div>
             </div>
           </div>
@@ -252,36 +254,38 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── MAP ─── */}
-      <div className="relative h-[420px] bg-[#F3F3F1] overflow-hidden">
+      <div className="relative h-105 bg-gray-100 overflow-hidden">
         <iframe src={location.mapUrl} className="w-full h-full border-none" loading="lazy" />
-        <div className="absolute top-7 left-10 bg-white p-[24px_26px] max-w-[278px] rounded-xl shadow-[0_8px_40px_rgba(0,0,0,0.11)] z-10">
-          <div className="text-[15px] font-bold text-[#111] mb-[5px]">Transit Education {slug.charAt(0).toUpperCase() + slug.slice(1)}</div>
-          <div className="text-[12px] text-[#9A9895] leading-[1.7] mb-4">{location.address}</div>
-          <a href={`https://maps.google.com/?q=${encodeURIComponent(location.address)}`} target="_blank" className="bg-brand text-white text-xs font-semibold px-5 py-3 rounded-[10px] inline-flex items-center gap-2 hover:bg-brand-dark transition-colors">Get Directions →</a>
+        {/* Custom shadow depth not covered by the standard shadow scale — kept arbitrary. */}
+        <div className="absolute top-7 left-10 bg-white py-6 px-6.5 max-w-70 rounded-xl shadow-[0_8px_40px_rgba(0,0,0,0.11)] z-10">
+          <div className="text-base font-bold text-black mb-1.5">Transit Education {slug.charAt(0).toUpperCase() + slug.slice(1)}</div>
+          <div className="text-xs text-gray-400 leading-[1.7] mb-4">{location.address}</div>
+          <a href={`https://maps.google.com/?q=${encodeURIComponent(location.address)}`} target="_blank" className="bg-brand text-white text-xs font-semibold px-5 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-brand-dark transition-colors">Get Directions →</a>
         </div>
       </div>
 
       {/* ─── WHY US ─── */}
-      <section className="py-[100px] bg-white">
-        <div className="container max-w-[1180px] mx-auto px-10">
+      <section className="py-24 bg-white">
+        <div className="container">
           <div className="mb-14">
-            <div className="flex items-center gap-[10px] mb-4">
+            <div className="flex items-center gap-2.5 mb-4">
               <div className="w-6 h-0.5 bg-brand rounded-full" />
-              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">Why Choose Us</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-brand">Why Choose Us</span>
             </div>
-            <h2 className="text-[clamp(28px,3.5vw,46px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-[#111]">Why {slug.charAt(0).toUpperCase() + slug.slice(1)} Students<br />Trust <span className="text-brand">Transit Education</span></h2>
-            <p className="text-sm text-[#9A9895] leading-[1.85] mt-3.5 max-w-[520px]">No commission pressure. No hollow promises. Just straightforward guidance from counsellors who know the Nepali student visa process inside out.</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold leading-[1.1] tracking-tight text-black">Why {slug.charAt(0).toUpperCase() + slug.slice(1)} Students<br />Trust <span className="text-brand">Transit Education</span></h2>
+            <p className="text-sm text-gray-400 leading-[1.85] mt-3.5 max-w-130">No commission pressure. No hollow promises. Just straightforward guidance from counsellors who know the Nepali student visa process inside out.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
+            {/* Custom brand-tinted shadow not covered by the standard shadow scale — kept arbitrary. */}
             {location.whyChooseUs.map((item, idx) => (
-              <div key={idx} className="bg-off-white p-[44px_40px] rounded-xl border border-transparent hover:border-brand hover:bg-white hover:-translate-y-[3px] hover:shadow-[0_12px_40px_rgba(169,50,38,0.10)] transition-all duration-300 group">
-                <div className="text-[52px] font-extrabold text-[#E5E4E0] leading-none tracking-[-3px] mb-4 group-hover:text-brand-light transition-colors">{item.num}</div>
-                <div className="w-11 h-11 bg-brand-light rounded-[10px] flex items-center justify-center mb-4 group-hover:bg-brand transition-colors">
-                  <Check className="w-[22px] h-[22px] text-brand group-hover:text-white transition-colors" />
+              <div key={idx} className="bg-off-white py-11 px-10 rounded-xl border border-transparent hover:border-brand hover:bg-white hover:-translate-y-0.75 hover:shadow-[0_12px_40px_rgba(169,50,38,0.10)] transition-all duration-300 group">
+                <div className="text-5xl font-extrabold text-gray-200 leading-none tracking-tighter mb-4 group-hover:text-brand-light transition-colors">{item.num}</div>
+                <div className="w-11 h-11 bg-brand-light rounded-lg flex items-center justify-center mb-4 group-hover:bg-brand transition-colors">
+                  <Check className="w-5.5 h-5.5 text-brand group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-[17px] font-bold text-[#111] mb-3 group-hover:text-brand transition-colors">{item.title}</h3>
-                <p className="text-[13px] font-light text-[#6B6966] leading-[1.85]">{item.text}</p>
+                <h3 className="text-lg font-bold text-black mb-3 group-hover:text-brand transition-colors">{item.title}</h3>
+                <p className="text-sm font-light text-gray-600 leading-[1.85]">{item.text}</p>
               </div>
             ))}
           </div>
@@ -289,14 +293,14 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── DESTINATIONS ─── */}
-      <section className="py-[100px] bg-black">
-        <div className="container max-w-[1180px] mx-auto px-10">
+      <section className="py-24 bg-black">
+        <div className="container">
           <div className="mb-14">
-            <div className="flex items-center gap-[10px] mb-4">
+            <div className="flex items-center gap-2.5 mb-4">
               <div className="w-6 h-0.5 bg-brand rounded-full" />
-              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">Destinations</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-brand">Destinations</span>
             </div>
-            <h2 className="text-[clamp(28px,3.5vw,46px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-white">Where Will<br /><span className="text-brand">You Go?</span></h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold leading-[1.1] tracking-tight text-white">Where Will<br /><span className="text-brand">You Go?</span></h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-1 rounded-xl overflow-hidden">
@@ -306,12 +310,13 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
               { name: "United Kingdom", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80", tag: "1-Year Masters" },
               { name: "Japan", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80", tag: "Low Cost • High Quality" }
             ].map((dest, idx) => (
-              <div key={idx} className={`relative h-[380px] group overflow-hidden cursor-pointer bg-[#1c1c1c] ${dest.span || ''}`}>
-                <Image src={dest.img} alt={dest.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover opacity-[0.38] group-hover:opacity-[0.65] group-hover:scale-[1.06] transition-all duration-500" />
+              <div key={idx} className={`relative h-95 group overflow-hidden cursor-pointer bg-black ${dest.span || ''}`}>
+                <Image src={dest.img} alt={dest.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover opacity-38 group-hover:opacity-65 group-hover:scale-105 transition-all duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 pt-10 group-hover:pb-7 transition-all">
                   <span className="text-base font-bold text-white block">{dest.name}</span>
-                  <span className="text-[9px] font-semibold tracking-[0.1em] uppercase text-brand mt-1 block group-hover:text-[#e8a09a] transition-colors">{dest.tag}</span>
+                  {/* #e8a09a is a one-off decorative hover tint, not part of the brand token set. */}
+                  <span className="text-xs font-semibold tracking-widest uppercase text-brand mt-1 block group-hover:text-[#e8a09a] transition-colors">{dest.tag}</span>
                 </div>
               </div>
             ))}
@@ -320,20 +325,20 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── LEAD CAPTURE ─── */}
-      <section id="guide-form" className="py-25 bg-white border-t border-[#E5E4E0]">
-        <div className="container max-w-[1180px] mx-auto px-10">
+      <section id="guide-form" className="py-24 bg-white border-t border-gray-200">
+        <div className="container">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
-              <div className="flex items-center gap-[10px] mb-5">
+              <div className="flex items-center gap-2.5 mb-5">
                 <div className="w-6 h-0.5 bg-brand rounded-full" />
-                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">Free Resource</span>
+                <span className="text-xs font-bold tracking-widest uppercase text-brand">Free Resource</span>
               </div>
-              <h2 className="text-[clamp(28px,3.5vw,44px)] font-extrabold leading-[1.1] text-[#111] mb-[18px] tracking-[-0.02em]">Get the Free<br /><em className="italic font-light text-brand not-italic">2025 Study Abroad Guide</em><br />for Nepali Students</h2>
-              <p className="text-sm font-light text-[#6B6966] leading-[1.85] mb-9">Everything you need to know before applying — destination costs in NPR, IELTS requirements, intake calendars, and the most common visa mistakes to avoid.</p>
+              <h2 className="text-4xl md:text-5xl font-extrabold leading-[1.1] text-black mb-4.5 tracking-tight">Get the Free<br /><em className="italic font-light text-brand not-italic">2025 Study Abroad Guide</em><br />for Nepali Students</h2>
+              <p className="text-sm font-light text-gray-600 leading-[1.85] mb-9">Everything you need to know before applying — destination costs in NPR, IELTS requirements, intake calendars, and the most common visa mistakes to avoid.</p>
 
               <div className="space-y-3">
                 {["Top 8 countries for Nepali students", "Full cost breakdown in NPR", "Minimum IELTS scores by destination", "2025 intake deadlines calendar"].map((perk, i) => (
-                  <div key={i} className="flex items-center gap-3 text-[13px] text-[#6B6966] hover:text-[#111] transition-colors">
+                  <div key={i} className="flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors">
                     <div className="w-5 h-5 bg-brand-light rounded-full flex items-center justify-center">
                       <Check className="w-2.5 h-2.5 text-brand" />
                     </div>
@@ -349,14 +354,14 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="py-[100px] bg-off-white">
-        <div className="container max-w-[1180px] mx-auto px-10">
+      <section className="py-24 bg-off-white">
+        <div className="container">
           <div className="mb-14">
-            <div className="flex items-center gap-[10px] mb-4">
+            <div className="flex items-center gap-2.5 mb-4">
               <div className="w-6 h-0.5 bg-brand rounded-full" />
-              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">Common Questions</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-brand">Common Questions</span>
             </div>
-            <h2 className="text-[clamp(28px,3.5vw,46px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-[#111]">Everything You've<br />Been <span className="text-brand">Wondering</span></h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold leading-[1.1] tracking-tight text-black">Everything You've<br />Been <span className="text-brand">Wondering</span></h2>
           </div>
 
           <LocationFAQ faqs={location.faqs} />
@@ -364,27 +369,28 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── TESTIMONIALS ─── */}
-      <section className="py-[100px] bg-white">
-        <div className="container max-w-[1180px] mx-auto px-10">
+      <section className="py-24 bg-white">
+        <div className="container">
           <div className="mb-14 text-center lg:text-left">
-            <div className="flex items-center gap-[10px] mb-4 justify-center lg:justify-start">
+            <div className="flex items-center gap-2.5 mb-4 justify-center lg:justify-start">
               <div className="w-6 h-0.5 bg-brand rounded-full" />
-              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-brand">Student Stories</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-brand">Student Stories</span>
             </div>
-            <h2 className="text-[clamp(28px,3.5vw,46px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-[#111]">Real Students.<br /><span className="text-brand">Real Results.</span></h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold leading-[1.1] tracking-tight text-black">Real Students.<br /><span className="text-brand">Real Results.</span></h2>
           </div>
 
+          {/* Custom brand-tinted shadow not covered by the standard shadow scale — kept arbitrary. */}
           <div className="grid lg:grid-cols-3 gap-5">
             {location.testimonials.map((testi, i) => (
-              <div key={i} className="p-8 border border-[#E5E4E0] rounded-xl relative hover:border-brand hover:shadow-[0_8px_32px_rgba(169,50,38,0.10)] transition-all group">
-                <span className="text-[56px] text-brand leading-[0.55] mb-4.5 block font-serif">"</span>
-                <div className="text-[#F59E0B] text-[11px] tracking-[2px] mb-3.5">★★★★★</div>
-                <p className="text-[13px] font-light text-[#6B6966] leading-[1.85] mb-6 group-hover:text-[#111] transition-colors">{testi.text}</p>
-                <div className="flex items-center gap-3 pt-5 border-t border-[#E5E4E0]">
+              <div key={i} className="p-8 border border-gray-200 rounded-xl relative hover:border-brand hover:shadow-[0_8px_32px_rgba(169,50,38,0.10)] transition-all group">
+                <span className="text-6xl text-brand leading-[0.55] mb-4.5 block font-serif">"</span>
+                <div className="text-amber-500 text-xs tracking-widest mb-3.5">★★★★★</div>
+                <p className="text-sm font-light text-gray-600 leading-[1.85] mb-6 group-hover:text-black transition-colors">{testi.text}</p>
+                <div className="flex items-center gap-3 pt-5 border-t border-gray-200">
                   <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-xs font-bold text-brand group-hover:bg-brand group-hover:text-white transition-colors">{testi.name.split(' ')[0][0]}</div>
                   <div>
-                    <div className="text-[13px] font-bold text-[#111]">{testi.name}</div>
-                    <div className="text-[11px] font-light text-[#9A9895]">{testi.meta}</div>
+                    <div className="text-sm font-bold text-black">{testi.name}</div>
+                    <div className="text-xs font-light text-gray-400">{testi.meta}</div>
                   </div>
                 </div>
               </div>
@@ -395,12 +401,12 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
 
       {/* ─── FOOTER CTA ─── */}
       <section className="py-24 bg-black text-center">
-        <div className="container max-w-[1180px] mx-auto px-10">
-          <h2 className="text-[clamp(26px,3.5vw,44px)] font-extrabold text-white mb-3.5 tracking-[-0.02em]">Start Your Journey<br />from <span className="text-brand">{slug.charAt(0).toUpperCase() + slug.slice(1)} Today</span></h2>
-          <p className="text-sm font-light text-[#777] mb-10 max-w-lg mx-auto">Walk in, call {location.phone}, or WhatsApp {location.whatsapp}. Free counselling. No appointment needed.</p>
+        <div className="container">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3.5 tracking-tight">Start Your Journey<br />from <span className="text-brand">{slug.charAt(0).toUpperCase() + slug.slice(1)} Today</span></h2>
+          <p className="text-sm font-light text-gray-400 mb-10 max-w-lg mx-auto">Walk in, call {location.phone}, or WhatsApp {location.whatsapp}. Free counselling. No appointment needed.</p>
           <div className="flex justify-center gap-3.5 flex-wrap">
-            <a href="#guide-form" className="bg-brand text-white text-[13px] font-semibold px-8 py-4 rounded-[10px] hover:bg-brand-dark transition-all">Download Free 2025 Guide</a>
-            <a href={`https://wa.me/977${location.whatsapp}`} target="_blank" className="bg-transparent text-white text-[13px] font-medium px-7 py-4 border border-white/35 rounded-[10px] hover:border-white hover:bg-white/10 transition-all">WhatsApp Us →</a>
+            <a href="#guide-form" className="bg-brand text-white text-sm font-semibold px-8 py-4 rounded-lg hover:bg-brand-dark transition-all">Download Free 2025 Guide</a>
+            <a href={`https://wa.me/977${location.whatsapp}`} target="_blank" className="bg-transparent text-white text-sm font-medium px-7 py-4 border border-white/35 rounded-lg hover:border-white hover:bg-white/10 transition-all">WhatsApp Us →</a>
           </div>
         </div>
       </section>
