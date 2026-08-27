@@ -32,13 +32,13 @@ export default function FAQAccordion({ items, className, firstOpen = true }: FAQ
           >
             <span className={cn(
               "text-[15px] md:text-[16px] font-[700] transition-colors",
-              openIndex === index ? "text-[#A93226]" : "text-[#111] group-hover:text-[#A93226]"
+              openIndex === index ? "text-brand" : "text-[#111] group-hover:text-brand"
             )}>
               {item.question}
             </span>
             <div className={cn(
               "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-              openIndex === index ? "bg-[#A93226] text-white rotate-0" : "bg-[#F9F4F4] text-[#A93226]"
+              openIndex === index ? "bg-brand text-white rotate-0" : "bg-[#F9F4F4] text-brand"
             )}>
               {openIndex === index ? <Minus size={16} /> : <Plus size={16} />}
             </div>

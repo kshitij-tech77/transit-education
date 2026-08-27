@@ -173,14 +173,14 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
               <h2 className="text-3xl font-bold text-black mt-4 mb-8">Quality Education & Global Recognition</h2>
               <div className="space-y-6">
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex gap-4">
-                  <GraduationCap className="w-8 h-8 text-[#A93226] shrink-0" />
+                  <GraduationCap className="w-8 h-8 text-brand shrink-0" />
                   <div>
                     <h3 className="font-bold text-black mb-2">Academic Excellence</h3>
                     <p className="text-gray-600 text-sm">Institutions in {formattedCountry.name} are known for their high standards and research contributions.</p>
                   </div>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex gap-4">
-                  <CheckCircle2 className="w-8 h-8 text-[#A93226] shrink-0" />
+                  <CheckCircle2 className="w-8 h-8 text-brand shrink-0" />
                   <div>
                     <h3 className="font-bold text-black mb-2">Global Career Path</h3>
                     <p className="text-gray-600 text-sm">Degrees from {formattedCountry.name} are recognized worldwide by employers and academic institutions.</p>
@@ -191,7 +191,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
 
             <div className="bg-white p-10 rounded-[2rem] border border-gray-100 shadow-xl">
               <h3 className="text-2xl font-bold text-black mb-6 flex items-center gap-3">
-                <ListChecks className="w-7 h-7 text-[#A93226]" /> Major Intakes
+                <ListChecks className="w-7 h-7 text-brand" /> Major Intakes
               </h3>
               <p className="text-gray-600 mb-8 leading-relaxed">
                 {formattedCountry.major_intakes_description || formattedCountry.intakes || "Varies by institution. Contact us for details."}
@@ -199,7 +199,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
               <h3 className="text-xl font-bold text-black mb-4">Required Documents:</h3>
               <ul className="grid grid-cols-1 gap-3">
                 {(formattedCountry.required_documents?.length > 0 ? formattedCountry.required_documents : ["Passport Copy", "Academic Transcripts", "IELTS/PTE Score", "Statement of Purpose"]).map((doc: string) => (
-                  <li key={doc} className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-[#A93226]" /> {doc}</li>
+                  <li key={doc} className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle2 className="w-4 h-4 text-brand" /> {doc}</li>
                 ))}
               </ul>
             </div>
@@ -217,12 +217,12 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="p-8 rounded-3xl bg-[#A93226]/5 border border-[#A93226]/10 h-full">
+              <div className="p-8 rounded-3xl bg-brand/5 border border-brand/10 h-full">
                 <h3 className="text-xl font-bold text-black mb-6">Undergraduate / Bachelors</h3>
                 <ul className="space-y-4">
                   {(formattedCountry.entry_requirements.ug || ["Completed Grade 12 with good standing", "IELTS 6.0 or equivalent"]).map((req: string, i: number) => (
                     <li key={i} className="flex gap-3 text-gray-700">
-                      <div className="w-6 h-6 rounded-full bg-[#A93226] text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
+                      <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center shrink-0 text-xs font-bold">{i+1}</div>
                       <p>{req}</p>
                     </li>
                   ))}
@@ -257,7 +257,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
             <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-gray-300 before:to-transparent">
               {formattedCountry.visa_process.map((step: any, i: number) => (
                 <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-[#A93226] text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-brand text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">

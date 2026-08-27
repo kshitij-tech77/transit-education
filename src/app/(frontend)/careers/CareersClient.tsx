@@ -134,7 +134,7 @@ export default function CareersClient() {
                 transition={{ delay: i * 0.1, duration: 0.5 }}
                 className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm"
               >
-                <div className="w-12 h-12 bg-[#A93226]/10 rounded-xl flex items-center justify-center text-[#A93226] mb-5">
+                <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-brand mb-5">
                   <item.icon size={24} />
                 </div>
                 <h3 className="font-bold text-lg text-black mb-3">{item.title}</h3>
@@ -170,7 +170,7 @@ export default function CareersClient() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col md:flex-row md:items-center gap-4 hover:border-[#A93226] hover:shadow-md transition-all"
+                  className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col md:flex-row md:items-center gap-4 hover:border-brand hover:shadow-md transition-all"
                 >
                   <div className="flex-1">
                     <h3 className="font-bold text-lg text-black">{job.title}</h3>
@@ -194,7 +194,7 @@ export default function CareersClient() {
                       setForm(f => ({ ...f, position: job.title }));
                       document.getElementById("apply-form")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="shrink-0 bg-[#A93226] text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-[#7E2219] transition-colors"
+                    className="shrink-0 bg-brand text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-brand-dark transition-colors"
                   >
                     Apply Now
                   </button>
@@ -234,7 +234,7 @@ export default function CareersClient() {
                     required
                     value={form.full_name}
                     onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand transition-colors"
                     placeholder="Your full name"
                   />
                 </div>
@@ -246,7 +246,7 @@ export default function CareersClient() {
                     required
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -261,7 +261,7 @@ export default function CareersClient() {
                     required
                     value={form.phone}
                     onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand transition-colors"
                     placeholder="+977 98XXXXXXXX"
                   />
                 </div>
@@ -273,7 +273,7 @@ export default function CareersClient() {
                     required
                     value={form.position}
                     onChange={e => setForm(f => ({ ...f, position: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand transition-colors"
                     placeholder="e.g. Education Counsellor"
                   />
                 </div>
@@ -286,7 +286,7 @@ export default function CareersClient() {
                   rows={4}
                   value={form.cover_letter}
                   onChange={e => setForm(f => ({ ...f, cover_letter: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] transition-colors resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand transition-colors resize-none"
                   placeholder="Tell us why you'd be a great fit for Transit Education..."
                 />
               </div>
@@ -304,7 +304,7 @@ export default function CareersClient() {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#A93226] hover:text-[#A93226] transition-colors"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-brand hover:text-brand transition-colors"
                 >
                   <Upload size={18} />
                   {cvFile ? cvFile.name : "Click to upload your CV (PDF only)"}
@@ -318,7 +318,7 @@ export default function CareersClient() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#A93226] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#7E2219] transition-colors disabled:opacity-60"
+                className="w-full bg-brand text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-brand-dark transition-colors disabled:opacity-60"
               >
                 <Send size={18} />
                 {uploading ? "Uploading CV..." : submitting ? "Submitting..." : "Submit Application"}

@@ -76,7 +76,7 @@ export default function FranchiseClient() {
     <main>
       {/* Hero */}
       <section className="bg-black text-white pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_#A93226_0%,_transparent_60%)] opacity-30" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--brand)_0%,_transparent_60%)] opacity-30" />
         <div className="container relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,7 +112,7 @@ export default function FranchiseClient() {
                 transition={{ delay: i * 0.1, duration: 0.5 }}
                 className="bg-[#F7F3F3] p-8 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow"
               >
-                <div className="w-12 h-12 bg-[#A93226] rounded-xl flex items-center justify-center text-white mb-5">
+                <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center text-white mb-5">
                   <b.icon size={24} />
                 </div>
                 <h3 className="font-bold text-lg text-black mb-3">{b.title}</h3>
@@ -145,7 +145,7 @@ export default function FranchiseClient() {
                 transition={{ delay: i * 0.1 }}
                 className="flex gap-5 bg-white p-6 rounded-2xl border border-gray-100"
               >
-                <span className="text-2xl font-black text-[#A93226]/20 shrink-0">{item.step}</span>
+                <span className="text-2xl font-black text-brand/20 shrink-0">{item.step}</span>
                 <div>
                   <h3 className="font-bold text-black mb-1">{item.title}</h3>
                   <p className="text-gray-500 text-sm">{item.desc}</p>
@@ -186,7 +186,7 @@ export default function FranchiseClient() {
                     required
                     value={form.full_name}
                     onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors"
                     placeholder="Your full name"
                   />
                 </div>
@@ -198,7 +198,7 @@ export default function FranchiseClient() {
                     required
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function FranchiseClient() {
                     required
                     value={form.phone}
                     onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors"
                     placeholder="+977 98XXXXXXXX"
                   />
                 </div>
@@ -225,7 +225,7 @@ export default function FranchiseClient() {
                     required
                     value={form.city}
                     onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors"
                     placeholder="e.g. Pokhara, Biratnagar"
                   />
                 </div>
@@ -238,7 +238,7 @@ export default function FranchiseClient() {
                   rows={3}
                   value={form.business_background}
                   onChange={e => setForm(f => ({ ...f, business_background: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors resize-none"
                   placeholder="Tell us about your current business or professional background..."
                 />
               </div>
@@ -250,7 +250,7 @@ export default function FranchiseClient() {
                   rows={3}
                   value={form.message}
                   onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#A93226] bg-white transition-colors resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-brand bg-white transition-colors resize-none"
                   placeholder="Any questions or additional information..."
                 />
               </div>
@@ -262,7 +262,7 @@ export default function FranchiseClient() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#A93226] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#7E2219] transition-colors disabled:opacity-60"
+                className="w-full bg-brand text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-brand-dark transition-colors disabled:opacity-60"
               >
                 <Send size={18} />
                 {submitting ? "Sending..." : "Submit Inquiry"}

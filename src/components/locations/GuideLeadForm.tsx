@@ -41,7 +41,7 @@ export default function GuideLeadForm({ whatsapp, branchName }: Props) {
     <div className="bg-black p-12 rounded-2xl shadow-xl">
       {done ? (
         <div className="text-center py-8">
-          <div className="w-14 h-14 bg-[#A93226] rounded-full flex items-center justify-center mx-auto mb-5">
+          <div className="w-14 h-14 bg-brand rounded-full flex items-center justify-center mx-auto mb-5">
             <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
@@ -50,7 +50,7 @@ export default function GuideLeadForm({ whatsapp, branchName }: Props) {
           <p className="text-xs text-[#777]">Your details are saved. Our team will send the guide shortly.</p>
           <button
             onClick={() => { setDone(false); setName(""); setPhone(""); }}
-            className="mt-6 text-[11px] text-[#A93226] hover:underline"
+            className="mt-6 text-[11px] text-brand hover:underline"
           >
             Submit another
           </button>
@@ -71,7 +71,7 @@ export default function GuideLeadForm({ whatsapp, branchName }: Props) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-[#A93226] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-brand transition-colors"
                 />
               </div>
               <div>
@@ -84,14 +84,14 @@ export default function GuideLeadForm({ whatsapp, branchName }: Props) {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="98X-XXXXXXX"
-                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-[#A93226] transition-colors"
+                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] p-[13px_15px] rounded-[10px] text-[13px] text-white outline-none focus:border-brand transition-colors"
                 />
               </div>
             </div>
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#A93226] text-white text-xs font-bold tracking-[0.08em] uppercase py-[17px] rounded-[10px] hover:bg-[#7E2219] transition-colors mt-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-brand text-white text-xs font-bold tracking-[0.08em] uppercase py-[17px] rounded-[10px] hover:bg-brand-dark transition-colors mt-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitting ? 'Sending...' : 'Send Me the Free Guide →'}
             </button>

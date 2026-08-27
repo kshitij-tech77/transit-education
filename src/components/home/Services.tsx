@@ -86,7 +86,7 @@ export default function Services() {
                   transition={{ duration: 0.45, delay: i * 0.06 }}
                   className="group py-7 flex items-start gap-5 cursor-default"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-[#FEF2F1] flex items-center justify-center shrink-0 mt-0.5 transition-colors group-hover:bg-brand">
+                  <div className="w-9 h-9 rounded-lg bg-brand-surface flex items-center justify-center shrink-0 mt-0.5 transition-colors group-hover:bg-brand">
                     <Icon className="w-4.5 h-4.5 text-brand transition-colors group-hover:text-white" />
                   </div>
                   <div className="flex-1 min-w-0">

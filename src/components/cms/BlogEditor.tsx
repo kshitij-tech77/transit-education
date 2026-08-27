@@ -242,7 +242,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-[#FEF2F1] rounded-full text-[#A93226] transition-colors"
+            className="p-2 hover:bg-brand-surface rounded-full text-brand transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
@@ -279,7 +279,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                 type="text"
                 value={formData.slug}
                 onChange={(e) => handleChange("slug", e.target.value)}
-                className="text-[13px] text-[#A93226] font-[500] border-b border-transparent focus:border-[#A93226] outline-none bg-transparent min-w-[200px]"
+                className="text-[13px] text-brand font-[500] border-b border-transparent focus:border-brand outline-none bg-transparent min-w-[200px]"
               />
             </div>
 
@@ -298,7 +298,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                       if (e.key === 'Enter') { e.preventDefault(); commitNewCategory(); }
                       if (e.key === 'Escape') { setIsAddingCategory(false); setNewCategoryInput(""); }
                     }}
-                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226]"
+                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-brand"
                   />
                 ) : (
                   <select
@@ -311,7 +311,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                         handleChange("category", e.target.value);
                       }
                     }}
-                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226] disabled:opacity-60"
+                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-brand disabled:opacity-60"
                   >
                     {categoriesLoading ? (
                       <option>Loading categories...</option>
@@ -332,7 +332,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   type="text"
                   value={formData.authorName}
                   onChange={(e) => handleChange("authorName", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-brand"
                 />
               </div>
             </div>
@@ -346,7 +346,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <div className="mt-6 p-4 bg-[#F9F4F4] rounded-[12px] border border-[#EDE8E8]">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Link2 size={13} className="text-[#A93226]" />
+                  <Link2 size={13} className="text-brand" />
                   <span className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Internal Links</span>
                 </div>
                 <span className={cn(
@@ -359,7 +359,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               {internalLinks.length > 0 ? (
                 <div className="space-y-0.5 max-h-20 overflow-y-auto">
                   {internalLinks.map((href, i) => (
-                    <p key={i} className="text-[10px] text-[#A93226] truncate font-mono">{href}</p>
+                    <p key={i} className="text-[10px] text-brand truncate font-mono">{href}</p>
                   ))}
                 </div>
               ) : (
@@ -408,7 +408,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                     <h4 className="text-[13px] font-[700] text-[#111]">FAQ Schema Items</h4>
                     <p className="text-[10px] text-[#BBB] mt-0.5">Injects FAQPage JSON-LD — boosts People Also Ask ranking</p>
                   </div>
-                  <button onClick={addFAQ} className="text-[#A93226] text-[11px] font-[700] flex items-center gap-1 hover:underline">
+                  <button onClick={addFAQ} className="text-brand text-[11px] font-[700] flex items-center gap-1 hover:underline">
                     <Plus size={14} /> Add
                   </button>
                 </div>
@@ -453,7 +453,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
-                <TrendingUp size={16} className="text-[#A93226]" />
+                <TrendingUp size={16} className="text-brand" />
                 <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">SEO Score</h3>
               </div>
               <span className={cn("text-[15px] font-[800] px-3 py-1 rounded-full", scoreColor)}>
@@ -484,7 +484,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-[#A93226]" />
+                <ShieldCheck size={16} className="text-brand" />
                 <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">E-E-A-T Signals</h3>
               </div>
               {(() => {
@@ -505,7 +505,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   placeholder="e.g. Certified Visa Consultant, 8+ years"
                   value={formData.authorCredential}
                   onChange={(e) => handleChange("authorCredential", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -515,7 +515,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   placeholder="Short bio highlighting expertise relevant to this article..."
                   value={formData.authorBio}
                   onChange={(e) => handleChange("authorBio", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -524,7 +524,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   type="date"
                   value={formData.lastReviewed}
                   onChange={(e) => handleChange("lastReviewed", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -534,7 +534,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   placeholder={"https://immi.homeaffairs.gov.au/...\nhttps://studyaustralia.gov.au/..."}
                   value={(formData.sources || []).join("\n")}
                   onChange={(e) => handleChange("sources", e.target.value.split("\n").map(s => s.trim()).filter(Boolean))}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226] font-mono"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-brand font-mono"
                 />
               </div>
             </div>
@@ -543,7 +543,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           {/* SEO SETTINGS */}
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
-              <Globe size={16} className="text-[#A93226]" />
+              <Globe size={16} className="text-brand" />
               <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">SEO Settings</h3>
             </div>
             <div className="space-y-4">
@@ -559,7 +559,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   maxLength={60}
                   value={formData.metaTitle}
                   onChange={(e) => handleChange("metaTitle", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -574,7 +574,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   maxLength={160}
                   value={formData.metaDescription}
                   onChange={(e) => handleChange("metaDescription", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -585,7 +585,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   placeholder="Leave blank to use meta description. Custom text for Facebook / X cards."
                   value={formData.ogDescription || ''}
                   onChange={(e) => handleChange("ogDescription", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none resize-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -595,7 +595,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   placeholder="e.g. Australia student visa Nepal"
                   value={formData.focusKeyword}
                   onChange={(e) => handleChange("focusKeyword", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-brand"
                 />
               </div>
               <div className="space-y-1">
@@ -606,7 +606,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   value={secondaryKwInput}
                   onChange={(e) => setSecondaryKwInput(e.target.value)}
                   onBlur={() => handleChange("secondaryKeywords", secondaryKwInput.split(",").map((s: string) => s.trim()).filter(Boolean))}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-[#A93226]"
+                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none focus:border-brand"
                 />
               </div>
               <label className="flex items-center gap-2 pt-2 border-t border-[#EDE8E8] cursor-pointer">
@@ -614,7 +614,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                   type="checkbox"
                   checked={!!formData.noindex}
                   onChange={(e) => handleChange("noindex", e.target.checked)}
-                  className="w-4 h-4 accent-[#A93226]"
+                  className="w-4 h-4 accent-brand"
                 />
                 <span className="text-[12px] text-[#555]">Hide from search engines (noindex)</span>
               </label>
@@ -624,7 +624,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           {/* PUBLISH SETTINGS */}
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
-              <BookOpen size={16} className="text-[#A93226]" />
+              <BookOpen size={16} className="text-brand" />
               <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">Publish Settings</h3>
             </div>
             <div className="space-y-4">
@@ -639,7 +639,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                     className="flex-1 bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] px-3 py-2 text-[12px] outline-none"
                   />
                   <input ref={featuredImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleFeaturedImageUpload} />
-                  <button type="button" onClick={() => featuredImageInputRef.current?.click()} className="px-3 py-2 bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] text-[11px] font-[700] text-[#A93226] hover:bg-[#FEF2F1] whitespace-nowrap">Upload</button>
+                  <button type="button" onClick={() => featuredImageInputRef.current?.click()} className="px-3 py-2 bg-[#F9F4F4] border border-[#EDE8E8] rounded-[8px] text-[11px] font-[700] text-brand hover:bg-brand-surface whitespace-nowrap">Upload</button>
                 </div>
                 {formData.featuredImage && (
                   <img src={formData.featuredImage} alt="preview" className="w-full h-28 object-cover rounded-[8px] border border-[#EDE8E8] mt-1" />
@@ -658,7 +658,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               </div>
               <div className="pt-2 border-t border-[#EDE8E8] flex items-center justify-between">
                 <span className="text-[11px] text-[#BBB] flex items-center gap-1.5"><Clock size={11} /> Reading Time</span>
-                <span className="text-[11px] font-[700] text-[#A93226]">{readingTime}</span>
+                <span className="text-[11px] font-[700] text-brand">{readingTime}</span>
               </div>
             </div>
           </div>
@@ -672,7 +672,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             "flex items-center gap-2 text-[12px] font-[500]",
             isSaved ? "text-green-600" : "text-[#999]"
           )}>
-            {isSaved ? <CheckCircle2 size={14} /> : <div className="w-2 h-2 rounded-full bg-[#A93226] animate-pulse" />}
+            {isSaved ? <CheckCircle2 size={14} /> : <div className="w-2 h-2 rounded-full bg-brand animate-pulse" />}
             {isSaved ? "All changes saved" : "Unsaved changes"}
           </div>
         </div>
@@ -687,7 +687,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           <button
             onClick={() => handleSave("published")}
             disabled={loading}
-            className="px-10 py-2.5 rounded-[10px] bg-[#A93226] text-white font-[600] text-[13px] hover:bg-[#7E2219] shadow-lg shadow-red-900/10 transition-all flex items-center gap-2"
+            className="px-10 py-2.5 rounded-[10px] bg-brand text-white font-[600] text-[13px] hover:bg-brand-dark shadow-lg shadow-red-900/10 transition-all flex items-center gap-2"
           >
             {loading ? <Clock className="animate-spin" size={16} /> : <Send size={16} />}
             {formData.status === "published" ? "Update Post" : "Publish Post"}

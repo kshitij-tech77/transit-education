@@ -36,7 +36,7 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
     extensions: [
       StarterKit,
       Underline,
-      Link.configure({ openOnClick: false, HTMLAttributes: { class: "text-[#A93226] underline font-bold" } }),
+      Link.configure({ openOnClick: false, HTMLAttributes: { class: "text-brand underline font-bold" } }),
       Heading.configure({ levels: [1, 2, 3] }),
       BulletList,
       OrderedList,
@@ -65,7 +65,7 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
       title={title}
       className={cn(
         "p-2 rounded-md transition-all",
-        active ? "bg-[#A93226] text-white" : "text-gray-500 hover:bg-gray-200"
+        active ? "bg-brand text-white" : "text-gray-500 hover:bg-gray-200"
       )}
     >
       {children}

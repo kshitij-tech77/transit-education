@@ -23,16 +23,16 @@ export default function LocationFAQ({ faqs }: LocationFAQProps) {
         return (
           <div 
             key={i} 
-            className={`bg-white rounded-[10px] border transition-all duration-300 ${isOpen ? 'border-[#A93226] shadow-[0_4px_20px_rgba(169,50,38,0.08)]' : 'border-[#E5E4E0]'}`}
+            className={`bg-white rounded-[10px] border transition-all duration-300 ${isOpen ? 'border-brand shadow-[0_4px_20px_rgba(169,50,38,0.08)]' : 'border-[#E5E4E0]'}`}
           >
             <div 
               className="flex justify-between items-center p-6 cursor-pointer"
               onClick={() => setOpenIndex(isOpen ? null : i)}
             >
-              <span className={`text-[15px] font-bold transition-colors ${isOpen ? 'text-[#A93226]' : 'text-[#111]'}`}>
+              <span className={`text-[15px] font-bold transition-colors ${isOpen ? 'text-brand' : 'text-[#111]'}`}>
                 {faq.q}
               </span>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-[#A93226] text-white rotate-0' : 'bg-[#F3F3F1] text-[#A93226] rotate-0'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-brand text-white rotate-0' : 'bg-[#F3F3F1] text-brand rotate-0'}`}>
                 {isOpen ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
               </div>
             </div>

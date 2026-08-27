@@ -33,7 +33,7 @@ export default function EditBlogPostPage() {
           <h1 className="text-2xl font-bold mb-4">Post not found</h1>
           <button 
             onClick={() => router.push('/cms')}
-            className="text-[#A93226] font-bold underline"
+            className="text-brand font-bold underline"
           >
             Back to Dashboard
           </button>
@@ -45,7 +45,7 @@ export default function EditBlogPostPage() {
   if (!post) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F7F3F3]">
-        <Loader2 className="animate-spin text-[#A93226]" size={40} />
+        <Loader2 className="animate-spin text-brand" size={40} />
       </div>
     );
   }

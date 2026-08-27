@@ -40,7 +40,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
         className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        <div className="bg-[#A93226] px-6 py-4 flex items-center justify-between">
+        <div className="bg-brand px-6 py-4 flex items-center justify-between">
           <div>
             <p className="text-[#f9b8b3] text-[10px] font-bold uppercase tracking-widest">Don't Miss Out</p>
             <h2 className="text-white text-lg font-extrabold">Upcoming Events & Webinars</h2>
@@ -72,7 +72,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
                   />
                 )}
                 <div className="flex gap-3 items-start">
-                  <div className="bg-[#A93226] text-white rounded-xl p-2.5 text-center min-w-[48px] shrink-0">
+                  <div className="bg-brand text-white rounded-xl p-2.5 text-center min-w-[48px] shrink-0">
                     <span className="text-lg font-black block leading-none">{day}</span>
                     <span className="text-[9px] font-bold uppercase tracking-widest block mt-0.5">{month}</span>
                   </div>
@@ -91,7 +91,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
                           href={event.registration_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-xs font-bold text-[#A93226] hover:gap-1.5 transition-all"
+                          className="flex items-center gap-1 text-xs font-bold text-brand hover:gap-1.5 transition-all"
                           onClick={dismiss}
                         >
                           Register <ArrowRight size={11} />
@@ -99,7 +99,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
                       ) : (
                         <Link
                           href="/contact"
-                          className="flex items-center gap-1 text-xs font-bold text-[#A93226] hover:gap-1.5 transition-all"
+                          className="flex items-center gap-1 text-xs font-bold text-brand hover:gap-1.5 transition-all"
                           onClick={dismiss}
                         >
                           Enquire <ArrowRight size={11} />

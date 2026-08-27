@@ -112,7 +112,7 @@ export default function TransitPortal() {
       <aside className="w-58 bg-white border-r border-[#EDE8E8] flex flex-col h-full shrink-0">
         <div className="px-5 py-4 border-b border-[#F0ECEC]">
           <img src={TRANSIT_LOGO_URL} alt="Transit Education" className="w-full max-w-38 h-auto object-contain" />
-          <div className="mt-2 inline-flex items-center gap-1 bg-[#FEF2F1] border border-[#F5C4BF] rounded-full px-2 py-0.75">
+          <div className="mt-2 inline-flex items-center gap-1 bg-brand-surface border border-[#F5C4BF] rounded-full px-2 py-0.75">
             <div className="w-1.25 h-1.25 rounded-full bg-brand" />
             <span className="text-brand text-[9px] font-bold tracking-widest uppercase">CMS Portal</span>
           </div>
@@ -128,11 +128,11 @@ export default function TransitPortal() {
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
-                    className={`w-[calc(100%-16px)] flex items-center justify-between px-3 py-2.25 rounded-lg mx-2 my-px transition-all duration-200 ${active ? "bg-brand text-white shadow-lg shadow-red-900/20" : "text-gray-500 hover:bg-[#FEF2F1] hover:text-brand"}`}
+                    className={`w-[calc(100%-16px)] flex items-center justify-between px-3 py-2.25 rounded-lg mx-2 my-px transition-all duration-200 ${active ? "bg-brand text-white shadow-lg shadow-red-900/20" : "text-gray-500 hover:bg-brand-surface hover:text-brand"}`}
                   >
                     <div className="flex items-center gap-2.5"><item.icon size={16} /><span className="text-[12.5px] font-medium tracking-tight">{item.id}</span></div>
                     {item.badge !== null && (
-                      <span className={`text-[10px] font-bold px-1.75 py-0.5 rounded-full ${active ? "bg-white/25 text-white" : "bg-[#FEF2F1] text-brand"}`}>{item.badge}</span>
+                      <span className={`text-[10px] font-bold px-1.75 py-0.5 rounded-full ${active ? "bg-white/25 text-white" : "bg-brand-surface text-brand"}`}>{item.badge}</span>
                     )}
                   </button>
                 );
@@ -158,20 +158,20 @@ export default function TransitPortal() {
         <header className="h-14 bg-white border-b border-[#EDE8E8] flex items-center justify-between px-7 shrink-0">
           <h1 className="text-[16px] font-bold text-black tracking-tight">{activeSection}</h1>
           <div className="flex items-center gap-4">
-            <span className="text-[9px] font-bold text-brand bg-[#FEF2F1] border border-[#F5C4BF] px-3 py-1 rounded-full uppercase tracking-[0.04em]">{profile?.role ?? 'USER'}</span>
+            <span className="text-[9px] font-bold text-brand bg-brand-surface border border-[#F5C4BF] px-3 py-1 rounded-full uppercase tracking-[0.04em]">{profile?.role ?? 'USER'}</span>
             <div className="relative" onClick={e => e.stopPropagation()}>
               <button
                 onClick={() => setShowProfileMenu(v => !v)}
-                className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center font-bold text-[11px] border border-white shadow-sm hover:bg-[#7E2219] transition-colors"
+                className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center font-bold text-[11px] border border-white shadow-sm hover:bg-brand-dark transition-colors"
               >{initials}</button>
               {showProfileMenu && (
                 <div className="absolute right-0 top-10 w-55 bg-white border border-[#EDE8E8] rounded-xl shadow-xl z-50 overflow-hidden">
                   <div className="px-4 py-3.5 border-b border-[#F0ECEC]">
                     <p className="text-[13px] font-bold text-black truncate">{profile?.full_name ?? 'User'}</p>
                     <p className="text-[11px] text-gray-400 truncate mt-px">{user?.email}</p>
-                    <span className="inline-block mt-1.5 text-[9px] font-bold text-brand bg-[#FEF2F1] border border-[#F5C4BF] px-2 py-0.5 rounded-full uppercase tracking-widest">{profile?.role ?? 'user'}</span>
+                    <span className="inline-block mt-1.5 text-[9px] font-bold text-brand bg-brand-surface border border-[#F5C4BF] px-2 py-0.5 rounded-full uppercase tracking-widest">{profile?.role ?? 'user'}</span>
                   </div>
-                  <button onClick={() => { setShowProfileMenu(false); handleLogout(); }} className="w-full flex items-center gap-2.5 px-4 py-3 text-[12px] font-semibold text-red-700 hover:bg-[#FEF2F1] transition-colors">
+                  <button onClick={() => { setShowProfileMenu(false); handleLogout(); }} className="w-full flex items-center gap-2.5 px-4 py-3 text-[12px] font-semibold text-red-700 hover:bg-brand-surface transition-colors">
                     <LogOut size={14} /> Sign Out
                   </button>
                 </div>

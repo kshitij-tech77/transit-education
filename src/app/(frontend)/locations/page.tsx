@@ -83,7 +83,7 @@ export default function LocationsPage() {
               <Link
                 key={branch.slug}
                 href={`/locations/${branch.slug}`}
-                className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#A93226]/20 transition-all duration-300"
+                className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/20 transition-all duration-300"
               >
                 {/* Image */}
                 <div className="relative h-56 w-full overflow-hidden">
@@ -96,7 +96,7 @@ export default function LocationsPage() {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4">
-                    <span className="bg-[#A93226] text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <span className="bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">
                       {branch.label}
                     </span>
                   </div>
@@ -106,30 +106,30 @@ export default function LocationsPage() {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-black">{branch.name}</h2>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#A93226] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-brand group-hover:translate-x-1 transition-all" />
                   </div>
 
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-[#A93226] shrink-0 mt-0.5" />
+                      <MapPin className="w-4 h-4 text-brand shrink-0 mt-0.5" />
                       <span>{branch.address}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-[#A93226] shrink-0" />
+                      <Phone className="w-4 h-4 text-brand shrink-0" />
                       <span>{branch.phone}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-[#A93226] shrink-0" />
+                      <Mail className="w-4 h-4 text-brand shrink-0" />
                       <span>{branch.email}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#A93226] shrink-0" />
+                      <Clock className="w-4 h-4 text-brand shrink-0" />
                       <span>{branch.hours}</span>
                     </div>
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-gray-100">
-                    <span className="text-[#A93226] font-semibold text-sm group-hover:underline">
+                    <span className="text-brand font-semibold text-sm group-hover:underline">
                       View office details →
                     </span>
                   </div>
@@ -149,7 +149,7 @@ export default function LocationsPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-block bg-[#A93226] text-white px-8 py-4 rounded-full font-bold hover:bg-[#7E2219] transition-colors"
+            className="inline-block bg-brand text-white px-8 py-4 rounded-full font-bold hover:bg-brand-dark transition-colors"
           >
             Contact Us
           </Link>

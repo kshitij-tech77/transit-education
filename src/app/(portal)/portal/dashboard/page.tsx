@@ -206,10 +206,10 @@ export default function PortalDashboard() {
           </div>
           <p className="text-[12px] text-gray-500">Share your referral code — you'll earn points when they join.</p>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[14px] font-bold bg-[#FEF2F1] text-brand px-4 py-2.5 rounded-lg">{member?.referral_code}</span>
+            <span className="font-mono text-[14px] font-bold bg-brand-surface text-brand px-4 py-2.5 rounded-lg">{member?.referral_code}</span>
             <button
               onClick={handleCopyReferral}
-              className="flex items-center gap-1.5 text-[12px] font-semibold text-brand bg-[#FEF2F1] px-3 py-2.5 rounded-lg hover:bg-brand hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-[12px] font-semibold text-brand bg-brand-surface px-3 py-2.5 rounded-lg hover:bg-brand hover:text-white transition-colors"
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
               {copied ? "Copied" : "Copy Link"}
@@ -228,7 +228,7 @@ export default function PortalDashboard() {
               return (
                 <div key={m.id} className="flex items-center justify-between px-5 py-3.5 gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-[#FEF2F1] flex items-center justify-center text-brand shrink-0 text-[15px]">
+                    <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0 text-[15px]">
                       {m.icon || <Flag size={16} />}
                     </div>
                     <div className="min-w-0">
@@ -269,7 +269,7 @@ export default function PortalDashboard() {
               return (
                 <div key={r.id} className="bg-white rounded-2xl border border-[#E5E4E0] p-5 space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#FEF2F1] flex items-center justify-center text-brand shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-brand-surface flex items-center justify-center text-brand shrink-0">
                       <Gift size={16} />
                     </div>
                     <div>

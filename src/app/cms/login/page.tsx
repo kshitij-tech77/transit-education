@@ -90,12 +90,12 @@ export default function CmsLogin() {
       <div className="w-full max-w-[400px] bg-white rounded-[24px] shadow-2xl border border-[#EDE8E8] overflow-hidden">
         <div className="p-10 pb-6 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-[60px] h-[60px] bg-[#A93226] rounded-[16px] flex items-center justify-center shadow-lg">
+            <div className="w-[60px] h-[60px] bg-brand rounded-[16px] flex items-center justify-center shadow-lg">
               <ArrowUpRight size={34} className="text-white" strokeWidth={3} />
             </div>
           </div>
           <h1 className="text-[24px] font-[800] text-[#111] leading-tight uppercase">Transit Education</h1>
-          <p className="text-[#A93226] text-[12px] font-[700] tracking-[0.1em] uppercase mt-1">CMS Portal Access</p>
+          <p className="text-brand text-[12px] font-[700] tracking-[0.1em] uppercase mt-1">CMS Portal Access</p>
         </div>
 
         <form onSubmit={handleLogin} className="p-10 pt-4 space-y-5">
@@ -124,7 +124,7 @@ export default function CmsLogin() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 disabled={locked}
-                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-brand transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="your@email.com"
               />
             </div>
@@ -141,7 +141,7 @@ export default function CmsLogin() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 disabled={locked}
-                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-[#A93226] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full pl-10 pr-4 py-3 border border-[#E0DADA] rounded-[12px] text-[13px] outline-none focus:border-brand transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="••••••••"
               />
             </div>
@@ -150,7 +150,7 @@ export default function CmsLogin() {
           <button
             type="submit"
             disabled={loading || locked}
-            className="w-full bg-[#A93226] text-white py-3.5 rounded-[12px] text-[14px] font-[700] hover:bg-[#7E2219] shadow-xl transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-brand text-white py-3.5 rounded-[12px] text-[14px] font-[700] hover:bg-brand-dark shadow-xl transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading
               ? <Loader2 className="animate-spin" size={18} />
