@@ -37,6 +37,12 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const [secondaryKwInput, setSecondaryKwInput] = useState((initialData?.secondaryKeywords || []).join(", "));
   const featuredImageInputRef = React.useRef<HTMLInputElement>(null);
 
+  // ─── CATEGORIES (DB-driven) ───
+  const [categories, setCategories] = useState<string[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryInput, setNewCategoryInput] = useState("");
+
   // ─── STATE ───
   const [formData, setFormData] = useState<Partial<BlogPost>>(
     initialData || {
@@ -84,6 +90,32 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
     }
   }, [formData.title, isEdit]);
 
+  // ─── LOAD CATEGORIES ───
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/cms/blog/categories');
+        if (!res.ok) throw new Error();
+        const data: string[] = await res.json();
+        if (!cancelled) setCategories(data);
+      } catch {
+        if (!cancelled) toast.error('Failed to load categories');
+      } finally {
+        if (!cancelled) setCategoriesLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Merges in the post's current category in case it predates the fetched
+  // list (e.g. a draft-only category not yet covered by a published post).
+  const categoryOptions = useMemo(() => {
+    const set = new Set(categories);
+    if (formData.category) set.add(formData.category);
+    return Array.from(set).sort();
+  }, [categories, formData.category]);
+
   // ─── READING TIME ───
   const readingTime = useMemo(() => {
     const words = formData.body?.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length || 0;
@@ -127,6 +159,16 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
     }
     setFormData(prev => ({ ...prev, [field]: value }));
     setIsSaved(false);
+  };
+
+  const commitNewCategory = () => {
+    const trimmed = newCategoryInput.trim();
+    if (trimmed) {
+      handleChange("category", trimmed);
+      setCategories(prev => (prev.includes(trimmed) ? prev : [...prev, trimmed]));
+    }
+    setIsAddingCategory(false);
+    setNewCategoryInput("");
   };
 
   const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,16 +285,45 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <div className="grid grid-cols-2 gap-6 mb-8">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Category</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => handleChange("category", e.target.value)}
-                  className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226]"
-                >
-                  <option>Visa Tips</option>
-                  <option>University Guide</option>
-                  <option>Student Lifestyle</option>
-                  <option>News & Updates</option>
-                </select>
+                {isAddingCategory ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    placeholder="New category name..."
+                    value={newCategoryInput}
+                    onChange={(e) => setNewCategoryInput(e.target.value)}
+                    onBlur={commitNewCategory}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') { e.preventDefault(); commitNewCategory(); }
+                      if (e.key === 'Escape') { setIsAddingCategory(false); setNewCategoryInput(""); }
+                    }}
+                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226]"
+                  />
+                ) : (
+                  <select
+                    value={formData.category}
+                    disabled={categoriesLoading}
+                    onChange={(e) => {
+                      if (e.target.value === "__add_new__") {
+                        setIsAddingCategory(true);
+                      } else {
+                        handleChange("category", e.target.value);
+                      }
+                    }}
+                    className="w-full bg-[#F9F4F4] border border-[#EDE8E8] rounded-[10px] px-4 py-2.5 text-[13px] outline-none focus:border-[#A93226] disabled:opacity-60"
+                  >
+                    {categoriesLoading ? (
+                      <option>Loading categories...</option>
+                    ) : (
+                      <>
+                        {categoryOptions.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                        <option value="__add_new__">+ Add new category…</option>
+                      </>
+                    )}
+                  </select>
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-[700] text-[#999] uppercase tracking-widest">Author Name</label>
