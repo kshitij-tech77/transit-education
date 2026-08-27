@@ -16,6 +16,7 @@ import {
   BookOpen,
   TrendingUp,
   Link2,
+  ExternalLink,
 } from "lucide-react";
 import TiptapEditor from "@/components/cms/TiptapEditor";
 import { cn } from "@/lib/utils";
@@ -678,6 +679,22 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          {formData.slug && (
+            <a
+              href={`/blog/${formData.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={
+                formData.status === "published"
+                  ? "Open the live post in a new tab"
+                  : "Post must be published to preview publicly"
+              }
+              className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#555] font-[600] text-[13px] hover:bg-gray-50 transition-all flex items-center gap-2"
+            >
+              <ExternalLink size={15} />
+              Preview
+            </a>
+          )}
           <button
             onClick={() => handleSave("draft")}
             className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#555] font-[600] text-[13px] hover:bg-gray-50 transition-all"
