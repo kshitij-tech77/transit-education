@@ -60,7 +60,7 @@ export default function WhyTransit() {
               className="bg-white rounded-2xl p-8 border border-[#E5E4E0] flex flex-col gap-4 hover:border-brand/30 transition-colors"
             >
               <span className="text-brand font-semibold text-[12px] uppercase tracking-widest">{r.eyebrow}</span>
-              <h3 className="text-xl font-bold text-[#111111] leading-snug">{r.title}</h3>
+              <h3 className="text-xl font-bold text-black leading-snug">{r.title}</h3>
               <p className="text-[14px] text-[#6B6966] leading-relaxed flex-1">{r.body}</p>
               {r.cta && (
                 <Link
@@ -87,7 +87,7 @@ export default function WhyTransit() {
               className="bg-white rounded-2xl p-8 border border-[#E5E4E0] border-l-4 border-l-brand flex flex-col gap-3 hover:shadow-md hover:border-brand/30 transition-all"
             >
               <span className="text-brand font-semibold text-[12px] uppercase tracking-widest">{r.eyebrow}</span>
-              <h3 className="text-xl font-bold text-[#111111] leading-snug">{r.title}</h3>
+              <h3 className="text-xl font-bold text-black leading-snug">{r.title}</h3>
               <p className="text-[14px] text-[#6B6966] leading-relaxed">{r.body}</p>
             </motion.div>
           ))}

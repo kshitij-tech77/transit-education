@@ -247,7 +247,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <ArrowLeft size={20} />
           </button>
           <div className="h-6 w-px bg-gray-200" />
-          <h1 className="text-[14px] font-[700] text-[#111]">
+          <h1 className="text-[14px] font-[700] text-black">
             {isEdit ? "Edit Blog Post" : "New Blog Post"}
           </h1>
         </div>
@@ -271,7 +271,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               placeholder="Post Title..."
               value={formData.title}
               onChange={(e) => handleChange("title", e.target.value)}
-              className="w-full text-[42px] font-[800] text-[#111] placeholder-[#E0DADA] outline-none mb-2 border-none bg-transparent"
+              className="w-full text-[42px] font-[800] text-black placeholder-[#E0DADA] outline-none mb-2 border-none bg-transparent"
             />
             <div className="flex items-center gap-2 mb-8 group">
               <span className="text-[13px] text-[#BBB]">Slug:</span>
@@ -375,7 +375,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                 <Zap size={18} />
               </div>
               <div>
-                <h3 className="text-[15px] font-[700] text-[#111]">GEO & AEO Signals</h3>
+                <h3 className="text-[15px] font-[700] text-black">GEO & AEO Signals</h3>
                 <p className="text-[10px] text-[#BBB]">Optimizes for AI Overviews, ChatGPT, Perplexity & featured snippets</p>
               </div>
             </div>
@@ -405,7 +405,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
               <div className="pt-5 border-t border-[#EDE8E8]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="text-[13px] font-[700] text-[#111]">FAQ Schema Items</h4>
+                    <h4 className="text-[13px] font-[700] text-black">FAQ Schema Items</h4>
                     <p className="text-[10px] text-[#BBB] mt-0.5">Injects FAQPage JSON-LD — boosts People Also Ask ranking</p>
                   </div>
                   <button onClick={addFAQ} className="text-brand text-[11px] font-[700] flex items-center gap-1 hover:underline">
@@ -426,7 +426,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
                         placeholder="Question..."
                         value={faq.question}
                         onChange={(e) => updateFAQ(i, "question", e.target.value)}
-                        className="w-full bg-transparent font-[600] text-[13px] outline-none mb-2 text-[#111]"
+                        className="w-full bg-transparent font-[600] text-[13px] outline-none mb-2 text-black"
                       />
                       <textarea
                         placeholder="Answer..."
@@ -454,7 +454,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <TrendingUp size={16} className="text-brand" />
-                <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">SEO Score</h3>
+                <h3 className="text-[13px] font-[700] text-black uppercase tracking-widest">SEO Score</h3>
               </div>
               <span className={cn("text-[15px] font-[800] px-3 py-1 rounded-full", scoreColor)}>
                 {seoScore.score}/100
@@ -485,7 +485,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <ShieldCheck size={16} className="text-brand" />
-                <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">E-E-A-T Signals</h3>
+                <h3 className="text-[13px] font-[700] text-black uppercase tracking-widest">E-E-A-T Signals</h3>
               </div>
               {(() => {
                 const score = [formData.authorName, formData.authorCredential, formData.authorBio, formData.lastReviewed, formData.sources?.[0]].filter(Boolean).length;
@@ -544,7 +544,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
               <Globe size={16} className="text-brand" />
-              <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">SEO Settings</h3>
+              <h3 className="text-[13px] font-[700] text-black uppercase tracking-widest">SEO Settings</h3>
             </div>
             <div className="space-y-4">
               <div className="space-y-1">
@@ -625,7 +625,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
           <div className="bg-white rounded-[20px] p-6 shadow-sm border border-[#EDE8E8]">
             <div className="flex items-center gap-2 mb-4">
               <BookOpen size={16} className="text-brand" />
-              <h3 className="text-[13px] font-[700] text-[#111] uppercase tracking-widest">Publish Settings</h3>
+              <h3 className="text-[13px] font-[700] text-black uppercase tracking-widest">Publish Settings</h3>
             </div>
             <div className="space-y-4">
               <div className="space-y-1">

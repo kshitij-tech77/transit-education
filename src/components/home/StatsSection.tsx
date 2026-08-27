@@ -60,7 +60,7 @@ export default function StatsSection({ stats }: { stats?: any }) {
               transition={{ duration: 0.45, delay: i * 0.07 }}
               className={`flex flex-col px-6 py-4 ${i === 0 ? "pl-0" : ""} ${i === displayStats.length - 1 ? "pr-0" : ""} ${i === 4 ? "col-span-2 sm:col-span-1" : ""}`}
             >
-              <span className="text-[clamp(2rem,4vw,3rem)] font-black text-[#111111] leading-none tracking-tight mb-2">
+              <span className="text-[clamp(2rem,4vw,3rem)] font-black text-black leading-none tracking-tight mb-2">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </span>
               <span className="text-[13px] text-[#6B6966] font-medium leading-snug">{stat.label}</span>

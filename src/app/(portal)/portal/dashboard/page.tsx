@@ -183,7 +183,7 @@ export default function PortalDashboard() {
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-[22px] font-extrabold text-[#111]">Transit Rewards</h1>
+            <h1 className="text-[22px] font-extrabold text-black">Transit Rewards</h1>
             <p className="text-[12px] text-gray-500">{email}</p>
           </div>
           <button onClick={handleLogout} className="text-gray-400 hover:text-brand transition-colors flex items-center gap-1.5 text-[12px] font-semibold">
@@ -202,7 +202,7 @@ export default function PortalDashboard() {
         <div className="bg-white rounded-2xl border border-[#E5E4E0] p-6 space-y-3">
           <div className="flex items-center gap-2">
             <Share2 size={16} className="text-brand" />
-            <h2 className="text-[14px] font-bold text-[#111]">Invite a Friend</h2>
+            <h2 className="text-[14px] font-bold text-black">Invite a Friend</h2>
           </div>
           <p className="text-[12px] text-gray-500">Share your referral code — you'll earn points when they join.</p>
           <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export default function PortalDashboard() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-[14px] font-bold text-[#111]">Your Journey</h2>
+          <h2 className="text-[14px] font-bold text-black">Your Journey</h2>
           {milestones.length === 0 && (
             <p className="text-[12px] text-gray-400 bg-white border border-[#E5E4E0] rounded-2xl p-6 text-center">No milestones yet — check back soon.</p>
           )}
@@ -232,7 +232,7 @@ export default function PortalDashboard() {
                       {m.icon || <Flag size={16} />}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[13px] font-bold text-[#111] truncate">{m.title}</p>
+                      <p className="text-[13px] font-bold text-black truncate">{m.title}</p>
                       {m.description && <p className="text-[11px] text-gray-400 truncate">{m.description}</p>}
                     </div>
                   </div>
@@ -257,7 +257,7 @@ export default function PortalDashboard() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-[14px] font-bold text-[#111]">Redeem Rewards</h2>
+          <h2 className="text-[14px] font-bold text-black">Redeem Rewards</h2>
           {rewards.length === 0 && (
             <p className="text-[12px] text-gray-400 bg-white border border-[#E5E4E0] rounded-2xl p-6 text-center">No rewards available yet — check back soon.</p>
           )}
@@ -273,7 +273,7 @@ export default function PortalDashboard() {
                       <Gift size={16} />
                     </div>
                     <div>
-                      <p className="text-[13.5px] font-bold text-[#111]">{r.title}</p>
+                      <p className="text-[13.5px] font-bold text-black">{r.title}</p>
                       {r.description && <p className="text-[11px] text-gray-400">{r.description}</p>}
                     </div>
                   </div>
@@ -298,7 +298,7 @@ export default function PortalDashboard() {
 
         {redemptions.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-[14px] font-bold text-[#111]">Your Redemption History</h2>
+            <h2 className="text-[14px] font-bold text-black">Your Redemption History</h2>
             <div className="bg-white rounded-2xl border border-[#E5E4E0] divide-y divide-gray-100">
               {redemptions.map(rd => (
                 <div key={rd.id} className="flex items-center justify-between px-5 py-3.5">

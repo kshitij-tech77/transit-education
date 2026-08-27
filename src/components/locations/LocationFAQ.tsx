@@ -29,7 +29,7 @@ export default function LocationFAQ({ faqs }: LocationFAQProps) {
               className="flex justify-between items-center p-6 cursor-pointer"
               onClick={() => setOpenIndex(isOpen ? null : i)}
             >
-              <span className={`text-[15px] font-bold transition-colors ${isOpen ? 'text-brand' : 'text-[#111]'}`}>
+              <span className={`text-[15px] font-bold transition-colors ${isOpen ? 'text-brand' : 'text-black'}`}>
                 {faq.q}
               </span>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-brand text-white rotate-0' : 'bg-[#F3F3F1] text-brand rotate-0'}`}>

@@ -183,7 +183,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
 
           {/* Urgency signal */}
           <p className="mt-3 text-[13px] text-[#6B6966] font-medium text-center sm:text-left px-4 sm:px-0">
-            Join <span className="font-bold text-[#111111]">2,000+ students</span> who trusted Transit Education
+            Join <span className="font-bold text-black">2,000+ students</span> who trusted Transit Education
           </p>
 
           {/* Fix #28 — ICEF + Google Reviews trust badges below CTA */}
@@ -222,7 +222,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
               <div className="w-14 h-14 rounded-full border-[3px] border-white bg-brand flex items-center justify-center text-[13px] font-black text-white shadow-lg z-10">+2k</div>
             </div>
             <div className="text-center sm:text-left">
-              <p className="text-lg font-black text-[#111111]">2,000+ Success Stories</p>
+              <p className="text-lg font-black text-black">2,000+ Success Stories</p>
               <p className="text-[10px] text-brand uppercase tracking-[0.2em] font-bold mt-2">Certified Education Gateway</p>
             </div>
           </div>

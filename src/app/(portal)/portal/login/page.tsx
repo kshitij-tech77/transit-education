@@ -81,7 +81,7 @@ export default function PortalLogin() {
               <ArrowUpRight size={34} className="text-white" strokeWidth={3} />
             </div>
           </div>
-          <h1 className="text-[22px] font-[800] text-[#111]">Transit Rewards</h1>
+          <h1 className="text-[22px] font-[800] text-black">Transit Rewards</h1>
           <p className="text-brand text-[12px] font-[700] tracking-[0.08em] uppercase mt-1">Student Loyalty Portal</p>
         </div>
 

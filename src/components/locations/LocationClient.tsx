@@ -55,7 +55,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
   };
 
   return (
-    <div className="font-sans antialiased text-[#111] bg-white overflow-x-hidden">
+    <div className="font-sans antialiased text-black bg-white overflow-x-hidden">
       {/* ─── HERO SLIDER ─── */}
       <section className="relative min-h-[92vh] bg-black overflow-hidden flex items-center">
         <div className="absolute inset-0 z-0">

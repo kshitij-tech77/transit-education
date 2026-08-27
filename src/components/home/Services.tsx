@@ -90,7 +90,7 @@ export default function Services() {
                     <Icon className="w-4.5 h-4.5 text-brand transition-colors group-hover:text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[16px] font-bold text-[#111111] mb-1.5 group-hover:text-brand transition-colors">
+                    <h3 className="text-[16px] font-bold text-black mb-1.5 group-hover:text-brand transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-[14px] text-[#6B6966] leading-relaxed">{service.desc}</p>

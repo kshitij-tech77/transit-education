@@ -94,7 +94,7 @@ export default function CmsLogin() {
               <ArrowUpRight size={34} className="text-white" strokeWidth={3} />
             </div>
           </div>
-          <h1 className="text-[24px] font-[800] text-[#111] leading-tight uppercase">Transit Education</h1>
+          <h1 className="text-[24px] font-[800] text-black leading-tight uppercase">Transit Education</h1>
           <p className="text-brand text-[12px] font-[700] tracking-[0.1em] uppercase mt-1">CMS Portal Access</p>
         </div>
 

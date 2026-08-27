@@ -88,15 +88,15 @@ export default function AccreditationPage() {
                 <div className="mt-6 flex flex-wrap gap-4 justify-center md:justify-start">
                   <div className="flex items-center gap-2 bg-brand/5 rounded-xl px-4 py-2">
                     <CheckCircle2 className="w-4 h-4 text-brand" />
-                    <span className="text-sm font-semibold text-[#111111]">Annual compliance review</span>
+                    <span className="text-sm font-semibold text-black">Annual compliance review</span>
                   </div>
                   <div className="flex items-center gap-2 bg-brand/5 rounded-xl px-4 py-2">
                     <CheckCircle2 className="w-4 h-4 text-brand" />
-                    <span className="text-sm font-semibold text-[#111111]">Ethical recruitment guaranteed</span>
+                    <span className="text-sm font-semibold text-black">Ethical recruitment guaranteed</span>
                   </div>
                   <div className="flex items-center gap-2 bg-brand/5 rounded-xl px-4 py-2">
                     <CheckCircle2 className="w-4 h-4 text-brand" />
-                    <span className="text-sm font-semibold text-[#111111]">Active since 2015</span>
+                    <span className="text-sm font-semibold text-black">Active since 2015</span>
                   </div>
                 </div>
               </div>

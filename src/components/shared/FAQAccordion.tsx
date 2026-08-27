@@ -32,7 +32,7 @@ export default function FAQAccordion({ items, className, firstOpen = true }: FAQ
           >
             <span className={cn(
               "text-[15px] md:text-[16px] font-[700] transition-colors",
-              openIndex === index ? "text-brand" : "text-[#111] group-hover:text-brand"
+              openIndex === index ? "text-brand" : "text-black group-hover:text-brand"
             )}>
               {item.question}
             </span>
