@@ -90,7 +90,7 @@ export default function TransitPortal() {
   const sp = { data, actionsLoading: actionLoading, onSave: save, onDelete: remove, onToast };
 
   if (authLoading) return (
-    <div className="flex h-screen items-center justify-center bg-[#F7F3F3]">
+    <div className="flex h-screen items-center justify-center bg-off-white">
       <Loader2 className="animate-spin text-brand" size={40} />
     </div>
   );
@@ -99,7 +99,7 @@ export default function TransitPortal() {
 
   return (
     <div
-      className="flex h-screen bg-[#F7F3F3] text-gray-600 overflow-hidden"
+      className="flex h-screen bg-off-white text-gray-600 overflow-hidden"
       onClick={() => showProfileMenu && setShowProfileMenu(false)}
     >
       <style>{`

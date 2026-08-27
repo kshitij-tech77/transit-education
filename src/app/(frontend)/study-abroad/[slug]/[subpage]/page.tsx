@@ -472,7 +472,7 @@ export default async function CountrySubPage({
   return (
     <main className="pt-20">
       {/* Breadcrumb Hero */}
-      <section className="bg-black py-20 text-white">
+      <section className="bg-black py-24 text-white">
         <div className="container">
           <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 flex-wrap">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -512,7 +512,7 @@ export default async function CountrySubPage({
       </section>
 
       {/* Content */}
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2">
@@ -567,7 +567,7 @@ export default async function CountrySubPage({
 
       {/* FAQs */}
       {faqs.length > 0 && (
-        <section className="py-16 bg-off-white">
+        <section className="py-24 bg-off-white">
           <div className="container max-w-4xl">
             <div className="text-center mb-12">
               <SectionLabel>Questions?</SectionLabel>

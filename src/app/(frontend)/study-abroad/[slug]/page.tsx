@@ -165,7 +165,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
         image="https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/05/Web-banner-Canada.png"
       />
 
-      <section className="py-24 bg-[#F7F3F3]">
+      <section className="py-24 bg-off-white">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16">
             <div>
@@ -247,7 +247,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
 
       {/* VISA PROCESS */}
       {formattedCountry.visa_process?.length > 0 && (
-        <section className="py-24 bg-[#F7F3F3]">
+        <section className="py-24 bg-off-white">
           <div className="container max-w-4xl">
             <div className="text-center mb-16">
               <SectionLabel>Visa Process</SectionLabel>

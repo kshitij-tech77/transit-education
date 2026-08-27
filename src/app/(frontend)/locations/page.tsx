@@ -76,7 +76,7 @@ export default function LocationsPage() {
       </section>
 
       {/* Branch Grid */}
-      <section className="py-20 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-8">
             {BRANCHES.map((branch) => (
@@ -141,7 +141,7 @@ export default function LocationsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-[#F7F3F3]">
+      <section className="py-24 bg-off-white">
         <div className="container text-center max-w-2xl">
           <h2 className="text-2xl font-bold text-black mb-4">Not sure which branch to visit?</h2>
           <p className="text-gray-600 mb-8">

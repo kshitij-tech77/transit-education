@@ -169,7 +169,7 @@ export default function PortalDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center">
+      <div className="min-h-screen bg-off-white flex items-center justify-center">
         <Loader2 className="animate-spin text-brand" size={40} />
       </div>
     );
@@ -179,7 +179,7 @@ export default function PortalDashboard() {
   const completionByMilestone = new Map(completions.map(c => [c.milestone_id, c.status]));
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] p-6">
+    <div className="min-h-screen bg-off-white p-6">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
           <div>

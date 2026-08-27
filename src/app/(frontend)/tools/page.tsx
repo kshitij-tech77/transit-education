@@ -92,7 +92,7 @@ export default function ToolsPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-off-white border-t border-gray-100">
+      <section className="py-24 bg-off-white border-t border-gray-100">
         <div className="container text-center">
           <p className="text-gray-500 text-sm mb-4">
             Need personalised guidance beyond these tools?

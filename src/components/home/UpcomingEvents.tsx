@@ -139,7 +139,7 @@ export default function UpcomingEvents({ events }: { events: Event[] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="bg-[#F7F3F3] rounded-2xl p-6 border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group"
+                className="bg-off-white rounded-2xl p-6 border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group"
               >
                 {event.banner_image && (
                   <img src={proxiedMediaUrl(event.banner_image)} alt={event.title} className="w-full h-36 object-cover rounded-xl mb-4" />

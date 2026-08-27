@@ -15,7 +15,7 @@ export default function PortalIndex() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center">
+    <div className="min-h-screen bg-off-white flex items-center justify-center">
       <Loader2 className="animate-spin text-brand" size={40} />
     </div>
   );

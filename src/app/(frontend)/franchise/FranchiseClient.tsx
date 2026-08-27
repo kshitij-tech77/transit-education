@@ -96,7 +96,7 @@ export default function FranchiseClient() {
       </section>
 
       {/* Benefits */}
-      <section className="py-20 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="text-center mb-14">
             <SectionLabel>Why Partner With Us</SectionLabel>
@@ -110,7 +110,7 @@ export default function FranchiseClient() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-[#F7F3F3] p-8 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow"
+                className="bg-off-white p-8 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow"
               >
                 <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center text-white mb-5">
                   <b.icon size={24} />
@@ -124,7 +124,7 @@ export default function FranchiseClient() {
       </section>
 
       {/* Process */}
-      <section className="py-16 bg-[#F7F3F3]">
+      <section className="py-24 bg-off-white">
         <div className="container max-w-3xl">
           <div className="text-center mb-12">
             <SectionLabel>How It Works</SectionLabel>
@@ -157,7 +157,7 @@ export default function FranchiseClient() {
       </section>
 
       {/* Inquiry Form */}
-      <section className="py-20 bg-white">
+      <section className="py-24 bg-white">
         <div className="container max-w-2xl">
           <div className="text-center mb-12">
             <SectionLabel>Apply Now</SectionLabel>
@@ -169,14 +169,14 @@ export default function FranchiseClient() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-[#F7F3F3] rounded-3xl p-12 text-center border border-gray-100"
+              className="bg-off-white rounded-3xl p-12 text-center border border-gray-100"
             >
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
               <h3 className="text-2xl font-bold text-black mb-3">Inquiry Received!</h3>
               <p className="text-gray-500">Thank you for your interest in becoming a Transit Education partner. Our team will contact you within 3–5 business days.</p>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-[#F7F3F3] rounded-3xl p-8 md:p-12 border border-gray-100 space-y-5">
+            <form onSubmit={handleSubmit} className="bg-off-white rounded-3xl p-8 md:p-12 border border-gray-100 space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="fr-name" className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full Name *</label>

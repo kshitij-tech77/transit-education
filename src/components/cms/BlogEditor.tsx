@@ -236,7 +236,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
   const barColor = seoScore.score >= 80 ? "bg-green-500" : seoScore.score >= 50 ? "bg-amber-400" : "bg-red-400";
 
   return (
-    <div className="min-h-screen bg-[#F7F3F3] pb-24">
+    <div className="min-h-screen bg-off-white pb-24">
       {/* Top Header */}
       <header className="h-[64px] bg-white border-b border-[#EDE8E8] sticky top-0 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">

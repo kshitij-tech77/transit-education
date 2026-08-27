@@ -169,7 +169,7 @@ export default function CostCalculatorPage() {
 
   return (
     <main className="pt-20">
-      <section className="bg-black py-16 text-white">
+      <section className="bg-black py-24 text-white">
         <div className="container">
           <Link href="/tools" className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Tools
@@ -182,7 +182,7 @@ export default function CostCalculatorPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {/* Inputs */}

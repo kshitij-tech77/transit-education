@@ -41,7 +41,7 @@ export default async function NotFound() {
         locationsLinks={locationsLinks}
       />
       <main className="flex-1 flex flex-col pt-20">
-        <section className="flex-1 flex items-center py-24 bg-[#FAFAF8]">
+        <section className="flex-1 flex items-center py-24 bg-off-white">
           <div className="container max-w-2xl mx-auto text-center">
             {/* Logo */}
             <Link href="/" className="inline-block mb-10">

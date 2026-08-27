@@ -14,7 +14,7 @@ const CONTACT_EMAIL = "info@transiteducation.com.np";
 export default function TermsPage() {
   return (
     <main className="pt-20">
-      <section className="bg-black py-20 text-white">
+      <section className="bg-black py-24 text-white">
         <div className="container">
           <SectionLabel className="text-white border-white/20 bg-white/10">Legal</SectionLabel>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-6 mb-4">Terms of Service</h1>
@@ -22,7 +22,7 @@ export default function TermsPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container max-w-3xl">
           <div className="prose-legal">
             <p className="text-gray-600 text-base leading-relaxed mb-10">

@@ -294,7 +294,7 @@ export default async function Home() {
       <UpcomingEvents events={upcomingEvents} />
       
       {/* FAQ Section */}
-      <section className="py-24 bg-[#F7F3F3]">
+      <section className="py-24 bg-off-white">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">

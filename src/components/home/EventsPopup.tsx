@@ -63,7 +63,7 @@ export default function EventsPopup({ events }: { events: Event[] }) {
             const time = date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
             return (
-              <div key={event.id} className="bg-[#F7F3F3] rounded-xl p-4 border border-gray-100">
+              <div key={event.id} className="bg-off-white rounded-xl p-4 border border-gray-100">
                 {event.banner_image && (
                   <img
                     src={proxiedMediaUrl(event.banner_image)}

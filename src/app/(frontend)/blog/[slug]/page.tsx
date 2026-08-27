@@ -250,7 +250,7 @@ export default async function BlogPostPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       {/* ── Hero ── */}
-      <section className="bg-black py-20 text-white relative overflow-hidden">
+      <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-35">
           {formattedPost.featuredImage && (
             <Image
@@ -306,7 +306,7 @@ export default async function BlogPostPage({
       </section>
 
       {/* ── Body ── */}
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="max-w-[1100px] mx-auto">
             <div className="flex gap-12 items-start">
@@ -459,7 +459,7 @@ export default async function BlogPostPage({
 
       {/* ── Related Posts ── */}
       {blogPosts.length > 0 && (
-        <section className="py-20 bg-off-white">
+        <section className="py-24 bg-off-white">
           <div className="container">
             <div className="text-center mb-12">
               <SectionLabel>More for you</SectionLabel>

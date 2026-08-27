@@ -193,7 +193,7 @@ export default function TestPreparationPage() {
       </section>
 
       {/* Mock Tests */}
-      <section className="py-20 bg-white border-y border-gray-100">
+      <section className="py-24 bg-white border-y border-gray-100">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>

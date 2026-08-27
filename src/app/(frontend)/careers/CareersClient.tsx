@@ -118,7 +118,7 @@ export default function CareersClient() {
       </section>
 
       {/* Why Join */}
-      <section className="py-20 bg-[#F7F3F3]">
+      <section className="py-24 bg-off-white">
         <div className="container">
           <div className="text-center mb-14">
             <SectionLabel>Why Transit?</SectionLabel>
@@ -146,7 +146,7 @@ export default function CareersClient() {
       </section>
 
       {/* Open Positions */}
-      <section className="py-20 bg-white">
+      <section className="py-24 bg-white">
         <div className="container max-w-4xl">
           <div className="text-center mb-12">
             <SectionLabel>Open Roles</SectionLabel>
@@ -206,7 +206,7 @@ export default function CareersClient() {
       </section>
 
       {/* Application Form */}
-      <section id="apply-form" className="py-20 bg-[#F7F3F3]">
+      <section id="apply-form" className="py-24 bg-off-white">
         <div className="container max-w-2xl">
           <div className="text-center mb-12">
             <SectionLabel>Apply Now</SectionLabel>

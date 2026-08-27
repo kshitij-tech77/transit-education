@@ -164,7 +164,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       <LocationClient location={location} slug={slug} />
 
       {/* ─── BRANCH DETAIL ─── */}
-      <section className="py-[100px] bg-[#FAFAF8]" id="branch">
+      <section className="py-[100px] bg-off-white" id="branch">
         <div className="container max-w-[1180px] mx-auto px-10">
           <div className="grid lg:grid-cols-2 gap-[72px] items-start">
             <div className="grid grid-cols-2 grid-rows-[280px_170px] gap-[6px] rounded-xl overflow-hidden">
@@ -275,7 +275,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
 
           <div className="grid md:grid-cols-2 gap-5">
             {location.whyChooseUs.map((item, idx) => (
-              <div key={idx} className="bg-[#FAFAF8] p-[44px_40px] rounded-xl border border-transparent hover:border-brand hover:bg-white hover:-translate-y-[3px] hover:shadow-[0_12px_40px_rgba(169,50,38,0.10)] transition-all duration-300 group">
+              <div key={idx} className="bg-off-white p-[44px_40px] rounded-xl border border-transparent hover:border-brand hover:bg-white hover:-translate-y-[3px] hover:shadow-[0_12px_40px_rgba(169,50,38,0.10)] transition-all duration-300 group">
                 <div className="text-[52px] font-extrabold text-[#E5E4E0] leading-none tracking-[-3px] mb-4 group-hover:text-brand-light transition-colors">{item.num}</div>
                 <div className="w-11 h-11 bg-brand-light rounded-[10px] flex items-center justify-center mb-4 group-hover:bg-brand transition-colors">
                   <Check className="w-[22px] h-[22px] text-brand group-hover:text-white transition-colors" />
@@ -349,7 +349,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="py-[100px] bg-[#FAFAF8]">
+      <section className="py-[100px] bg-off-white">
         <div className="container max-w-[1180px] mx-auto px-10">
           <div className="mb-14">
             <div className="flex items-center gap-[10px] mb-4">
@@ -394,7 +394,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* ─── FOOTER CTA ─── */}
-      <section className="py-20 bg-black text-center">
+      <section className="py-24 bg-black text-center">
         <div className="container max-w-[1180px] mx-auto px-10">
           <h2 className="text-[clamp(26px,3.5vw,44px)] font-extrabold text-white mb-3.5 tracking-[-0.02em]">Start Your Journey<br />from <span className="text-brand">{slug.charAt(0).toUpperCase() + slug.slice(1)} Today</span></h2>
           <p className="text-sm font-light text-[#777] mb-10 max-w-lg mx-auto">Walk in, call {location.phone}, or WhatsApp {location.whatsapp}. Free counselling. No appointment needed.</p>

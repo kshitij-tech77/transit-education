@@ -33,7 +33,7 @@ const reasons = [
 
 export default function WhyTransit() {
   return (
-    <section className="py-20 bg-[#FAFAF8] border-t border-[#E5E4E0]">
+    <section className="py-20 bg-off-white border-t border-[#E5E4E0]">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 16 }}

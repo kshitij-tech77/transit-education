@@ -73,7 +73,7 @@ export default function PortalLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-off-white flex items-center justify-center p-6">
       <div className="w-full max-w-[400px] bg-white rounded-[24px] shadow-2xl border border-[#E5E4E0] overflow-hidden">
         <div className="p-10 pb-6 text-center">
           <div className="flex justify-center mb-6">

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function CmsLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#F7F3F3]">
+    <div className="min-h-screen bg-off-white">
       {children}
       <Toaster />
     </div>

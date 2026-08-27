@@ -203,7 +203,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
                 <input 
                   type="text" 
                   placeholder="Your name"
-                  className="w-full bg-[#FAFAF8] border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors"
+                  className="w-full bg-off-white border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                 />
@@ -213,7 +213,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
                 <input 
                   type="tel" 
                   placeholder="98X-XXXXXXX"
-                  className="w-full bg-[#FAFAF8] border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors"
+                  className="w-full bg-off-white border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
@@ -221,7 +221,7 @@ export default function LocationClient({ location, slug }: LocationClientProps) 
               <div>
                 <label className="block text-[9px] font-bold tracking-[0.13em] uppercase text-[#6B6966] mb-[7px]">Where do you want to study?</label>
                 <select 
-                  className="w-full bg-[#FAFAF8] border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors appearance-none"
+                  className="w-full bg-off-white border border-[#E5E4E0] px-[15px] py-[13px] rounded-[10px] text-[13px] outline-none focus:border-brand transition-colors appearance-none"
                   value={formData.country}
                   onChange={(e) => setFormData({...formData, country: e.target.value})}
                 >

@@ -81,7 +81,7 @@ export default function CmsLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3F3] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-off-white flex items-center justify-center p-6">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Poppins', sans-serif !important; }

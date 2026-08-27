@@ -385,11 +385,12 @@
   }
 }
 
-/* Fix #22 — standard section vertical padding: 80px (py-20).
-   Apply .section-pad to override any oversized gaps. */
+/* Fix #22 — standard section vertical padding: 96px (py-24), matching
+   what's actually used across the site. Apply .section-pad to override
+   any oversized or undersized gaps. */
 @utility section-pad {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 96px;
+  padding-bottom: 96px;
 }
 
 /* Fix #6 — hero headline mobile: word-break safety at 375px and 320px */

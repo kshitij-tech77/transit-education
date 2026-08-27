@@ -29,7 +29,7 @@ const NON_REFUNDABLE = [
 export default function RefundPage() {
   return (
     <main className="pt-20">
-      <section className="bg-black py-20 text-white">
+      <section className="bg-black py-24 text-white">
         <div className="container">
           <SectionLabel className="text-white border-white/20 bg-white/10">Legal</SectionLabel>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-6 mb-4">Refund Policy</h1>
@@ -37,7 +37,7 @@ export default function RefundPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container max-w-3xl">
           <p className="text-gray-600 text-base leading-relaxed mb-10">
             Transit Education strives to provide high-quality services to every student. This policy outlines when refunds are available and how to request one.

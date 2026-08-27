@@ -109,7 +109,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
 
   if (loading) {
     return (
-      <section className="relative pt-24 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-[#FAFAF8]">
+      <section className="relative pt-24 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-off-white">
         <div className="container relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           <div className="lg:col-span-6 xl:col-span-7">
             <div className="w-48 h-8 bg-gray-200 animate-pulse rounded-full mb-10" />
@@ -129,7 +129,7 @@ export default function Hero({ initialSuccessStories, initialCountries, initialS
 
   return (
     /* Fix #7 — overflow-hidden contains the blur orb inside this section */
-    <section className="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-[#FAFAF8]">
+    <section className="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-off-white">
       {/* Background — contained within this section only */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div

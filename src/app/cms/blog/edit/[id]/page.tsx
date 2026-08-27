@@ -28,7 +28,7 @@ export default function EditBlogPostPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F3F3]">
+      <div className="min-h-screen flex items-center justify-center bg-off-white">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Post not found</h1>
           <button 
@@ -44,7 +44,7 @@ export default function EditBlogPostPage() {
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F3F3]">
+      <div className="min-h-screen flex items-center justify-center bg-off-white">
         <Loader2 className="animate-spin text-brand" size={40} />
       </div>
     );

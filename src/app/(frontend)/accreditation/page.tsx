@@ -56,7 +56,7 @@ export default function AccreditationPage() {
   return (
     <main className="pt-20">
       {/* Hero */}
-      <section className="bg-black py-20 text-white relative overflow-hidden">
+      <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--brand)_0%,_transparent_55%)] opacity-25" />
         <div className="container relative z-10">
           <SectionLabel className="text-white border-white/20 bg-white/10">Trust & Verification</SectionLabel>
@@ -70,7 +70,7 @@ export default function AccreditationPage() {
       </section>
 
       {/* ICEF Certificate Feature */}
-      <section className="py-16 bg-brand-surface">
+      <section className="py-24 bg-brand-surface">
         <div className="container">
           <div className="bg-white rounded-[2rem] border border-brand/20 shadow-sm overflow-hidden">
             <div className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
@@ -106,7 +106,7 @@ export default function AccreditationPage() {
       </section>
 
       {/* All Certifications */}
-      <section className="py-16 bg-white">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="text-center mb-14">
             <SectionLabel>All Certifications</SectionLabel>
@@ -137,7 +137,7 @@ export default function AccreditationPage() {
       </section>
 
       {/* Why It Matters */}
-      <section className="py-16 bg-[#111111] text-white">
+      <section className="py-24 bg-[#111111] text-white">
         <div className="container max-w-3xl text-center">
           <SectionLabel className="text-white border-white/20 bg-white/10 mx-auto">Why It Matters</SectionLabel>
           <h2 className="text-3xl md:text-4xl font-extrabold mt-6 mb-6">

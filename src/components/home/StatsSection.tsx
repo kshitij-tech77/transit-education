@@ -48,7 +48,7 @@ export default function StatsSection({ stats }: { stats?: any }) {
   ];
 
   return (
-    <section className="py-20 bg-[#FAFAF8] border-y border-[#E5E4E0]">
+    <section className="py-20 bg-off-white border-y border-[#E5E4E0]">
       <div className="container">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-[#E5E4E0]">
           {displayStats.map((stat, i) => (
