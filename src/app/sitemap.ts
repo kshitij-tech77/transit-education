@@ -11,6 +11,20 @@ export const revalidate = 300;
 // so all four are always real, indexable URLs.
 const COUNTRY_SUBPAGES = ["visa", "scholarships", "cost", "universities"] as const;
 
+// These 4 of the 9 static study-abroad/<country> folders are fully
+// hand-authored (no Supabase read, no draft/LIVE gate — see
+// study-abroad/{italy,south-korea,ireland,new-zealand}/page.tsx), so they
+// always render 200 regardless of whether a matching `countries` row exists.
+// The other 5 static folders (canada/usa/uk/germany/australia) wrap
+// CountryDestinationPage, which *does* read the DB and 404s if not LIVE —
+// those are correctly covered by the dynamic `countries` query below instead.
+// Next.js's static routes always win over the `[slug]` catch-all for an
+// exact path match, so if a `countries` row with a matching id ever exists
+// too, the static page (not the DB content) is what's actually served —
+// hence excluding these ids from the dynamic query's output as well, to
+// avoid ever listing the same URL twice.
+const HAND_AUTHORED_COUNTRY_PAGES = ["italy", "south-korea", "ireland", "new-zealand"] as const;
+
 const STATIC_ROUTES: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { path: "", priority: 1.0, changeFrequency: "daily" },
   { path: "/about", priority: 0.7, changeFrequency: "monthly" },
@@ -22,7 +36,6 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/services/sop-writing", priority: 0.8, changeFrequency: "monthly" },
   { path: "/courses/language-training", priority: 0.6, changeFrequency: "monthly" },
   { path: "/courses/test-preparation", priority: 0.6, changeFrequency: "monthly" },
-  { path: "/study-abroad", priority: 0.9, changeFrequency: "weekly" },
   { path: "/locations", priority: 0.7, changeFrequency: "monthly" },
   { path: "/tools", priority: 0.6, changeFrequency: "monthly" },
   { path: "/tools/cost-calculator", priority: 0.6, changeFrequency: "monthly" },
@@ -60,8 +73,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const countryEntries: MetadataRoute.Sitemap = [];
+  const countryEntries: MetadataRoute.Sitemap = HAND_AUTHORED_COUNTRY_PAGES.map((id) => ({
+    url: `${SITE_URL}/study-abroad/${id}`,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
   for (const country of countries ?? []) {
+    if ((HAND_AUTHORED_COUNTRY_PAGES as readonly string[]).includes(country.id)) continue;
     countryEntries.push({
       url: `${SITE_URL}/study-abroad/${country.id}`,
       lastModified: country.updated_at ?? undefined,
