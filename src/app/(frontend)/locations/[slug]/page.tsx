@@ -129,6 +129,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "website",
       images: [{ url: location.heroImage, width: 1200, height: 630, alt: location.name }],
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [location.heroImage],
+    },
   };
 }
 
@@ -158,9 +164,20 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
     sameAs: ["https://transiteducation.com.np"],
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://transiteducation.com.np" },
+      { "@type": "ListItem", position: 2, name: "Locations", item: "https://transiteducation.com.np/locations" },
+      { "@type": "ListItem", position: 3, name: location.name, item: `https://transiteducation.com.np/locations/${slug}` },
+    ],
+  };
+
   return (
     <main className="pt-20 bg-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <LocationClient location={location} slug={slug} />
 
       {/* ─── BRANCH DETAIL ─── */}

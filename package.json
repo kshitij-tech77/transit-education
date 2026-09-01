@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--max-old-space-size=8192 next dev",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 next build",
-    "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint",
     "check-usage": "tsx scripts/check-supabase-usage.ts",
@@ -37,7 +36,6 @@
     "lint-staged": "^16.4.0",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",
-    "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",

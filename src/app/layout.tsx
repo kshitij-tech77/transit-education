@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { supabase } from "@/lib/supabase";
 import Script from "next/script";
+import { SITE_URL } from "@/lib/site-url";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { data: settings } = await supabase
@@ -17,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const defaultOgImage = "https://transiteducation.com.np/logo.png";
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
       default: defaultTitle,
       template: `%s | ${siteName}`
@@ -62,15 +64,33 @@ export default async function RootLayout({
   const siteName = settings?.site_name || "Transit Education";
   const defaultOgImage = "https://transiteducation.com.np/logo.png";
 
+  // sameAs / address mirror the same site_settings fallbacks Footer.tsx uses
+  // for its social links, and the Kathmandu HQ address already published on
+  // /locations/kathmandu — real, existing data, not new claims.
+  const sameAs = [
+    settings?.facebook_url || "https://facebook.com/transiteducation",
+    settings?.instagram_url || "https://instagram.com/transiteducation",
+    settings?.linkedin_url || "https://linkedin.com/company/transiteducation",
+    settings?.tiktok_url,
+  ].filter(Boolean);
+
   const orgSchema = {
     name: siteName,
     url: "https://transiteducation.com.np",
     logo: defaultOgImage,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Level 2, Purple House, Bagbazar",
+      addressLocality: "Kathmandu",
+      addressCountry: "NP",
+    },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: settings?.phone || "01-5906277",
-      contactType: "customer service"
-    }
+      contactType: "customer service",
+      areaServed: "NP",
+    },
+    sameAs,
   };
 
   return (

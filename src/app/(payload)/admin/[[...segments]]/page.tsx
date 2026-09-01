@@ -6,4 +6,5 @@ export default function Page() {
 
 export const metadata: Metadata = {
   title: 'Payload Admin',
+  robots: { index: false, follow: false },
 }
