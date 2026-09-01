@@ -71,7 +71,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const image = "https://transiteducation.com.np/logo.png";
 
   return {
-    title,
+    // `absolute` bypasses the root layout's `title.template` ("%s | Transit
+    // Education"). This route's fallback string already hardcodes "Transit
+    // Education" (used when a country has no CMS meta_title, e.g. France),
+    // so a plain string here would double the suffix.
+    title: { absolute: title },
     description,
     alternates: { canonical: `https://transiteducation.com.np/study-abroad/${slug}` },
     openGraph: {
