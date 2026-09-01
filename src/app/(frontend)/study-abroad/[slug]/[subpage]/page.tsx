@@ -427,7 +427,10 @@ export async function generateMetadata({
   };
 
   return {
-    title: titles[subpage as SubPage],
+    // `absolute` bypasses the root layout's `title.template` ("%s | Transit
+    // Education"). `titles` above already hardcodes "— Transit Education",
+    // so a plain string here would double the suffix.
+    title: { absolute: titles[subpage as SubPage] },
     description: descriptions[subpage as SubPage],
     alternates: { canonical: `https://transiteducation.com.np/study-abroad/${country}/${subpage}` },
     openGraph: {

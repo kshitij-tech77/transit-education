@@ -33,7 +33,12 @@ export async function getCountryMetadata(id: string, fallback: CountryMetadataFa
   const url = `https://transiteducation.com.np/study-abroad/${id}`;
 
   return {
-    title,
+    // `absolute` bypasses the root layout's `title.template` ("%s | Transit
+    // Education"). A plain string here would let that template run, and the
+    // CMS-authored `meta_title` values already end in "— Transit Education"
+    // (confirmed against the live `countries` table), producing a doubled
+    // suffix ("... — Transit Education | Transit Education").
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
