@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import CountryTabs, { CountryTab } from "@/components/compliance/CountryTabs";
+import FAQAccordion from "@/components/shared/FAQAccordion";
+import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "Student Compliance Guide",
@@ -416,9 +418,29 @@ const TABS: CountryTab[] = [
   { id: "others",    label: "Others",    flag: "🌍", content: OthersContent },
 ];
 
-export default function CompliancePage() {
+export default async function CompliancePage() {
+  const { data: faqs } = await supabase
+    .from('faqs')
+    .select('*')
+    .eq('page_path', 'compliance')
+    .eq('status', 'published')
+    .order('display_order', { ascending: true });
+
+  const faqSchema = faqs && faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  } : null;
+
   return (
     <main className="pt-20">
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       {/* Hero */}
       <section className="relative pt-20 pb-20 lg:pt-28 lg:pb-28 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-35">
@@ -459,6 +481,23 @@ export default function CompliancePage() {
       </section>
 
       <CountryTabs tabs={TABS} defaultTab="australia" />
+
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <section className="py-24 bg-off-white">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <SectionLabel>FAQ</SectionLabel>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Frequently Asked Questions</h2>
+              </div>
+              <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

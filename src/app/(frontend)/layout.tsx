@@ -8,6 +8,7 @@ import MotionProvider from "@/components/shared/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/lib/supabase";
 import { unstable_cache } from "next/cache";
+import { toBranchSlug } from "@/lib/branch-slug";
 
 // These three queries feed shared chrome (nav links, footer branches, site
 // settings) that changes rarely. Cached independently of each page's own
@@ -60,12 +61,9 @@ export default async function FrontendLayout({
 
   const BRANCH_ORDER = ['kathmandu', 'itahari', 'damak', 'damauli'];
 
-  const toSlug = (name: string) =>
-    name.replace(/ Branch$/i, '').replace(/ \(Head Office\)/i, '').trim().toLowerCase();
-
   const sortedBranches = [...(branches || [])].sort((a, b) => {
-    const ai = BRANCH_ORDER.indexOf(toSlug(a.name));
-    const bi = BRANCH_ORDER.indexOf(toSlug(b.name));
+    const ai = BRANCH_ORDER.indexOf(toBranchSlug(a.name));
+    const bi = BRANCH_ORDER.indexOf(toBranchSlug(b.name));
     return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
   });
 
@@ -76,10 +74,10 @@ export default async function FrontendLayout({
 
   const locationsLinks = sortedBranches.map(b => ({
     title: b.name.replace(/ Branch$/i, '').replace(/ \(Head Office\)/i, '').trim(),
-    href: `/locations/${toSlug(b.name)}`
+    href: `/locations/${toBranchSlug(b.name)}`
   }));
 
-  const branchCards = sortedBranches.map(b => ({ ...b, slug: toSlug(b.name) }));
+  const branchCards = sortedBranches.map(b => ({ ...b, slug: toBranchSlug(b.name) }));
 
   return (
     <MotionProvider>

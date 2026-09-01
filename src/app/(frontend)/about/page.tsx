@@ -51,8 +51,21 @@ export default async function AboutPage() {
     },
   ];
 
+  const faqSchema = faqs && faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  } : null;
+
   return (
     <main className="pt-20">
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-40">

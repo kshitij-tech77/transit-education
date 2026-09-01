@@ -42,6 +42,11 @@ export async function getCountryMetadata(id: string, fallback: CountryMetadataFa
       url,
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: fallback.ogTitle ?? title,
+      description: fallback.ogDescription ?? description,
+    },
     // notFound() (thrown by CountryDestinationPage for a non-LIVE country)
     // already auto-injects a noindex tag, but generateMetadata resolves
     // independently of that, so this is explicit defense-in-depth rather

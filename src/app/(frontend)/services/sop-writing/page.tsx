@@ -1,9 +1,11 @@
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
+import FAQAccordion from "@/components/shared/FAQAccordion";
 import { FileText, CheckCircle2, AlertCircle, Lightbulb, Clock, Users2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import { supabase } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "SOP Writing Support Nepal | Statement of Purpose Help",
@@ -93,9 +95,29 @@ const WHAT_WE_DO = [
   },
 ];
 
-export default function SopWritingPage() {
+export default async function SopWritingPage() {
+  const { data: faqs } = await supabase
+    .from('faqs')
+    .select('*')
+    .eq('page_path', 'services/sop-writing')
+    .eq('status', 'published')
+    .order('display_order', { ascending: true });
+
+  const faqSchema = faqs && faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  } : null;
+
   return (
     <main className="pt-20">
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       {/* Hero */}
       <section className="relative py-24 overflow-hidden bg-black text-white">
         <div className="absolute inset-0 opacity-30">
@@ -322,6 +344,23 @@ export default function SopWritingPage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <SectionLabel>FAQ</SectionLabel>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-black mt-4">Frequently Asked Questions</h2>
+              </div>
+              <div className="bg-off-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <FAQAccordion items={faqs.map(f => ({ ...f, featured: f.is_featured }))} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
