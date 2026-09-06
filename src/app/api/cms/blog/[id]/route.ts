@@ -109,11 +109,13 @@ export async function PUT(
       .select()
       .single();
 
+    if (error?.code === '23505') {
+      // blog_posts_slug_key — another post already owns this slug.
+      return NextResponse.json({ error: 'SLUG_TAKEN', slug }, { status: 409 });
+    }
     if (error) throw error;
 
-    // `/blog/[slug]` pattern revalidation covers a changed slug too (old +
-    // new both re-render on next visit).
-    revalidateBlog(updated.slug);
+    revalidateBlog();
     return NextResponse.json(updated);
   } catch (err) {
     console.error('PUT /api/cms/blog/[id] error:', err);

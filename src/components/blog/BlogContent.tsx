@@ -1,12 +1,12 @@
 "use client";
 
-import DOMPurify from "isomorphic-dompurify";
+import { sanitizeBlogHtml } from "@/lib/sanitize-blog-html";
 
 export default function BlogContent({ html }: { html: string }) {
   return (
     <div
       className="blog-content"
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
+      dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(html) }}
     />
   );
 }
