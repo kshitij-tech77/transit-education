@@ -680,20 +680,30 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
 
         <div className="flex items-center gap-3">
           {formData.slug && (
-            <a
-              href={`/blog/${formData.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={
-                formData.status === "published"
-                  ? "Open the live post in a new tab"
-                  : "Post must be published to preview publicly"
-              }
-              className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#555] font-[600] text-[13px] hover:bg-gray-50 transition-all flex items-center gap-2"
-            >
-              <ExternalLink size={15} />
-              Preview
-            </a>
+            formData.status === "published" && isSaved ? (
+              <a
+                href={`/blog/${formData.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open the live post in a new tab"
+                className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#555] font-[600] text-[13px] hover:bg-gray-50 transition-all flex items-center gap-2"
+              >
+                <ExternalLink size={15} />
+                Preview
+              </a>
+            ) : (
+              <span
+                title={
+                  formData.status === "published"
+                    ? "Save your changes first, then preview"
+                    : "Publish the post to preview it on the live site"
+                }
+                className="px-6 py-2.5 rounded-[10px] border border-[#E0DADA] text-[#BBB] font-[600] text-[13px] cursor-not-allowed flex items-center gap-2"
+              >
+                <ExternalLink size={15} />
+                Preview
+              </span>
+            )
           )}
           <button
             onClick={() => handleSave("draft")}

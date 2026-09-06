@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
+import { revalidateBlog } from '@/lib/revalidate-blog';
 
 export async function GET() {
   try {
@@ -94,6 +95,8 @@ export async function POST(req: Request) {
       .single();
 
     if (error) throw error;
+
+    revalidateBlog(newPost.slug);
     return NextResponse.json(newPost, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/blog error:', err);
