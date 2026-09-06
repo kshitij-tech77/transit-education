@@ -12,62 +12,41 @@ import { Metadata } from "next";
 import BlogContent from "@/components/blog/BlogContent";
 import TableOfContents, { type TOCItem } from "@/components/blog/TableOfContents";
 import ShareButtons from "@/components/blog/ShareButtons";
-import { unstable_cache } from "next/cache";
 
-export const revalidate = 300;
+// Rendered fresh on every request — CMS publishes/edits must show up
+// immediately, and Vercel's ISR route cache was serving stale copies for
+// minutes despite tag revalidation. See src/lib/revalidate-blog.ts.
+export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const { data } = await supabase
+async function getBlogPostMeta(slug: string) {
+  const res = await supabase
     .from("blog_posts")
-    .select("slug")
-    .eq("status", "published");
-
-  return (data ?? []).map((post) => ({ slug: post.slug }));
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .single();
+  return { data: res.data };
 }
 
-// `slug` is passed as an argument, so each post gets its own cache entry,
-// revalidated every 5 minutes.
-const getCachedBlogPostMeta = unstable_cache(
-  async (slug: string) => {
-    const res = await supabase
-      .from("blog_posts")
-      .select("*")
-      .eq("slug", slug)
-      .eq("status", "published")
-      .single();
-    return { data: res.data };
-  },
-  ['blog-post-metadata'],
-  { revalidate: 300, tags: ['blog-posts'] }
-);
+async function getBlogPostDetail(slug: string) {
+  const res = await supabase
+    .from("blog_posts")
+    .select("*, authors (name, credential, bio)")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .single();
+  return { data: res.data };
+}
 
-const getCachedBlogPostDetail = unstable_cache(
-  async (slug: string) => {
-    const res = await supabase
-      .from("blog_posts")
-      .select("*, authors (name, credential, bio)")
-      .eq("slug", slug)
-      .eq("status", "published")
-      .single();
-    return { data: res.data };
-  },
-  ['blog-post-detail'],
-  { revalidate: 300, tags: ['blog-posts'] }
-);
-
-const getCachedRelatedBlogPosts = unstable_cache(
-  async (slug: string) => {
-    const res = await supabase
-      .from("blog_posts")
-      .select("id, title, slug, category, featured_image, publish_date")
-      .neq("slug", slug)
-      .eq("status", "published")
-      .limit(3);
-    return { data: res.data };
-  },
-  ['blog-post-related'],
-  { revalidate: 300, tags: ['blog-posts'] }
-);
+async function getRelatedBlogPosts(slug: string) {
+  const res = await supabase
+    .from("blog_posts")
+    .select("id, title, slug, category, featured_image, publish_date")
+    .neq("slug", slug)
+    .eq("status", "published")
+    .limit(3);
+  return { data: res.data };
+}
 
 const TRANSIT_LOGO = "https://transiteducation.com.np/logo.png";
 
@@ -104,7 +83,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const { data: post } = await getCachedBlogPostMeta(slug);
+  const { data: post } = await getBlogPostMeta(slug);
 
   if (!post) return {};
 
@@ -153,8 +132,8 @@ export default async function BlogPostPage({
   const { slug } = await params;
 
   const [postRes, relatedRes] = await Promise.all([
-    getCachedBlogPostDetail(slug),
-    getCachedRelatedBlogPosts(slug),
+    getBlogPostDetail(slug),
+    getRelatedBlogPosts(slug),
   ]);
 
   const { data: post } = postRes;

@@ -16,7 +16,10 @@ interface BlogSectionProps {
 export function BlogSection({ data, onDelete, onToast }: BlogSectionProps) {
   const router = useRouter();
 
-  async function handleDelete(id: string) {
+  async function handleDelete(id: string, title: string) {
+    if (!window.confirm(`Delete "${title}"? It will be removed from the live site immediately.`)) {
+      return;
+    }
     const result = await onDelete("blog", id);
     onToast(result.message);
   }
@@ -55,7 +58,7 @@ export function BlogSection({ data, onDelete, onToast }: BlogSectionProps) {
                 <td className="px-6 py-4 text-gray-400">{p.date ?? p.publishDate}</td>
                 <td className="px-6 py-4 flex gap-2">
                   <CmsButton variant="ghost" onClick={() => router.push(`/cms/blog/edit/${p.id}`)}><Edit size={14} /></CmsButton>
-                  <CmsButton variant="destructive" onClick={() => handleDelete(p.id)}><Trash2 size={14} /></CmsButton>
+                  <CmsButton variant="destructive" onClick={() => handleDelete(p.id, p.title)}><Trash2 size={14} /></CmsButton>
                 </td>
               </tr>
             ))}

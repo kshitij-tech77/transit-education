@@ -409,6 +409,37 @@
   }
 }
 
+/* ── CMS Tiptap editor: table + image visibility while editing ── */
+.tiptap-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  table-layout: fixed;
+}
+.tiptap-editor th,
+.tiptap-editor td {
+  border: 1px solid var(--gray-200);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.tiptap-editor th {
+  background: var(--off-white);
+  font-weight: 700;
+}
+.tiptap-editor .selectedCell {
+  background: var(--brand-light);
+}
+.tiptap-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+.tiptap-editor .ProseMirror:focus {
+  outline: none;
+}
+/* ───────────────────────────────────────────────────────────────── */
+
 /* Fix #21 — prose-legal shared styles for legal pages */
 .prose-legal {
   font-size: 16px;

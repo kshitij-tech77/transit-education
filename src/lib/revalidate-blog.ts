@@ -1,19 +1,17 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 /**
- * Invalidate every cache entry that can surface a blog post.
+ * Invalidate the caches that still hold blog data after a CMS publish / edit /
+ * delete.
  *
- * The public blog routes are ISR (`export const revalidate = 300`) and read
- * their data through `unstable_cache(..., { tags: ['blog-posts'] })`, so a
- * freshly published/edited post otherwise stays invisible — or a stale 404
- * sticks around — for up to 5 minutes. CMS mutations must show up on the next
- * request, so we expire immediately (`{ expire: 0 }`) rather than using
- * stale-while-revalidate.
+ * The public `/blog` and `/blog/[slug]` pages are now `force-dynamic` (read
+ * fresh from Supabase on every request), so they need no invalidation. What
+ * remains cached:
+ *  - the homepage "Latest Blog" strip — `unstable_cache(tags: ['blog-posts'])`
+ *  - `/sitemap.xml` — time-based ISR
  */
-export function revalidateBlog(slug?: string) {
+export function revalidateBlog() {
   revalidateTag('blog-posts', { expire: 0 });
-  revalidatePath('/blog');
-  revalidatePath('/blog/[slug]', 'page');
-  if (slug) revalidatePath(`/blog/${slug}`);
+  revalidatePath('/');
   revalidatePath('/sitemap.xml');
 }

@@ -94,9 +94,14 @@ export async function POST(req: Request) {
       .select()
       .single();
 
+    if (error?.code === '23505') {
+      // blog_posts_slug_key — another post already owns this slug. The DB
+      // constraint (not a pre-check) is what makes this race-free.
+      return NextResponse.json({ error: 'SLUG_TAKEN', slug }, { status: 409 });
+    }
     if (error) throw error;
 
-    revalidateBlog(newPost.slug);
+    revalidateBlog();
     return NextResponse.json(newPost, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/blog error:', err);

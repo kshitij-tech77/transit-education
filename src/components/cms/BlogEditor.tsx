@@ -205,15 +205,36 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
         body: JSON.stringify(payload)
       });
 
+      if (res.status === 409) {
+        toast.error("That URL slug is already used by another post — change the slug and try again.");
+        return;
+      }
       if (!res.ok) throw new Error("Failed to save");
 
       toast.success(isEdit ? "Post updated!" : "Post created!");
       setIsSaved(true);
       if (!isEdit) router.push("/cms");
-    } catch (error) {
+    } catch {
       toast.error("Error saving post");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Warn before losing unsaved edits (tab close / reload / hard nav).
+  useEffect(() => {
+    if (isSaved) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [isSaved]);
+
+  const leaveEditor = () => {
+    if (isSaved || window.confirm("You have unsaved changes. Leave without saving?")) {
+      router.back();
     }
   };
 
@@ -242,7 +263,7 @@ export default function BlogEditor({ initialData, isEdit }: BlogEditorProps) {
       <header className="h-[64px] bg-white border-b border-[#EDE8E8] sticky top-0 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={leaveEditor}
             className="p-2 hover:bg-brand-surface rounded-full text-brand transition-colors"
           >
             <ArrowLeft size={20} />
