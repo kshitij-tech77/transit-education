@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
+import { revalidateBlog } from '@/lib/revalidate-blog';
 
 export async function GET(
   _req: Request,
@@ -109,6 +110,10 @@ export async function PUT(
       .single();
 
     if (error) throw error;
+
+    // `/blog/[slug]` pattern revalidation covers a changed slug too (old +
+    // new both re-render on next visit).
+    revalidateBlog(updated.slug);
     return NextResponse.json(updated);
   } catch (err) {
     console.error('PUT /api/cms/blog/[id] error:', err);
@@ -132,6 +137,8 @@ export async function DELETE(
       .eq('id', id);
 
     if (error) throw error;
+
+    revalidateBlog();
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('DELETE /api/cms/blog/[id] error:', err);
