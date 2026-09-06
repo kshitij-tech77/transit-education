@@ -57,6 +57,65 @@ const decodeEntities = (s: string) =>
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&");
 
+const BLOCK_SELECTOR =
+  "p,h1,h2,h3,h4,h5,h6,ul,ol,table,blockquote,pre,figure,div,section,article,hr";
+
+// Unwrap `<p>` tags that (invalidly) contain block-level elements. Decoding
+// previously-escaped content leaves a stray `<p>…entire document…</p>`
+// wrapper behind — this strips it without touching valid markup.
+const tidyHtml = (html: string): string => {
+  if (typeof window === "undefined" || !html) return html;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  let unwrapped = true;
+  while (unwrapped) {
+    unwrapped = false;
+    doc.body.querySelectorAll("p").forEach((p) => {
+      if (p.querySelector(BLOCK_SELECTOR)) {
+        p.replaceWith(...Array.from(p.childNodes));
+        unwrapped = true;
+      }
+    });
+  }
+  return doc.body.innerHTML.trim();
+};
+
+const hasNestedBlockParagraph = (html: string) =>
+  /<p>\s*<(?:p|h[1-6]|ul|ol|table|blockquote|pre|figure|div)\b/i.test(html);
+
+// Elements the rich-text editor's schema can't represent — switching to the
+// visual view would silently drop them.
+const RICH_LOSSY_RE = /<(?:table|img|iframe|figure|video|audio)\b/i;
+
+function ToolbarButton({
+  onClick,
+  active,
+  children,
+  title,
+  disabled,
+}: {
+  onClick: () => void;
+  active?: boolean;
+  children: React.ReactNode;
+  title?: string;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      disabled={disabled}
+      className={cn(
+        "p-2 rounded-md transition-all",
+        active ? "bg-brand text-white" : "text-gray-500 hover:bg-gray-200",
+        disabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
   const editorRef = useRef<Editor | null>(null);
   const [showSource, setShowSource] = useState(false);
@@ -86,7 +145,7 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
         if (!text) return false;
         if (isEscapedHtml(text)) text = decodeEntities(text);
         if (!looksLikeHtml(text)) return false;
-        editorRef.current?.commands.insertContent(text);
+        editorRef.current?.commands.insertContent(tidyHtml(text));
         return true;
       },
     },
@@ -109,39 +168,20 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
   };
 
   const applyAndCloseSource = () => {
+    if (
+      RICH_LOSSY_RE.test(source) &&
+      !window.confirm(
+        "The visual editor can't display tables or images — switching to it will remove them from this post.\n\nOK to switch anyway, or Cancel to keep editing the HTML."
+      )
+    ) {
+      return;
+    }
     editor.commands.setContent(source, { emitUpdate: false });
     setShowSource(false);
   };
 
-  const fixEscapedSource = () => onSourceChange(decodeEntities(source));
-
-  const ToolbarButton = ({
-    onClick,
-    active,
-    children,
-    title,
-    disabled,
-  }: {
-    onClick: () => void;
-    active?: boolean;
-    children: React.ReactNode;
-    title?: string;
-    disabled?: boolean;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      disabled={disabled}
-      className={cn(
-        "p-2 rounded-md transition-all",
-        active ? "bg-brand text-white" : "text-gray-500 hover:bg-gray-200",
-        disabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
-      )}
-    >
-      {children}
-    </button>
-  );
+  const fixEscapedSource = () => onSourceChange(tidyHtml(decodeEntities(source)));
+  const tidySource = () => onSourceChange(tidyHtml(source));
 
   return (
     <div className="space-y-4">
@@ -242,7 +282,17 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
               className="flex items-center gap-2 text-[12px] font-[600] text-brand bg-brand-surface border border-brand/30 rounded-[8px] px-3 py-2 hover:bg-brand/10 transition-colors"
             >
               <WandSparkles size={14} />
-              This looks like escaped HTML (&amp;lt;p&amp;gt;…) — click to decode it
+              This looks like escaped HTML (&amp;lt;p&amp;gt;…) — click to decode &amp; clean it
+            </button>
+          )}
+          {!isEscapedHtml(source) && hasNestedBlockParagraph(source) && (
+            <button
+              type="button"
+              onClick={tidySource}
+              className="flex items-center gap-2 text-[12px] font-[600] text-brand bg-brand-surface border border-brand/30 rounded-[8px] px-3 py-2 hover:bg-brand/10 transition-colors"
+            >
+              <WandSparkles size={14} />
+              Stray &lt;p&gt; wrapper around the whole document — click to clean it up
             </button>
           )}
           <textarea
@@ -253,7 +303,8 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
             placeholder="<p>Paste or edit raw HTML here…</p>"
           />
           <p className="text-[11px] text-[#999]">
-            Editing HTML directly. Click the <CodeIcon size={11} className="inline -mt-0.5" /> button again to return to rich text.
+            Editing HTML directly — you can save from here. Tables and images only survive in this view;
+            the <CodeIcon size={11} className="inline -mt-0.5" /> rich-text view drops them.
           </p>
         </div>
       ) : (
