@@ -1,215 +1,88 @@
-import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { notFound } from "next/navigation";
 import {
-  Calendar, User, Tag, ArrowLeft, Clock,
+  Calendar, User, Tag, Clock,
   ShieldCheck, CheckCircle2, ExternalLink, MessageSquareQuote,
 } from "lucide-react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import BlogContent from "@/components/blog/BlogContent";
+import InlineToc from "@/components/blog/InlineToc";
 import TableOfContents from "@/components/blog/TableOfContents";
-import { prepareBlogHtml } from "@/lib/blog-html";
 import ShareButtons from "@/components/blog/ShareButtons";
+import { JsonLd } from "@/components/shared/Schema";
+import { prepareBlogHtml } from "@/lib/blog-html";
+import { getPublishedPost, getRelatedPosts, excerptFor } from "@/lib/blog-posts";
+import {
+  buildBlogGraph,
+  buildBlogMetadata,
+  canonicalFor,
+  namedAuthor,
+  validFaqs,
+  validSources,
+} from "@/lib/blog-seo";
 
 // Rendered fresh on every request — CMS publishes/edits must show up
 // immediately, and Vercel's ISR route cache was serving stale copies for
 // minutes despite tag revalidation. See src/lib/revalidate-blog.ts.
 export const dynamic = "force-dynamic";
 
-async function getBlogPostMeta(slug: string) {
-  const res = await supabase
-    .from("blog_posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .single();
-  return { data: res.data };
+type PageProps = { params: Promise<{ slug: string }> };
+
+// UTC keeps the printed date identical between the server, the datetime
+// attribute and any crawler, regardless of the host's timezone.
+function formatDate(iso: string, month: "long" | "short" = "long"): string {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month, day: "numeric", year: "numeric", timeZone: "UTC",
+  });
 }
 
-async function getBlogPostDetail(slug: string) {
-  const res = await supabase
-    .from("blog_posts")
-    .select("*, authors (name, credential, bio)")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .single();
-  return { data: res.data };
-}
-
-async function getRelatedBlogPosts(slug: string) {
-  const res = await supabase
-    .from("blog_posts")
-    .select("id, title, slug, category, featured_image, publish_date")
-    .neq("slug", slug)
-    .eq("status", "published")
-    .limit(3);
-  return { data: res.data };
-}
-
-const TRANSIT_LOGO = `${SITE_URL}/logo.png`;
-
-// ── Metadata ─────────────────────────────────────────────────────
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { data: post } = await getBlogPostMeta(slug);
-
+  const post = await getPublishedPost(slug);
+  // A missing post renders the 404 page, which Next marks noindex itself.
   if (!post) return {};
-
-  return {
-    title: post.meta_title || post.title,
-    description:
-      (post.meta_description || "Read the latest updates from Nepal's most trusted study abroad consultancy.")
-        .replace(/\s*\*[…\.]{1,3}\s*$/, "")
-        .trim(),
-    alternates: {
-      canonical:
-        post.canonical_url || `${SITE_URL}/blog/${post.slug}`,
-    },
-    robots: post.noindex
-      ? { index: false, follow: false }
-      : { index: true, follow: true },
-    openGraph: {
-      title: post.meta_title || post.title,
-      description: (post as any).og_description || post.meta_description,
-      url: `${SITE_URL}/blog/${post.slug}`,
-      type: "article",
-      images: [
-        {
-          url: post.featured_image || TRANSIT_LOGO,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.meta_title || post.title,
-      description: post.meta_description,
-      images: [post.featured_image || TRANSIT_LOGO],
-    },
-  };
+  return buildBlogMetadata(post);
 }
 
-// ── Page ─────────────────────────────────────────────────────────
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const [postRes, relatedRes] = await Promise.all([
-    getBlogPostDetail(slug),
-    getRelatedBlogPosts(slug),
-  ]);
-
-  const { data: post } = postRes;
+  const post = await getPublishedPost(slug);
   if (!post) notFound();
 
-  const author = (post as any).authors;
-  const formattedPost = {
-    ...post,
-    publishDate: post.publish_date,
-    featuredImage: post.featured_image,
-    authorName: author?.name || "Transit Education",
-    authorCredential: author?.credential || "",
-    authorBio: author?.bio || "",
-    authorAvatar: (post as any).author_avatar_url || null,
-    lastReviewed: post.last_reviewed_at,
-    faqItems: (post as any).faq_schema || [],
-    readingTime: post.reading_time,
-    answerSummary: (post as any).answer_summary || "",
-    sources: (post as any).sources || [],
-    tags: post.tags || [],
-    ogDescription: (post as any).og_description || "",
-    secondaryKeywords: (post as any).secondary_keywords || [],
-  };
+  const related = await getRelatedPosts(post.slug, post.category);
 
-  const { html: processedBody, toc, wordCount } = prepareBlogHtml(formattedPost.body || "");
-  const canonicalUrl =
-    post.canonical_url || `${SITE_URL}/blog/${slug}`;
+  const { html: bodyHtml, toc, wordCount } = prepareBlogHtml(post.body ?? "");
+  const canonicalUrl = canonicalFor(post);
+  const faqs = validFaqs(post.faq_schema);
+  const sources = validSources(post.sources);
+  const tags = post.tags ?? [];
+  const answerSummary = post.answer_summary?.trim() ?? "";
 
-  const blogPosts = (relatedRes.data || []).map((p) => ({
-    ...p,
-    publishDate: p.publish_date,
-    featuredImage: p.featured_image,
-  }));
+  const author = namedAuthor(post);
+  const authorName = author?.name ?? "";
+  const authorCredential = author?.credential ?? "";
+  const authorBio = author?.bio ?? "";
+  const displayAuthor = authorName || "Transit Education";
+  const reviewedAt = post.last_reviewed_at;
 
-  // ── JSON-LD ──────────────────────────────────────────────────
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: formattedPost.title,
-    image: formattedPost.featuredImage || TRANSIT_LOGO,
-    author: {
-      "@type": author ? "Person" : "Organization",
-      name: formattedPost.authorName,
-      ...(formattedPost.authorCredential && { jobTitle: formattedPost.authorCredential }),
-    },
-    datePublished: formattedPost.publishDate,
-    dateModified: formattedPost.lastReviewed || formattedPost.publishDate,
-    wordCount,
-    keywords: [...formattedPost.tags, ...formattedPost.secondaryKeywords].join(", "),
-    publisher: {
-      "@type": "Organization",
-      name: "Transit Education",
-      logo: { "@type": "ImageObject", url: TRANSIT_LOGO },
-    },
-    mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-    ...(formattedPost.answerSummary && {
-      speakable: {
-        "@type": "SpeakableSpecification",
-        cssSelector: ["[data-answer-summary]"],
-      },
-    }),
-  };
-
-  const faqSchema =
-    formattedPost.faqItems?.length
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: formattedPost.faqItems.map((item: any) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: item.answer },
-          })),
-        }
-      : null;
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
-      { "@type": "ListItem", position: 3, name: formattedPost.title, item: canonicalUrl },
-    ],
-  };
+  const graph = buildBlogGraph(post, { wordCount, faqs, sources });
+  const featured = post.featured_image ? resolveMediaUrl(post.featured_image) : "";
 
   return (
-    <main className="pt-20">
-      {/* JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+    <div className="pt-20">
+      <JsonLd data={graph} />
 
       {/* ── Hero ── */}
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-35">
-          {formattedPost.featuredImage && (
+          {featured && (
             <Image
-              src={resolveMediaUrl(formattedPost.featuredImage)}
-              alt={formattedPost.title}
+              src={featured}
+              alt={post.title}
               fill
               sizes="100vw"
               className="object-cover"
@@ -219,41 +92,38 @@ export default async function BlogPostPage({
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
         </div>
         <div className="container relative z-10">
-          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-gray-400 mb-8 font-medium">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span>/</span>
+            <span aria-hidden="true">/</span>
             <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <span>/</span>
-            <span className="text-gray-300 truncate max-w-xs">{formattedPost.title}</span>
+            <span aria-hidden="true">/</span>
+            <span className="text-gray-300 truncate max-w-xs" aria-current="page">{post.title}</span>
           </nav>
 
           <div className="max-w-4xl">
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-6">
-              <span className="bg-brand text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
-                {formattedPost.category}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-brand" />
-                <time dateTime={formattedPost.publishDate}>
-                  {formattedPost.publishDate
-                    ? new Date(formattedPost.publishDate).toLocaleDateString("en-US", {
-                        month: "long", day: "numeric", year: "numeric",
-                      })
-                    : "Recently"}
-                </time>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <User className="w-4 h-4 text-brand" /> {formattedPost.authorName}
-              </span>
-              {formattedPost.readingTime && (
+              {post.category && (
+                <span className="bg-brand text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                  {post.category}
+                </span>
+              )}
+              {post.publish_date && (
                 <span className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-brand" /> {formattedPost.readingTime}
+                  <Calendar className="w-4 h-4 text-brand" />
+                  <time dateTime={post.publish_date}>{formatDate(post.publish_date)}</time>
+                </span>
+              )}
+              <span className="flex items-center gap-1.5">
+                <User className="w-4 h-4 text-brand" /> {displayAuthor}
+              </span>
+              {post.reading_time && (
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-4 h-4 text-brand" /> {post.reading_time}
                 </span>
               )}
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-              {formattedPost.title}
+              {post.title}
             </h1>
           </div>
         </div>
@@ -267,50 +137,49 @@ export default async function BlogPostPage({
 
               {/* ── Article ── */}
               <article className="flex-1 min-w-0">
-                {/* Fact-check banner */}
-                {formattedPost.lastReviewed && (
+                {/* Quick answer, directly after the H1 and before the body */}
+                {answerSummary && (
+                  <div
+                    data-answer-summary
+                    className="mb-8 p-6 bg-brand/5 border-l-4 border-brand rounded-r-2xl"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageSquareQuote className="w-4 h-4 text-brand" />
+                      <p className="text-xs font-bold text-brand uppercase tracking-widest">
+                        Quick Answer
+                      </p>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed font-medium">{answerSummary}</p>
+                  </div>
+                )}
+
+                {reviewedAt && (
                   <div className="mb-8 flex items-center gap-3 bg-green-50 text-green-700 px-5 py-3 rounded-2xl border border-green-100 text-sm font-medium">
                     <ShieldCheck className="w-5 h-5 shrink-0" />
                     <span>
-                      Fact-checked by{" "}
-                      <strong>{formattedPost.authorCredential || "Transit Education experts"}</strong>
-                      {" · "}
-                      <time dateTime={formattedPost.lastReviewed}>
-                        {new Date(formattedPost.lastReviewed).toLocaleDateString("en-US", {
-                          month: "long", day: "numeric", year: "numeric",
-                        })}
-                      </time>
+                      Last reviewed{" "}
+                      <time dateTime={reviewedAt}>{formatDate(reviewedAt)}</time>
+                      {authorName && (
+                        <>
+                          {" by "}
+                          <strong>{authorName}</strong>
+                          {authorCredential && `, ${authorCredential}`}
+                        </>
+                      )}
                     </span>
                   </div>
                 )}
 
-                {/* Quick Answer — GEO/AI snippet */}
-                {formattedPost.answerSummary && (
-                  <div
-                    data-answer-summary
-                    className="mb-10 p-6 bg-brand/5 border-l-4 border-brand rounded-r-2xl"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <MessageSquareQuote className="w-4 h-4 text-brand" />
-                      <span className="text-xs font-bold text-brand uppercase tracking-widest">
-                        Quick Answer
-                      </span>
-                    </div>
-                    <p className="text-gray-700 leading-relaxed font-medium">
-                      {formattedPost.answerSummary}
-                    </p>
-                  </div>
-                )}
+                <InlineToc items={toc} />
 
-                <BlogContent html={processedBody} />
+                <BlogContent html={bodyHtml} />
 
-                {/* Tags */}
-                {formattedPost.tags.length > 0 && (
+                {tags.length > 0 && (
                   <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-2">
-                    {formattedPost.tags.map((tag: string) => (
+                    {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="flex items-center gap-1.5 bg-gray-50 text-gray-500 px-4 py-2 rounded-xl text-sm font-medium border border-gray-100 hover:border-brand hover:text-brand transition-colors"
+                        className="flex items-center gap-1.5 bg-gray-50 text-gray-500 px-4 py-2 rounded-xl text-sm font-medium border border-gray-100"
                       >
                         <Tag className="w-3.5 h-3.5" /> {tag}
                       </span>
@@ -318,19 +187,19 @@ export default async function BlogPostPage({
                   </div>
                 )}
 
-                {/* Share */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                  <ShareButtons title={formattedPost.title} url={canonicalUrl} />
+                  <ShareButtons title={post.title} url={canonicalUrl} />
                 </div>
 
-                {/* FAQ */}
-                {formattedPost.faqItems.length > 0 && (
-                  <div className="mt-16">
-                    <h2 className="text-2xl font-extrabold text-black mb-8 tracking-tight">
+                {/* FAQ: native <details>, so every answer is in the server HTML
+                    whether or not the item is expanded. Same list feeds FAQPage. */}
+                {faqs.length > 0 && (
+                  <section className="mt-16" aria-labelledby="faq-heading">
+                    <h2 id="faq-heading" className="text-2xl font-extrabold text-black mb-8 tracking-tight">
                       Frequently Asked Questions
                     </h2>
                     <div className="space-y-4">
-                      {formattedPost.faqItems.map((faq: any, i: number) => (
+                      {faqs.map((faq, i) => (
                         <details
                           key={i}
                           className="group bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden"
@@ -338,30 +207,28 @@ export default async function BlogPostPage({
                         >
                           <summary className="px-6 py-5 font-bold text-black cursor-pointer list-none flex justify-between items-center gap-4 hover:bg-gray-100 transition-colors">
                             <span>{faq.question}</span>
-                            <span className="text-brand shrink-0 text-xl leading-none group-open:rotate-45 transition-transform duration-200">+</span>
+                            <span aria-hidden="true" className="text-brand shrink-0 text-xl leading-none group-open:rotate-45 transition-transform duration-200">+</span>
                           </summary>
-                          <div className="px-6 pb-5 text-gray-600 leading-relaxed">
-                            {faq.answer}
-                          </div>
+                          <div className="px-6 pb-5 text-gray-600 leading-relaxed">{faq.answer}</div>
                         </details>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
 
-                {/* Sources */}
-                {formattedPost.sources.length > 0 && (
-                  <div className="mt-12 pt-8 border-t border-gray-100">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                {sources.length > 0 && (
+                  <section className="mt-12 pt-8 border-t border-gray-100" aria-labelledby="sources-heading">
+                    <h2 id="sources-heading" className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                       Sources & References
-                    </h4>
+                    </h2>
                     <ul className="space-y-2">
-                      {formattedPost.sources.map((src: string, i: number) => (
-                        <li key={i}>
+                      {sources.map((src) => (
+                        <li key={src}>
+                          {/* No nofollow: these are official / government references. */}
                           <a
                             href={src}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener"
                             className="flex items-center gap-1.5 text-sm text-brand hover:underline break-all"
                           >
                             <ExternalLink className="w-3.5 h-3.5 shrink-0" /> {src}
@@ -369,35 +236,34 @@ export default async function BlogPostPage({
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </section>
                 )}
 
-                {/* Author E-E-A-T box */}
-                <div className="mt-14 p-8 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col sm:flex-row items-center gap-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center shrink-0 p-2 shadow-sm">
-                    <Image
-                      src={formattedPost.authorAvatar || TRANSIT_LOGO}
-                      alt={formattedPost.authorName}
-                      width={72}
-                      height={72}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-2 mb-1.5">
-                      <h3 className="text-lg font-bold text-black">{formattedPost.authorName}</h3>
-                      {formattedPost.authorCredential && (
-                        <span className="text-xs font-bold text-brand uppercase tracking-widest flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" /> {formattedPost.authorCredential}
-                        </span>
-                      )}
+                {/* Author box only for a real, named author. Never invented. */}
+                {authorName && (
+                  <aside
+                    aria-label="About the author"
+                    className="mt-14 p-8 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col sm:flex-row items-center gap-6"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="w-20 h-20 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shrink-0 shadow-sm text-2xl font-extrabold text-brand"
+                    >
+                      {authorName.charAt(0).toUpperCase()}
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed">
-                      {formattedPost.authorBio ||
-                        "Our team of expert counsellors and writers bring you the most accurate and up-to-date information regarding international education and visa processes."}
-                    </p>
-                  </div>
-                </div>
+                    <div className="text-center sm:text-left">
+                      <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-2 mb-1.5">
+                        <p className="text-lg font-bold text-black">{authorName}</p>
+                        {authorCredential && (
+                          <span className="text-xs font-bold text-brand uppercase tracking-widest flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> {authorCredential}
+                          </span>
+                        )}
+                      </div>
+                      {authorBio && <p className="text-gray-500 text-sm leading-relaxed">{authorBio}</p>}
+                    </div>
+                  </aside>
+                )}
               </article>
 
               {/* ── Sticky TOC ── */}
@@ -411,8 +277,8 @@ export default async function BlogPostPage({
         </div>
       </section>
 
-      {/* ── Related Posts ── */}
-      {blogPosts.length > 0 && (
+      {/* ── Related Posts: summary fields only, never full bodies ── */}
+      {related.length > 0 && (
         <section className="py-24 bg-off-white">
           <div className="container">
             <div className="text-center mb-12">
@@ -420,44 +286,47 @@ export default async function BlogPostPage({
               <h2 className="text-3xl font-extrabold text-black mt-4 tracking-tight">Related Articles</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.slice(0, 3).map((relatedPost) => (
-                <Link
-                  key={relatedPost.id}
-                  href={`/blog/${relatedPost.slug}`}
-                  className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all group"
-                >
-                  <div className="relative h-48 w-full overflow-hidden bg-gray-100">
-                    {relatedPost.featuredImage && (
-                      <Image
-                        src={resolveMediaUrl(relatedPost.featuredImage)}
-                        alt={relatedPost.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <div className="text-[10px] font-bold text-brand uppercase tracking-widest mb-3">
-                      {relatedPost.category}
+              {related.map((item) => {
+                const image = item.featuredImage ? resolveMediaUrl(item.featuredImage) : "";
+                const excerpt = excerptFor(item);
+                return (
+                  <Link
+                    key={item.slug}
+                    href={`/blog/${item.slug}`}
+                    className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all group"
+                  >
+                    <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                      {image && (
+                        <Image
+                          src={image}
+                          alt={item.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      )}
                     </div>
-                    <h4 className="font-bold text-black group-hover:text-brand transition-colors line-clamp-2 leading-snug">
-                      {relatedPost.title}
-                    </h4>
-                    {relatedPost.publishDate && (
-                      <p className="text-xs text-gray-400 mt-3">
-                        {new Date(relatedPost.publishDate).toLocaleDateString("en-US", {
-                          month: "short", day: "numeric", year: "numeric",
-                        })}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
+                    <div className="p-6">
+                      {item.category && (
+                        <div className="text-[10px] font-bold text-brand uppercase tracking-widest mb-3">
+                          {item.category}
+                        </div>
+                      )}
+                      <h3 className="font-bold text-black group-hover:text-brand transition-colors line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+                      {excerpt && <p className="text-sm text-gray-500 mt-2 line-clamp-2">{excerpt}</p>}
+                      {item.publishDate && (
+                        <p className="text-xs text-gray-400 mt-3">{formatDate(item.publishDate, "short")}</p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
       )}
-    </main>
+    </div>
   );
 }

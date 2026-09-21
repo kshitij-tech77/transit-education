@@ -81,6 +81,13 @@ const BASE_OPTIONS: sanitizeHtml.IOptions = {
       }
       return { tagName, attribs };
     },
+    img: (tagName, attribs) => {
+      // Below-the-fold body images should not compete with the hero for
+      // bandwidth, and every <img> needs an alt attribute (empty = decorative).
+      if (!attribs.loading) attribs.loading = "lazy";
+      if (attribs.alt === undefined) attribs.alt = "";
+      return { tagName, attribs };
+    },
   },
 };
 

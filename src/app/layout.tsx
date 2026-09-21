@@ -39,7 +39,10 @@ export async function generateMetadata(): Promise<Metadata> {
       description: defaultDescription,
       images: [defaultOgImage],
     },
-    robots: { index: true, follow: true }
+    // No site-wide `robots` here on purpose. Indexable is already the default,
+    // and Next.js adds its own `noindex` for the 404 page, so a layout-level
+    // "index, follow" produced two conflicting robots tags on every 404. Pages
+    // that need a directive (blog posts) set it themselves.
   };
 }
 
