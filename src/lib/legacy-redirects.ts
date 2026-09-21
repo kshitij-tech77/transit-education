@@ -54,8 +54,9 @@ export const LEGACY_REDIRECTS: LegacyRedirect[] = [
   { source: "/australia", destination: "/study-abroad/australia", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad." },
   { source: "/south-korea-2", destination: "/study-abroad/south-korea", status: "redirect", confidence: "high", note: "WordPress duplicate slug (-2) of the country page." },
   { source: "/netherlands", status: "gone", confidence: "n/a", note: "No Netherlands page exists. 410 rather than a redirect to an unrelated page." },
-  { source: "/study-abroad", destination: "/", status: "redirect", confidence: "medium", note: "There is no /study-abroad hub page yet. Send to home; point at a hub once one is built." },
-  { source: "/index.php/study-abroad", destination: "/", status: "redirect", confidence: "medium", note: "Same as /study-abroad." },
+  // "/study-abroad" is the live hub page, so it is not a source. Its slash form
+  // "/study-abroad/" gets the generic single 308 to "/study-abroad".
+  { source: "/index.php/study-abroad", destination: "/study-abroad", status: "redirect", confidence: "high", note: "Old WordPress index.php permalink for the destinations hub." },
 
   // ── Branches ─────────────────────────────────────────────────────────
   { source: "/damauli", destination: "/locations/damauli", status: "redirect", confidence: "high", note: "Branch page moved under /locations." },

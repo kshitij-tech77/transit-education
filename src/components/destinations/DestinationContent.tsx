@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import Breadcrumb, { BreadcrumbSchema, type BreadcrumbItem } from "@/components/shared/Breadcrumb";
 import { buttonVariants } from "@/components/ui/button";
 import { proxiedMediaUrl } from "@/lib/media-url";
 
@@ -9,14 +10,18 @@ interface DestinationHeroProps {
   subtitle: string;
   description: string;
   image: string;
+  /** Renders the trail above the title and emits its BreadcrumbList JSON-LD. */
+  breadcrumb?: BreadcrumbItem[];
 }
 
-export function DestinationHero({ title, subtitle, description, image }: DestinationHeroProps) {
+export function DestinationHero({ title, subtitle, description, image, breadcrumb }: DestinationHeroProps) {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
+      {breadcrumb && <BreadcrumbSchema items={breadcrumb} />}
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
+            {breadcrumb && <Breadcrumb items={breadcrumb} variant="light" />}
             <SectionLabel>{subtitle}</SectionLabel>
             <h1 className="text-4xl md:text-6xl font-extrabold text-black mt-6 mb-8 leading-tight">
               {title}

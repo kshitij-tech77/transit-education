@@ -165,6 +165,11 @@ export default function Header({
                   Study Abroad
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
+                  <NavigationMenuLink
+                    render={<Link href="/study-abroad" className={cn(dropdownLinkCls, "mx-3 mt-3 font-semibold", pathname === "/study-abroad" && "text-brand bg-brand/5")} />}
+                  >
+                    All Destinations
+                  </NavigationMenuLink>
                   <ul className="grid w-96 grid-cols-2 gap-1 p-3">
                     {studyAbroadLinks.map(l => (
                       <li key={l.href}>

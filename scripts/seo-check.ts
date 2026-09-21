@@ -2,7 +2,8 @@
  * seo-check.ts
  *
  * Crawls a running production build and asserts the SEO / AEO / GEO contract
- * for every published blog post, plus sitemap, robots, feeds and the 404 page.
+ * for every published blog post, the /study-abroad hub (and the breadcrumbs of
+ * every page it links to), plus sitemap, robots, feeds and the 404 page.
  * It only reads: it never writes to Supabase or to the site.
  *
  * ── HOW TO RUN ────────────────────────────────────────────────────────────
@@ -91,6 +92,12 @@ function bodySample(body: string): string | null {
   return null;
 }
 
+function metaContent(html: string, attr: "name" | "property", key: string): string | undefined {
+  const tag = (html.match(/<meta\b[^>]*>/gi) ?? []).find((t) => new RegExp(`${attr}=["']${key}["']`, "i").test(t));
+  const raw = tag && /content=(?:"([^"]*)"|'([^']*)')/i.exec(tag);
+  return raw ? decode(raw[1] ?? raw[2]) : undefined;
+}
+
 function jsonLdNodes(html: string): { nodes: Record<string, unknown>[]; problems: string[] } {
   const problems: string[] = [];
   const nodes: Record<string, unknown>[] = [];
@@ -175,6 +182,125 @@ async function checkPost(post: PostRow, sitemap: Map<string, string | null>) {
   }
 }
 
+/** Internal links inside the page's own <main>, without query or hash. */
+function mainLinks(html: string): string[] {
+  const start = html.indexOf('id="main-content"');
+  const main = html.slice(start, html.indexOf("</main>", start));
+  return [...new Set([...main.matchAll(/href="(\/[^"#?]*)"/g)].map((m) => m[1]))];
+}
+
+/** Breadcrumb JSON-LD on a country page or sub-page: Home > Study Abroad > Country (> Sub-page). */
+function checkCountryTrail(path: string, html: string) {
+  const crumb = jsonLdNodes(html).nodes.find((n) => n["@type"] === "BreadcrumbList");
+  const items = (crumb?.itemListElement ?? []) as { position: number; name: string; item?: string }[];
+  const depth = path.split("/").length - 1; // /study-abroad/x is 2 levels, /x/y is 3
+  check(`${path} breadcrumb JSON-LD is Home > Study Abroad > Country${depth > 2 ? " > Sub-page" : ""}`,
+    items.length === depth + 1 &&
+      items[0]?.item === SITE_ORIGIN &&
+      items[1]?.name === "Study Abroad" && items[1]?.item === `${SITE_ORIGIN}/study-abroad` &&
+      items[2]?.item === `${SITE_ORIGIN}${path.split("/").slice(0, 3).join("/")}`,
+    items.map((i) => `${i.name}=${i.item}`).join(" | "));
+  check(`${path} breadcrumb UI links Study Abroad to the hub`,
+    /<a[^>]*href="\/study-abroad"[^>]*>\s*Study Abroad\s*<\/a>/.test(stripScripts(html)));
+}
+
+async function checkHub(sitemap: Map<string, string | null>) {
+  const path = "/study-abroad";
+  const url = `${SITE_ORIGIN}${path}`;
+  console.log(`\n${path}`);
+  const { status, text: html } = await get(`${BASE_URL}${path}`);
+  check("status 200", status === 200, `got ${status}`);
+  if (status !== 200) return;
+  const visible = stripScripts(html);
+
+  const title = /<title>([^<]*)<\/title>/i.exec(html)?.[1] ?? "";
+  check("title is 50 to 60 characters", decode(title).length >= 50 && decode(title).length <= 60,
+    `${decode(title).length}: ${title}`);
+  const description = metaContent(html, "name", "description") ?? "";
+  check("meta description is 120 to 160 characters", description.length >= 120 && description.length <= 160,
+    String(description.length));
+  const robots = metaTags(html, "robots");
+  check("exactly one robots meta", robots.length === 1, `found ${robots.length}`);
+  const directives = robots.join(" ");
+  check("robots is index, follow with max-snippet:-1",
+    /index, follow/.test(directives) && !/noindex|nofollow/.test(directives) && /max-snippet:-1/.test(directives),
+    directives);
+  const canonicals = html.match(/<link rel="canonical"[^>]*>/gi) ?? [];
+  check("one canonical, SITE_URL + /study-abroad",
+    canonicals.length === 1 && canonicals[0].includes(`href="${url}"`), canonicals.join(" "));
+  check("Open Graph title, description and url", Boolean(metaContent(html, "property", "og:title")) &&
+    Boolean(metaContent(html, "property", "og:description")) && metaContent(html, "property", "og:url") === url);
+  check("Twitter card, title and description", Boolean(metaContent(html, "name", "twitter:card")) &&
+    Boolean(metaContent(html, "name", "twitter:title")) && Boolean(metaContent(html, "name", "twitter:description")));
+  check("exactly one <h1>", (visible.match(/<h1\b/gi) ?? []).length === 1);
+  check("no nested <main>", (html.match(/<main\b/gi) ?? []).length === 1);
+
+  // One JSON-LD @graph holds the CollectionPage and BreadcrumbList; the
+  // Organization stays in the root layout and is only referenced by @id.
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]);
+  const graphs = blocks.map((b) => { try { return JSON.parse(b); } catch { return null; } });
+  check("every JSON-LD block parses", graphs.every(Boolean));
+  const hubGraph = graphs.find((g) => Array.isArray(g?.["@graph"]) && g["@graph"].some((n: { "@type"?: string }) => n["@type"] === "CollectionPage"));
+  check("one @graph with a CollectionPage", Boolean(hubGraph));
+  const nodes = (hubGraph?.["@graph"] ?? []) as Record<string, unknown>[];
+  const types = typesOf(nodes);
+  check("@graph has CollectionPage and BreadcrumbList, and no second Organization",
+    types.includes("CollectionPage") && types.includes("BreadcrumbList") && !types.includes("Organization"), types.join(", "));
+  const collection = nodes.find((n) => n["@type"] === "CollectionPage") as
+    | { mainEntity?: { "@type"?: string; itemListElement?: { name: string; url: string }[] } } | undefined;
+  const listed = collection?.mainEntity?.itemListElement ?? [];
+  check("CollectionPage.mainEntity is an ItemList with destinations", collection?.mainEntity?.["@type"] === "ItemList" && listed.length > 0,
+    `${listed.length} items`);
+  const crumb = nodes.find((n) => n["@type"] === "BreadcrumbList") as { itemListElement?: { name: string; item: string }[] } | undefined;
+  check("BreadcrumbList is Home, Study Abroad",
+    JSON.stringify(crumb?.itemListElement?.map((i) => [i.name, i.item])) ===
+      JSON.stringify([["Home", SITE_ORIGIN], ["Study Abroad", url]]));
+
+  // Every ItemList destination is a card link, and every card matches the
+  // page it links to (status 200, same description as that page's meta).
+  const cardHtml = visible.split("<li").filter((li) => /<h3\b/.test(li) && /<a[^>]*href="\/study-abroad\/[^/"]+"/.test(li));
+  const cards = cardHtml.map((li) => ({
+    href: /href="(\/study-abroad\/[^/"]+)"/.exec(li)![1],
+    text: toText(/<p\b[^>]*>([\s\S]*?)<\/p>/i.exec(li)?.[1] ?? ""),
+  }));
+  check("ItemList and card links list the same destinations",
+    JSON.stringify(listed.map((i) => i.url).sort()) === JSON.stringify(cards.map((c) => `${SITE_ORIGIN}${c.href}`).sort()),
+    `${listed.length} in ItemList, ${cards.length} cards`);
+  for (const card of cards) {
+    const page = await get(`${BASE_URL}${card.href}`);
+    const pageDescription = metaContent(page.text, "name", "description") ?? "";
+    // A card shows the page's meta description, or its hero copy when the CMS
+    // has no description for that country. Nothing is written for the hub.
+    check(`${card.href} card text comes from that page`,
+      card.text === "" || card.text === pageDescription || toText(stripScripts(page.text)).includes(card.text),
+      `card "${card.text.slice(0, 50)}" vs page "${pageDescription.slice(0, 50)}"`);
+  }
+
+  const links = mainLinks(html);
+  const bad: string[] = [];
+  for (const link of links) {
+    const { status: linkStatus } = await get(`${BASE_URL}${link}`);
+    if (linkStatus !== 200) bad.push(`${link} -> ${linkStatus}`);
+  }
+  check(`all ${links.length} links in the page return 200`, bad.length === 0, bad.join(", "));
+  for (const required of ["/services/admission-counselling", "/services/student-visa-service", "/services/test-preparation",
+    "/contact", "/tools/ielts-band-calculator", "/tools/gpa-converter"]) {
+    check(`links to ${required}`, links.includes(required));
+  }
+  check("does not link to the out-of-date cost calculator", !links.includes("/tools/cost-calculator"));
+
+  check("listed in sitemap.xml", sitemap.has(url));
+  check("sitemap entry has lastmod", Boolean(sitemap.get(url)));
+
+  // Country pages and sub-pages: trail is Home > Study Abroad > Country (> Sub-page).
+  console.log("\nbreadcrumbs on country pages and sub-pages");
+  const trailPaths = links.filter((l) => /^\/study-abroad\/[^/]+(\/[^/]+)?$/.test(l));
+  for (const trailPath of trailPaths) {
+    const page = await get(`${BASE_URL}${trailPath}`);
+    if (page.status === 200) checkCountryTrail(trailPath, page.text);
+  }
+}
+
 async function checkSitemapUrls(sitemap: Map<string, string | null>) {
   console.log(`\nsitemap URLs (${sitemap.size})`);
   const urls = [...sitemap.keys()];
@@ -219,6 +345,7 @@ async function main() {
   check("has no changefreq / priority", !/<changefreq>|<priority>/.test(sm.text));
 
   for (const post of posts) await checkPost(post, sitemap);
+  await checkHub(sitemap);
   await checkSitemapUrls(sitemap);
 
   console.log("\nrobots.txt");

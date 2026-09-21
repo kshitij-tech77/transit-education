@@ -198,6 +198,7 @@ export default function MobileMenu({
                 </Accordion>
 
                 <Accordion label="Study Abroad" icon={Globe}>
+                  <SubLink href="/study-abroad" label="All Destinations" onClick={close} />
                   {studyAbroadLinks.map((l) => (
                     <SubLink key={l.href} href={l.href} label={l.title} onClick={close} />
                   ))}
