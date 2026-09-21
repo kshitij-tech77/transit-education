@@ -10,7 +10,8 @@ import {
 } from "lucide-react";
 import { Metadata } from "next";
 import BlogContent from "@/components/blog/BlogContent";
-import TableOfContents, { type TOCItem } from "@/components/blog/TableOfContents";
+import TableOfContents from "@/components/blog/TableOfContents";
+import { prepareBlogHtml } from "@/lib/blog-html";
 import ShareButtons from "@/components/blog/ShareButtons";
 
 // Rendered fresh on every request — CMS publishes/edits must show up
@@ -49,32 +50,6 @@ async function getRelatedBlogPosts(slug: string) {
 }
 
 const TRANSIT_LOGO = "https://transiteducation.com.np/logo.png";
-
-// ── Inject heading IDs + extract TOC ────────────────────────────
-function processBody(html: string): { html: string; toc: TOCItem[] } {
-  const toc: TOCItem[] = [];
-  const counts: Record<string, number> = {};
-  const processed = html.replace(
-    /<(h[23])([^>]*)>([\s\S]*?)<\/h[23]>/gi,
-    (_match, tag, attrs, content) => {
-      const text = content.replace(/<[^>]+>/g, "").trim();
-      const base = text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")
-        .slice(0, 60) || "section";
-      counts[base] = (counts[base] || 0) + 1;
-      const id = counts[base] > 1 ? `${base}-${counts[base]}` : base;
-      toc.push({ id, text, level: parseInt(tag[1]) });
-      return `<${tag}${attrs} id="${id}">${content}</${tag}>`;
-    }
-  );
-  return { html: processed, toc };
-}
-
-function countWords(html: string): number {
-  return html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
-}
 
 // ── Metadata ─────────────────────────────────────────────────────
 export async function generateMetadata({
@@ -158,8 +133,7 @@ export default async function BlogPostPage({
     secondaryKeywords: (post as any).secondary_keywords || [],
   };
 
-  const { html: processedBody, toc } = processBody(formattedPost.body || "");
-  const wordCount = countWords(formattedPost.body || "");
+  const { html: processedBody, toc, wordCount } = prepareBlogHtml(formattedPost.body || "");
   const canonicalUrl =
     post.canonical_url || `https://transiteducation.com.np/blog/${slug}`;
 
