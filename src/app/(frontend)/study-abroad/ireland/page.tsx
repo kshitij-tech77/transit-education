@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import Schema from "@/components/shared/Schema";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
@@ -52,6 +53,7 @@ export default function IrelandPage() {
     <main>
       <Schema type="FAQPage" data={faqData} />
       <DestinationHero 
+        breadcrumb={countryBreadcrumbs("ireland", "Ireland")}
         title="Study in Ireland"
         subtitle="Study Abroad"
         description="Ireland is the only English-speaking country in the European Union, offering globally ranked universities and a strong technology job market."

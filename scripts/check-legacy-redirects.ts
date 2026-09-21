@@ -157,6 +157,17 @@ async function main() {
     ok: REDIRECT_STATUSES.includes(slash.status) && slash.location === "/about",
     detail: "trailing slash normalisation changed",
   });
+  // The destinations hub is a real page: it must answer 200 itself, and its
+  // slash form must take exactly one 308 back to it (no loop, no chain).
+  const hub = await hit("/study-abroad");
+  record({
+    request: "/study-abroad",
+    expect: "200",
+    got: `${hub.status}${hub.location ? ` -> ${hub.location}` : ""}`,
+    ok: hub.status === 200,
+    detail: "the destinations hub must not redirect",
+  });
+  await expectRedirect("/study-abroad/", "/study-abroad");
   const unknown = await hit("/definitely-not-a-real-page-xyz");
   record({
     request: "/definitely-not-a-real-page-xyz",

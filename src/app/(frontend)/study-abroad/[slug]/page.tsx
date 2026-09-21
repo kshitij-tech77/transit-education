@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import { GraduationCap, CheckCircle2, ListChecks, HelpCircle, FileText } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -129,16 +130,6 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
     universities: country.top_universities?.join(', ')
   };
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Study Abroad", item: `${SITE_URL}/study-abroad` },
-      { "@type": "ListItem", position: 3, name: `Study in ${country.name}`, item: `${SITE_URL}/study-abroad/${slug}` },
-    ],
-  };
-
   // FAQ Schema
   const faqSchema = faqs.length > 0 ? {
     "@context": "https://schema.org",
@@ -155,7 +146,6 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {faqSchema && (
         <script
           type="application/ld+json"
@@ -164,6 +154,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
       )}
 
       <DestinationHero
+        breadcrumb={countryBreadcrumbs(slug, country.name || slug)}
         title={formattedCountry.heroTitle || `Study in ${formattedCountry.name}`}
         subtitle="Study Abroad"
         description={formattedCountry.whyStudy || `Comprehensive guide to studying in ${formattedCountry.name}.`}

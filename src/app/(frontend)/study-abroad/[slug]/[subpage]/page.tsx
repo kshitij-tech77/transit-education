@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { BreadcrumbSchema } from "@/components/shared/Breadcrumb";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import Link from "next/link";
 import { CheckCircle2, ArrowLeft, ExternalLink } from "lucide-react";
@@ -475,6 +477,9 @@ export default async function CountrySubPage({
 
   return (
     <main className="pt-20">
+      <BreadcrumbSchema
+        items={countryBreadcrumbs(country, countryName, { path: subpage, label: subpageLabels[subpage as SubPage] })}
+      />
       {/* Breadcrumb Hero */}
       <section className="bg-black py-24 text-white">
         <div className="container">
