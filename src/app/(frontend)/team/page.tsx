@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,11 +11,11 @@ import { buttonVariants } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Our Team | Expert Study Abroad Counsellors — Transit Education Nepal",
   description: "Meet the certified counsellors and visa experts at Transit Education who have helped 2,000+ Nepali students study in Canada, Australia, UK, USA, and Europe.",
-  alternates: { canonical: "https://transiteducation.com.np/team" },
+  alternates: { canonical: `${SITE_URL}/team` },
   openGraph: {
     title: "Our Team | Transit Education Nepal",
     description: "Dedicated professionals with years of experience in international education consulting across 4 branches in Nepal.",
-    url: "https://transiteducation.com.np/team",
+    url: `${SITE_URL}/team`,
     type: "website",
   },
 };

@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -68,7 +69,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const title = country.meta_title || `Study in ${country.name} | Transit Education`;
   const description = country.meta_description || `Everything you need to know about studying in ${country.name}. Visa requirements, tuition, and intakes.`;
-  const image = "https://transiteducation.com.np/logo.png";
+  const image = `${SITE_URL}/logo.png`;
 
   return {
     // `absolute` bypasses the root layout's `title.template` ("%s | Transit
@@ -77,11 +78,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     // so a plain string here would double the suffix.
     title: { absolute: title },
     description,
-    alternates: { canonical: `https://transiteducation.com.np/study-abroad/${slug}` },
+    alternates: { canonical: `${SITE_URL}/study-abroad/${slug}` },
     openGraph: {
       title,
       description,
-      url: `https://transiteducation.com.np/study-abroad/${slug}`,
+      url: `${SITE_URL}/study-abroad/${slug}`,
       images: [{ url: image, width: 1200, height: 630, alt: `Study in ${country.name}` }],
     },
     twitter: {
@@ -132,9 +133,9 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://transiteducation.com.np" },
-      { "@type": "ListItem", position: 2, name: "Study Abroad", item: "https://transiteducation.com.np/study-abroad" },
-      { "@type": "ListItem", position: 3, name: `Study in ${country.name}`, item: `https://transiteducation.com.np/study-abroad/${slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Study Abroad", item: `${SITE_URL}/study-abroad` },
+      { "@type": "ListItem", position: 3, name: `Study in ${country.name}`, item: `${SITE_URL}/study-abroad/${slug}` },
     ],
   };
 

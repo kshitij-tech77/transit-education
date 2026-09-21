@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
@@ -432,11 +433,11 @@ export async function generateMetadata({
     // so a plain string here would double the suffix.
     title: { absolute: titles[subpage as SubPage] },
     description: descriptions[subpage as SubPage],
-    alternates: { canonical: `https://transiteducation.com.np/study-abroad/${country}/${subpage}` },
+    alternates: { canonical: `${SITE_URL}/study-abroad/${country}/${subpage}` },
     openGraph: {
       title: titles[subpage as SubPage],
       description: descriptions[subpage as SubPage],
-      url: `https://transiteducation.com.np/study-abroad/${country}/${subpage}`,
+      url: `${SITE_URL}/study-abroad/${country}/${subpage}`,
       type: "website",
     },
   };

@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const tagline = settings?.tagline || "Global Education";
   const defaultTitle = `${siteName} | ${tagline}`;
   const defaultDescription = settings?.seo_description || "Expert study abroad consultancy in Nepal.";
-  const defaultOgImage = "https://transiteducation.com.np/logo.png";
+  const defaultOgImage = `${SITE_URL}/logo.png`;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "en_US",
-      url: "https://transiteducation.com.np",
+      url: SITE_URL,
       siteName: siteName,
       title: defaultTitle,
       description: defaultDescription,
@@ -62,7 +62,7 @@ export default async function RootLayout({
     .single();
 
   const siteName = settings?.site_name || "Transit Education";
-  const defaultOgImage = "https://transiteducation.com.np/logo.png";
+  const defaultOgImage = `${SITE_URL}/logo.png`;
 
   // sameAs / address mirror the same site_settings fallbacks Footer.tsx uses
   // for its social links, and the Kathmandu HQ address already published on
@@ -75,8 +75,9 @@ export default async function RootLayout({
   ].filter(Boolean);
 
   const orgSchema = {
+    "@id": `${SITE_URL}/#organization`,
     name: siteName,
-    url: "https://transiteducation.com.np",
+    url: SITE_URL,
     logo: defaultOgImage,
     address: {
       "@type": "PostalAddress",

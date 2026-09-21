@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import Hero from "@/components/home/Hero";
 import UniversityLogos from "@/components/home/UniversityLogos";
 import Destinations from "@/components/home/Destinations";
@@ -141,15 +142,15 @@ const getCachedHomeEvents = unstable_cache(
 export const metadata: Metadata = {
   title: { absolute: "Transit Education | Your Transit to Global Destinations" },
   description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
-  alternates: { canonical: "https://transiteducation.com.np" },
+  alternates: { canonical: SITE_URL },
   openGraph: {
     title: "Transit Education | Your Transit to Global Destinations",
     description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
-    url: "https://transiteducation.com.np",
+    url: SITE_URL,
     type: "website",
     images: [
       {
-        url: "https://transiteducation.com.np/logo.png",
+        url: `${SITE_URL}/logo.png`,
         width: 512,
         height: 512,
         alt: "Transit Education",
@@ -160,7 +161,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Transit Education | Your Transit to Global Destinations",
     description: "Nepal's most trusted study abroad consultancy. Expert visa guidance for Canada, Australia, UK, USA & Europe.",
-    images: ["https://transiteducation.com.np/logo.png"],
+    images: [`${SITE_URL}/logo.png`],
   },
 };
 

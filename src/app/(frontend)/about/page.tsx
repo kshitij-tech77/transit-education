@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { GraduationCap, Globe2, Target, Heart, Award, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
@@ -10,13 +11,13 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Transit Education | Nepal's Trusted Study Abroad Consultancy",
   description: "10+ years of expert study abroad consulting in Nepal. Learn about our mission, values, and the team behind 2,000+ successful student visas to Canada, Australia, UK, USA & more.",
-  alternates: { canonical: "https://transiteducation.com.np/about" },
+  alternates: { canonical: `${SITE_URL}/about` },
   openGraph: {
     title: "About Transit Education | Nepal's Trusted Study Abroad Consultancy",
     description: "10+ years of expert study abroad consulting in Nepal. 2,000+ successful students, 50+ partner institutions worldwide.",
-    url: "https://transiteducation.com.np/about",
+    url: `${SITE_URL}/about`,
     type: "website",
-    images: [{ url: "https://transiteducation.com.np/logo.png", width: 1200, height: 630 }],
+    images: [{ url: `${SITE_URL}/logo.png`, width: 1200, height: 630 }],
   },
 };
 

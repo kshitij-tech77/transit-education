@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 
@@ -30,7 +31,7 @@ export async function getCountryMetadata(id: string, fallback: CountryMetadataFa
   const isLive = country?.status === "LIVE";
   const title = (isLive && country?.meta_title) || fallback.title;
   const description = (isLive && country?.meta_description) || fallback.description;
-  const url = `https://transiteducation.com.np/study-abroad/${id}`;
+  const url = `${SITE_URL}/study-abroad/${id}`;
 
   return {
     // `absolute` bypasses the root layout's `title.template` ("%s | Transit

@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
@@ -8,11 +9,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Study Abroad Blog | Visa Tips, University Guides — Transit Education",
   description: "Expert articles on student visas, IELTS preparation, university admissions, and life abroad. Written by Transit Education's certified counsellors in Nepal.",
-  alternates: { canonical: "https://transiteducation.com.np/blog" },
+  alternates: { canonical: `${SITE_URL}/blog` },
   openGraph: {
     title: "Study Abroad Blog | Transit Education Nepal",
     description: "Visa tips, scholarship news, IELTS guides, and destination insights from Nepal's most trusted study abroad consultancy.",
-    url: "https://transiteducation.com.np/blog",
+    url: `${SITE_URL}/blog`,
     type: "website",
   },
 };

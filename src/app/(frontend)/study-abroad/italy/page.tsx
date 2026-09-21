@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -7,11 +8,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Study in Italy from Nepal | Student Visa, Scholarships & Requirements",
   description: "Complete guide to studying in Italy from Nepal. Italy student visa (Type D), DSU scholarships, Italian language requirements, and top universities for Nepali students.",
-  alternates: { canonical: "https://transiteducation.com.np/study-abroad/italy" },
+  alternates: { canonical: `${SITE_URL}/study-abroad/italy` },
   openGraph: {
     title: "Study in Italy from Nepal",
     description: "Italy student visa, DSU scholarships, free public universities — full guide for Nepali students.",
-    url: "https://transiteducation.com.np/study-abroad/italy",
+    url: `${SITE_URL}/study-abroad/italy`,
     type: "website",
   },
 };

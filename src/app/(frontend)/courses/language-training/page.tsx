@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { CheckCircle2, MessageSquare, Globe2, BookOpen, Users2, Clock } from "lucide-react";
 import Image from "next/image";
@@ -6,11 +7,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "English Language Training in Nepal | Transit Education",
   description: "Build English fluency for academic and professional success. Language training courses at Transit Education designed for Nepali students planning to study abroad.",
-  alternates: { canonical: "https://transiteducation.com.np/courses/language-training" },
+  alternates: { canonical: `${SITE_URL}/courses/language-training` },
   openGraph: {
     title: "English Language Training | Transit Education Nepal",
     description: "Structured English language courses to prepare you for university study abroad — listening, speaking, reading, and writing.",
-    url: "https://transiteducation.com.np/courses/language-training",
+    url: `${SITE_URL}/courses/language-training`,
     type: "website",
   },
 };

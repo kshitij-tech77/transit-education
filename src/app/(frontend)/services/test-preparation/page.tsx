@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -10,11 +11,11 @@ import { supabase } from "@/lib/supabase";
 export const metadata: Metadata = {
   title: "IELTS & PTE Test Preparation in Nepal",
   description: "Expert IELTS, PTE Academic, and TOEFL coaching at Transit Education Nepal. Proven strategies, mock tests, and personalised feedback to hit your target band score.",
-  alternates: { canonical: "https://transiteducation.com.np/services/test-preparation" },
+  alternates: { canonical: `${SITE_URL}/services/test-preparation` },
   openGraph: {
     title: "IELTS & PTE Test Preparation | Transit Education Nepal",
     description: "Structured IELTS, PTE, and TOEFL prep with experienced trainers. Join hundreds of students who achieved their target scores.",
-    url: "https://transiteducation.com.np/services/test-preparation",
+    url: `${SITE_URL}/services/test-preparation`,
     type: "website",
   },
 };

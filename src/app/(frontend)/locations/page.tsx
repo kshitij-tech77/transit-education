@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,11 +8,11 @@ import SectionLabel from "@/components/shared/SectionLabel";
 export const metadata: Metadata = {
   title: "Our Office Locations | 4 Branches Across Nepal",
   description: "Visit Transit Education at our 4 branches across Nepal — Kathmandu (Bagbazar), Itahari (Sunsari), Damak (Jhapa), and Damauli (Tanahun). Free student counselling at all locations.",
-  alternates: { canonical: "https://transiteducation.com.np/locations" },
+  alternates: { canonical: `${SITE_URL}/locations` },
   openGraph: {
     title: "Our Locations | Transit Education Nepal",
     description: "4 branches across Nepal — Kathmandu, Itahari, Damak, and Damauli. Walk in for free counselling.",
-    url: "https://transiteducation.com.np/locations",
+    url: `${SITE_URL}/locations`,
     type: "website",
   },
 };

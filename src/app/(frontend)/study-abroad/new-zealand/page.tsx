@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -7,11 +8,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Study in New Zealand from Nepal | Student Visa & Graduate Visa",
   description: "Complete guide to studying in New Zealand from Nepal. NZ student visa, 20-hour work rights, post-study work visa, and top New Zealand universities for Nepali students.",
-  alternates: { canonical: "https://transiteducation.com.np/study-abroad/new-zealand" },
+  alternates: { canonical: `${SITE_URL}/study-abroad/new-zealand` },
   openGraph: {
     title: "Study in New Zealand from Nepal",
     description: "NZ student visa, 20hr work rights, and post-study graduate visa — full guide for Nepali students.",
-    url: "https://transiteducation.com.np/study-abroad/new-zealand",
+    url: `${SITE_URL}/study-abroad/new-zealand`,
     type: "website",
   },
 };

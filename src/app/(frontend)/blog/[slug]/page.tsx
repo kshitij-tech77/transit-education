@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,7 +50,7 @@ async function getRelatedBlogPosts(slug: string) {
   return { data: res.data };
 }
 
-const TRANSIT_LOGO = "https://transiteducation.com.np/logo.png";
+const TRANSIT_LOGO = `${SITE_URL}/logo.png`;
 
 // ── Metadata ─────────────────────────────────────────────────────
 export async function generateMetadata({
@@ -70,7 +71,7 @@ export async function generateMetadata({
         .trim(),
     alternates: {
       canonical:
-        post.canonical_url || `https://transiteducation.com.np/blog/${post.slug}`,
+        post.canonical_url || `${SITE_URL}/blog/${post.slug}`,
     },
     robots: post.noindex
       ? { index: false, follow: false }
@@ -78,7 +79,7 @@ export async function generateMetadata({
     openGraph: {
       title: post.meta_title || post.title,
       description: (post as any).og_description || post.meta_description,
-      url: `https://transiteducation.com.np/blog/${post.slug}`,
+      url: `${SITE_URL}/blog/${post.slug}`,
       type: "article",
       images: [
         {
@@ -135,7 +136,7 @@ export default async function BlogPostPage({
 
   const { html: processedBody, toc, wordCount } = prepareBlogHtml(formattedPost.body || "");
   const canonicalUrl =
-    post.canonical_url || `https://transiteducation.com.np/blog/${slug}`;
+    post.canonical_url || `${SITE_URL}/blog/${slug}`;
 
   const blogPosts = (relatedRes.data || []).map((p) => ({
     ...p,
@@ -189,8 +190,8 @@ export default async function BlogPostPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://transiteducation.com.np" },
-      { "@type": "ListItem", position: 2, name: "Blog", item: "https://transiteducation.com.np/blog" },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
       { "@type": "ListItem", position: 3, name: formattedPost.title, item: canonicalUrl },
     ],
   };
