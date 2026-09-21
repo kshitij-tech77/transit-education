@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import Schema from "@/components/shared/Schema";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
@@ -52,6 +53,7 @@ export default function NewZealandPage() {
     <main>
       <Schema type="FAQPage" data={faqData} />
       <DestinationHero 
+        breadcrumb={countryBreadcrumbs("new-zealand", "New Zealand")}
         title="Study in New Zealand"
         subtitle="Study Abroad"
         description="New Zealand offers a British-system education within a small, safe, and welcoming country. All eight of its universities sit in the QS world top 500."

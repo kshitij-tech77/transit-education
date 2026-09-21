@@ -2,7 +2,8 @@ import { GraduationCap, CheckCircle2, ListChecks, FileText } from "lucide-react"
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import SectionLabel from "@/components/shared/SectionLabel";
-import Breadcrumb from "@/components/shared/Breadcrumb";
+import Breadcrumb, { BreadcrumbSchema } from "@/components/shared/Breadcrumb";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { proxiedMediaUrl } from "@/lib/media-url";
@@ -61,6 +62,7 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
 
   return (
     <main>
+      <BreadcrumbSchema items={countryBreadcrumbs(countryId, country.name || countryId)} />
       {faqs.length > 0 && (
         <script
           type="application/ld+json"
@@ -84,11 +86,7 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
           <img src={proxiedMediaUrl(heroImage)} alt={country.hero_title || countryId} className="w-full h-full object-cover" />
         </div>
         <div className="container relative z-10">
-          <Breadcrumb items={[
-            { label: "Home", href: "/" },
-            { label: "Study Abroad", href: "/study-abroad" },
-            { label: country.name || countryId },
-          ]} />
+          <Breadcrumb items={countryBreadcrumbs(countryId, country.name || countryId)} />
           <div className="max-w-3xl">
             <SectionLabel className="text-white border-white/20 bg-white/10">Study Abroad</SectionLabel>
             <h1 className="text-5xl lg:text-7xl font-black mt-8 mb-6 leading-[0.9] tracking-tight">

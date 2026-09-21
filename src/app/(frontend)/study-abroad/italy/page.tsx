@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import Schema from "@/components/shared/Schema";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
@@ -52,6 +53,7 @@ export default function ItalyPage() {
     <main>
       <Schema type="FAQPage" data={faqData} />
       <DestinationHero 
+        breadcrumb={countryBreadcrumbs("italy", "Italy")}
         title="Study in Italy"
         subtitle="Study Abroad"
         description="Italy combines world-class universities with affordable tuition and generous scholarship opportunities, making it an ideal destination for European education."

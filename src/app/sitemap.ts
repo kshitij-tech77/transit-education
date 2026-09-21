@@ -31,6 +31,7 @@ const HAND_AUTHORED_COUNTRY_PAGES = ["italy", "south-korea", "ireland", "new-zea
 const STATIC_PATHS = [
   "",
   "/about",
+  "/study-abroad",
   "/services",
   "/services/admission-counselling",
   "/services/student-visa-service",
@@ -71,9 +72,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // an inaccurate one, so hand-authored pages with no date source omit it.
   const latestPost = latestDate(...posts.map((post) => post.lastModified));
 
+  // The hub lists live countries and their CMS descriptions, so it changes
+  // when a country row does.
+  const latestCountry = latestDate(...(countries ?? []).map((country) => country.updated_at));
+
   const staticEntries: MetadataRoute.Sitemap = STATIC_PATHS.map((path) => ({
     url: `${SITE_URL}${path}`,
     ...(path === "/blog" && latestPost && { lastModified: latestPost }),
+    ...(path === "/study-abroad" && latestCountry && { lastModified: latestCountry }),
   }));
 
   const locationEntries: MetadataRoute.Sitemap = (branches ?? []).map((branch) => ({

@@ -1,8 +1,19 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { LEGACY_SEARCH_REDIRECT } from '@/lib/legacy-redirects'
 
 export async function proxy(request: NextRequest) {
+  // Old WordPress search (/?s=term). Answered before the Supabase session
+  // work below, and without the query string: a config redirect would carry
+  // "?s=term" over to the destination.
+  if (
+    request.nextUrl.pathname === '/' &&
+    request.nextUrl.searchParams.has(LEGACY_SEARCH_REDIRECT.queryKey)
+  ) {
+    return NextResponse.redirect(new URL(LEGACY_SEARCH_REDIRECT.destination, request.url), 308)
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -125,5 +136,14 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/cms/:path*', '/api/cms/:path*', '/portal', '/portal/:path*', '/api/portal/:path*']
+  matcher: [
+    // Old WordPress search. The matcher must be a static literal, so the key
+    // "s" repeats LEGACY_SEARCH_REDIRECT.queryKey.
+    { source: '/', has: [{ type: 'query', key: 's' }] },
+    '/cms/:path*',
+    '/api/cms/:path*',
+    '/portal',
+    '/portal/:path*',
+    '/api/portal/:path*',
+  ]
 }

@@ -2,6 +2,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
+import { countryBreadcrumbs } from "@/lib/study-abroad";
 import Schema from "@/components/shared/Schema";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
@@ -52,6 +53,7 @@ export default function SouthKoreaPage() {
     <main>
       <Schema type="FAQPage" data={faqData} />
       <DestinationHero 
+        breadcrumb={countryBreadcrumbs("south-korea", "South Korea")}
         title="Study in South Korea"
         subtitle="Study Abroad"
         description="South Korea has emerged as one of Asia's fastest-rising study destinations, backed by world-class universities and a strong post-graduation job market in technology."
