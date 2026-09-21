@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     }
     if (error) throw error;
 
-    revalidateBlog();
+    revalidateBlog(newPost?.slug);
     return NextResponse.json(newPost, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/blog error:', err);

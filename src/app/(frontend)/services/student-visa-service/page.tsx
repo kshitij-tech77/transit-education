@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -9,11 +10,11 @@ import { supabase } from "@/lib/supabase";
 export const metadata: Metadata = {
   title: "Student Visa Service Nepal | 98% Success Rate",
   description: "Complete student visa processing for Canada, Australia, UK, USA, and Europe. File preparation, interview coaching, and IRCC guidance by expert counsellors in Nepal.",
-  alternates: { canonical: "https://transiteducation.com.np/services/student-visa-service" },
+  alternates: { canonical: `${SITE_URL}/services/student-visa-service` },
   openGraph: {
     title: "Student Visa Service Nepal | Transit Education",
     description: "98% student visa success rate. Full file preparation, bank guidance, SOP review, and interview prep for all major destinations.",
-    url: "https://transiteducation.com.np/services/student-visa-service",
+    url: `${SITE_URL}/services/student-visa-service`,
     type: "website",
   },
 };

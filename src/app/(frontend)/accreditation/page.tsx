@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { ShieldCheck, Award, Globe2, GraduationCap, CheckCircle2 } from "lucide-react";
@@ -8,7 +9,7 @@ import { ICEF_BADGE, ICEF_BADGE_ALT, ICEF_LOGO } from "@/lib/icef";
 export const metadata: Metadata = {
   title: "ICEF Accredited Study Abroad Agency | Transit Education Nepal",
   description: "Transit Education is an ICEF accredited education agency in Nepal, verified for ethical recruitment and international-standard counselling. View our certifications and memberships.",
-  alternates: { canonical: "https://transiteducation.com.np/accreditation" },
+  alternates: { canonical: `${SITE_URL}/accreditation` },
 };
 
 const CERTIFICATIONS = [

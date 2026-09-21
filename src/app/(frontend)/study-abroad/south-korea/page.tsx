@@ -1,17 +1,19 @@
+import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
-import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
+import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Schema from "@/components/shared/Schema";
+import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Study in South Korea from Nepal | D-2 Visa & GKS Scholarship",
   description: "Complete guide to studying in South Korea from Nepal. D-2 student visa, Alien Registration Card, GKS scholarship, TOPIK requirements, and top Korean universities for Nepali students.",
-  alternates: { canonical: "https://transiteducation.com.np/study-abroad/south-korea" },
+  alternates: { canonical: `${SITE_URL}/study-abroad/south-korea` },
   openGraph: {
     title: "Study in South Korea from Nepal",
     description: "D-2 visa, ARC registration, GKS scholarship, and work rights — full guide for Nepali students.",
-    url: "https://transiteducation.com.np/study-abroad/south-korea",
+    url: `${SITE_URL}/study-abroad/south-korea`,
     type: "website",
   },
 };
@@ -174,15 +176,12 @@ export default function SouthKoreaPage() {
             <SectionLabel>Questions?</SectionLabel>
             <h2 className="text-3xl font-bold text-black mt-4">Frequently Asked Questions</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> Language requirement?</h4>
-              <p className="text-gray-600 text-sm">English-taught programmes are available. Korean programmes require TOPIK Level 3 or 4.</p>
-            </div>
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> GKS Scholarship?</h4>
-              <p className="text-gray-600 text-sm">Covers full tuition, living stipend, airfare, and one year of Korean language training.</p>
-            </div>
+          {/* The visible list and the FAQPage JSON-LD share one data source, so the
+              marked-up questions and answers are exactly what visitors read. */}
+          <div className="max-w-4xl mx-auto">
+            <FAQAccordion
+              items={faqData.mainEntity.map((q) => ({ question: q.name, answer: q.acceptedAnswer.text }))}
+            />
           </div>
         </div>
       </section>

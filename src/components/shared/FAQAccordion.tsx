@@ -28,6 +28,7 @@ export default function FAQAccordion({ items, className, firstOpen = true }: FAQ
         <div key={index} className="border-b border-[#F0ECEC]">
           <button
             onClick={() => toggle(index)}
+            aria-expanded={openIndex === index}
             className="w-full py-6 flex items-center justify-between text-left group"
           >
             <span className={cn(

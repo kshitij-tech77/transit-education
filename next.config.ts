@@ -25,7 +25,7 @@ const securityHeaders = [
       "object-src 'none'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://transiteducation.com.np https://images.unsplash.com https://flagcdn.com https://i.pravatar.cc https://res.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com",
+      "img-src 'self' data: blob: https://transiteducation.com.np https://www.transiteducation.com.np https://images.unsplash.com https://flagcdn.com https://i.pravatar.cc https://res.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com",
       `connect-src 'self' https://vlrhwdcqzpfqpbqeaqyr.supabase.co wss://vlrhwdcqzpfqpbqeaqyr.supabase.co https://res.cloudinary.com https://maps.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net${__impeccableLiveSrc}`,
       "frame-src https://www.google.com https://maps.google.com",
       "frame-ancestors 'none'",
@@ -89,6 +89,12 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year - images rarely change; new uploads get new year/month/filename paths so long-lived caching doesn't risk staleness
     remotePatterns: [
+      // www is the canonical host (SITE_URL); the apex stays allowed because
+      // existing content and DB rows still reference apex image URLs.
+      {
+        protocol: 'https',
+        hostname: 'www.transiteducation.com.np',
+      },
       {
         protocol: 'https',
         hostname: 'transiteducation.com.np',

@@ -1,18 +1,25 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
+import { JsonLd } from "@/components/shared/Schema";
 import BlogFeed from "@/components/blog/BlogFeed";
 import { Metadata } from "next";
+import { cleanDescription } from "@/lib/blog-posts";
+import { RSS_URL } from "@/lib/blog-seo";
 
 export const metadata: Metadata = {
-  title: "Study Abroad Blog | Visa Tips, University Guides — Transit Education",
+  title: "Study Abroad Blog | Visa Tips, University Guides | Transit Education",
   description: "Expert articles on student visas, IELTS preparation, university admissions, and life abroad. Written by Transit Education's certified counsellors in Nepal.",
-  alternates: { canonical: "https://transiteducation.com.np/blog" },
+  alternates: {
+    canonical: `${SITE_URL}/blog`,
+    types: { "application/rss+xml": [{ url: RSS_URL, title: "Transit Education Blog" }] },
+  },
   openGraph: {
     title: "Study Abroad Blog | Transit Education Nepal",
     description: "Visa tips, scholarship news, IELTS guides, and destination insights from Nepal's most trusted study abroad consultancy.",
-    url: "https://transiteducation.com.np/blog",
+    url: `${SITE_URL}/blog`,
     type: "website",
   },
 };
@@ -24,7 +31,10 @@ export const dynamic = "force-dynamic";
 async function getBlogPosts(category?: string) {
   const postsQuery = supabase
     .from('blog_posts')
-    .select('*, authors (name)')
+    // Only what the feed cards render. The article body is deliberately not
+    // read: the feed is a client component, so anything passed to it is
+    // serialised into the RSC payload of every /blog request.
+    .select('id, slug, title, category, featured_image, publish_date, meta_description, authors (name)')
     .eq('status', 'published')
     .order('publish_date', { ascending: false });
 
@@ -52,6 +62,13 @@ async function getBlogPageFaqs() {
   return { data: res.data };
 }
 
+// Supabase types a to-one join as an object or a one-element array depending on
+// how the relationship is declared; accept both.
+function relationName(rel: { name: string | null } | { name: string | null }[] | null | undefined): string | null {
+  const one = Array.isArray(rel) ? rel[0] : rel;
+  return one?.name ?? null;
+}
+
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category: activeCategory } = await searchParams;
 
@@ -62,22 +79,25 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   ]);
 
   const blogPosts = posts?.map(p => ({
-    ...p,
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    category: p.category,
     publishDate: p.publish_date,
     featuredImage: p.featured_image,
-    authorName: (p as any).authors?.name || "Transit Education",
-    excerpt: p.body?.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...'
+    authorName: relationName(p.authors) || "Transit Education",
+    excerpt: cleanDescription(p.meta_description),
   })) || [];
 
   /* Fix #19 — filter UNCATEGORIZED from public-facing category list */
-  const categoryCounts = categoriesRaw?.reduce((acc: any, curr) => {
-    const cat = curr.category?.trim();
-    if (!cat || cat.toLowerCase() === "uncategorized") return acc;
-    acc[cat] = (acc[cat] || 0) + 1;
-    return acc;
-  }, {}) || {};
+  const categoryCounts: Record<string, number> = {};
+  for (const row of categoriesRaw ?? []) {
+    const cat = row.category?.trim();
+    if (!cat || cat.toLowerCase() === "uncategorized") continue;
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  }
 
-  const categories = Object.entries(categoryCounts).map(([name, count]) => ({ name, count: count as number }));
+  const categories = Object.entries(categoryCounts).map(([name, count]) => ({ name, count }));
 
   const faqSchema = faqs && faqs.length > 0 ? {
     "@context": "https://schema.org",
@@ -90,10 +110,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   } : null;
 
   return (
-    <main className="pt-20">
-      {faqSchema && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      )}
+    <div className="pt-20">
+      {faqSchema && <JsonLd data={faqSchema} />}
       {/* Hero Section */}
       <section className="bg-black py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -139,6 +157,6 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           </div>
         </section>
       )}
-    </main>
+    </div>
   );
 }

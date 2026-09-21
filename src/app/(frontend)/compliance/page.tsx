@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { Metadata } from "next";
 import {
   ShieldCheck,
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   title: "Student Compliance Guide",
   description:
     "Country-by-country compliance guidance for Nepali students studying abroad — visa rules, work rights, enrolment requirements, and what to do before and after you arrive.",
-  alternates: { canonical: "https://transiteducation.com.np/compliance" },
+  alternates: { canonical: `${SITE_URL}/compliance` },
 };
 
 const HERO_FEATURES = [
