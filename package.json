@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check-usage": "tsx scripts/check-supabase-usage.ts",
+    "seo-check": "tsx scripts/seo-check.ts",
     "migrate:cloudinary": "npx tsx scripts/migrate-to-cloudinary.ts"
   },
   "dependencies": {
@@ -37,7 +38,6 @@
     "framer-motion": "^12.38.0",
     "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
-    "isomorphic-dompurify": "^2.36.0",
     "lint-staged": "^16.4.0",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",
@@ -45,6 +45,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.75.0",
+    "sanitize-html": "^2.17.7",
     "shadcn": "^4.6.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
@@ -56,6 +57,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/sanitize-html": "^2.16.1",
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "eslint": "^9",

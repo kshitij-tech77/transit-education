@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Link from "next/link";
@@ -6,7 +7,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 export const metadata: Metadata = {
   title: "Refund Policy",
   description: "Transit Education's refund and cancellation policy for study abroad consultancy, visa assistance, and IELTS/PTE preparation services in Nepal.",
-  alternates: { canonical: "https://transiteducation.com.np/refund" },
+  alternates: { canonical: `${SITE_URL}/refund` },
 };
 
 const EFFECTIVE_DATE = "1 January 2025";

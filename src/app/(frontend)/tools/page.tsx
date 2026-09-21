@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import Link from "next/link";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { Calculator, GraduationCap, DollarSign, ArrowRight } from "lucide-react";
@@ -6,11 +7,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Free Study Abroad Tools | IELTS Calculator, GPA Converter, Cost Estimator",
   description: "Free tools for Nepali students planning to study abroad. Calculate IELTS band scores, convert Nepal NEB/SLC percentage to GPA, and estimate cost of studying in Canada, Australia, UK, and Germany.",
-  alternates: { canonical: "https://transiteducation.com.np/tools" },
+  alternates: { canonical: `${SITE_URL}/tools` },
   openGraph: {
     title: "Free Study Abroad Tools | Transit Education Nepal",
     description: "IELTS Band Calculator, GPA Converter (NEB to GPA), and Study Abroad Cost Calculator — free tools for Nepali students.",
-    url: "https://transiteducation.com.np/tools",
+    url: `${SITE_URL}/tools`,
     type: "website",
   },
 };

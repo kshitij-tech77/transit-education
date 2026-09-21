@@ -1,17 +1,19 @@
+import { SITE_URL } from "@/lib/site-url";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
-import { CheckCircle2, ListChecks, GraduationCap, FileText, HelpCircle } from "lucide-react";
+import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Schema from "@/components/shared/Schema";
+import FAQAccordion from "@/components/shared/FAQAccordion";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Study in New Zealand from Nepal | Student Visa & Graduate Visa",
   description: "Complete guide to studying in New Zealand from Nepal. NZ student visa, 20-hour work rights, post-study work visa, and top New Zealand universities for Nepali students.",
-  alternates: { canonical: "https://transiteducation.com.np/study-abroad/new-zealand" },
+  alternates: { canonical: `${SITE_URL}/study-abroad/new-zealand` },
   openGraph: {
     title: "Study in New Zealand from Nepal",
     description: "NZ student visa, 20hr work rights, and post-study graduate visa — full guide for Nepali students.",
-    url: "https://transiteducation.com.np/study-abroad/new-zealand",
+    url: `${SITE_URL}/study-abroad/new-zealand`,
     type: "website",
   },
 };
@@ -174,15 +176,12 @@ export default function NewZealandPage() {
             <SectionLabel>Questions?</SectionLabel>
             <h2 className="text-3xl font-bold text-black mt-4">Frequently Asked Questions</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> Working hours?</h4>
-              <p className="text-gray-600 text-sm">Most students can work 20 hours/week during term and full-time during breaks.</p>
-            </div>
-            <div className="bg-off-white p-8 rounded-3xl">
-              <h4 className="font-bold text-black mb-4 flex gap-2"><HelpCircle className="w-5 h-5 text-brand shrink-0" /> Post-study work?</h4>
-              <p className="text-gray-600 text-sm">A Level 7 or higher degree allows up to 3 years of open work rights.</p>
-            </div>
+          {/* The visible list and the FAQPage JSON-LD share one data source, so the
+              marked-up questions and answers are exactly what visitors read. */}
+          <div className="max-w-4xl mx-auto">
+            <FAQAccordion
+              items={faqData.mainEntity.map((q) => ({ question: q.name, answer: q.acceptedAnswer.text }))}
+            />
           </div>
         </div>
       </section>

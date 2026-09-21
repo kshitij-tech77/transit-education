@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -10,11 +11,11 @@ import { supabase } from "@/lib/supabase";
 export const metadata: Metadata = {
   title: "SOP Writing Support Nepal | Statement of Purpose Help",
   description: "Expert SOP writing guidance for Canadian, Australian, UK, and US student visas. Our counsellors help Nepali students craft compelling statements of purpose that get approved.",
-  alternates: { canonical: "https://transiteducation.com.np/services/sop-writing" },
+  alternates: { canonical: `${SITE_URL}/services/sop-writing` },
   openGraph: {
     title: "SOP Writing Support | Transit Education Nepal",
     description: "A strong SOP is the difference between approval and rejection. Let our experts help you tell your story compellingly.",
-    url: "https://transiteducation.com.np/services/sop-writing",
+    url: `${SITE_URL}/services/sop-writing`,
     type: "website",
   },
 };

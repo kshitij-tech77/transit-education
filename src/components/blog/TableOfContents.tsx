@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { List } from "lucide-react";
 
-export interface TOCItem {
-  id: string;
-  text: string;
-  level: number;
-}
+import type { TOCItem } from "@/lib/blog-html";
+
+export type { TOCItem };
 
 export default function TableOfContents({ items }: { items: TOCItem[] }) {
   const [active, setActive] = useState<string>("");

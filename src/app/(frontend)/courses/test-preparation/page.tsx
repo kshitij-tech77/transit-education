@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { BookOpen, Headphones, Languages, PenTool, CheckCircle2, Clock, Users2 } from "lucide-react";
 import Image from "next/image";
@@ -6,11 +7,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "IELTS & PTE Test Prep Courses Nepal | Transit Education",
   description: "Intensive IELTS and PTE Academic preparation courses in Nepal. Expert trainers, full mock tests, band-score guarantees. Enrol at Transit Education today.",
-  alternates: { canonical: "https://transiteducation.com.np/courses/test-preparation" },
+  alternates: { canonical: `${SITE_URL}/courses/test-preparation` },
   openGraph: {
     title: "IELTS & PTE Test Prep Courses | Transit Education Nepal",
     description: "Master IELTS and PTE with structured modules, weekly mock tests, and expert feedback from Transit Education's certified trainers.",
-    url: "https://transiteducation.com.np/courses/test-preparation",
+    url: `${SITE_URL}/courses/test-preparation`,
     type: "website",
   },
 };

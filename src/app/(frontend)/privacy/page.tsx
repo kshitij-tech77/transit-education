@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Link from "next/link";
@@ -5,7 +6,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Read Transit Education's privacy policy. Learn how we collect, use, and protect your personal information when you use our study abroad consultancy services.",
-  alternates: { canonical: "https://transiteducation.com.np/privacy" },
+  alternates: { canonical: `${SITE_URL}/privacy` },
 };
 
 const EFFECTIVE_DATE = "1 January 2025";

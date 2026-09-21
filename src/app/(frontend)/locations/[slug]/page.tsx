@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { MapPin, Phone, Mail, Clock, ArrowRight, ExternalLink, MessageSquare, Check, Plus } from "lucide-react";
 import Image from "next/image";
@@ -121,11 +122,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    alternates: { canonical: `https://transiteducation.com.np/locations/${slug}` },
+    alternates: { canonical: `${SITE_URL}/locations/${slug}` },
     openGraph: {
       title,
       description,
-      url: `https://transiteducation.com.np/locations/${slug}`,
+      url: `${SITE_URL}/locations/${slug}`,
       type: "website",
       images: [{ url: location.heroImage, width: 1200, height: 630, alt: location.name }],
     },
@@ -151,7 +152,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
     "@type": "LocalBusiness",
     name: `Transit Education — ${location.name}`,
     image: location.heroImage,
-    url: `https://transiteducation.com.np/locations/${slug}`,
+    url: `${SITE_URL}/locations/${slug}`,
     telephone: location.phone,
     email: location.email,
     address: {
@@ -161,16 +162,16 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
     },
     openingHours: "Su-Fr 09:00-18:00",
     priceRange: "Free consultation",
-    sameAs: ["https://transiteducation.com.np"],
+    sameAs: [SITE_URL],
   };
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://transiteducation.com.np" },
-      { "@type": "ListItem", position: 2, name: "Locations", item: "https://transiteducation.com.np/locations" },
-      { "@type": "ListItem", position: 3, name: location.name, item: `https://transiteducation.com.np/locations/${slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Locations", item: `${SITE_URL}/locations` },
+      { "@type": "ListItem", position: 3, name: location.name, item: `${SITE_URL}/locations/${slug}` },
     ],
   };
 

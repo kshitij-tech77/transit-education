@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site-url";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -9,11 +10,11 @@ import { supabase } from "@/lib/supabase";
 export const metadata: Metadata = {
   title: "Admission Counselling | University Application Help",
   description: "Expert university admission counselling for Nepali students. SOP writing, LOR guidance, and applications to 50+ partner institutions in Canada, Australia, UK, USA & more.",
-  alternates: { canonical: "https://transiteducation.com.np/services/admission-counselling" },
+  alternates: { canonical: `${SITE_URL}/services/admission-counselling` },
   openGraph: {
     title: "Admission Counselling | Transit Education Nepal",
     description: "We shortlist the right university for your profile, write compelling SOPs, and manage your entire application — free consultation available.",
-    url: "https://transiteducation.com.np/services/admission-counselling",
+    url: `${SITE_URL}/services/admission-counselling`,
     type: "website",
   },
 };
