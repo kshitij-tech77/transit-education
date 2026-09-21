@@ -115,7 +115,7 @@ export async function PUT(
     }
     if (error) throw error;
 
-    revalidateBlog();
+    revalidateBlog(updated?.slug);
     return NextResponse.json(updated);
   } catch (err) {
     console.error('PUT /api/cms/blog/[id] error:', err);
