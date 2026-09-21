@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { ArrowRight } from "lucide-react";
 import Breadcrumb, { breadcrumbListNode, type BreadcrumbItem } from "@/components/shared/Breadcrumb";
 import { JsonLd } from "@/components/shared/Schema";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { INDEXABLE_ROBOTS, LOGO_URL, ORG_ID, SITE_NAME } from "@/lib/blog-seo";
 import { latestDate } from "@/lib/blog-posts";
@@ -277,6 +278,8 @@ export default async function StudyAbroadHubPage() {
           </ul>
         </div>
       </section>
+
+      <RelatedGuides heading="Guides" />
     </div>
   );
 }

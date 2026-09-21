@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Home, Mail, Search, ArrowRight, BookOpen, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+
+// `absolute` skips the layout's "%s | Transit Education" template so the brand
+// is not doubled. The noindex robots tag is added by Next.js for every 404.
+export const metadata: Metadata = {
+  title: { absolute: "Page not found | Transit Education" },
+};
 
 export default async function NotFound() {
   const [{ data: settings }, { data: countries }, { data: branches }] = await Promise.allSettled([

@@ -110,3 +110,22 @@ export function countryBreadcrumbs(
     ...(subpage ? [{ label: subpage.label, href: `${STUDY_ABROAD_PATH}/${id}/${subpage.path}` }] : []),
   ];
 }
+
+export interface Guide {
+  /** Blog post slug, served at /blog/{slug}. */
+  slug: string;
+  /** Anchor text: the post's own headline. */
+  title: string;
+}
+
+/** Blog guides linked from country pages, visa and cost pages, the visa service page and the hub. */
+export const GUIDES: Guide[] = [
+  {
+    slug: "study-abroad-proof-of-funds-vs-real-cost-nepal",
+    title: "How Much Money Do You Need to Study Abroad from Nepal? Proof of Funds vs Real Cost (2026)",
+  },
+  {
+    slug: "study-abroad-intake-timeline-nepal",
+    title: "Which Study Abroad Intake Should You Choose? A Backward Timeline for Nepali Students",
+  },
+];

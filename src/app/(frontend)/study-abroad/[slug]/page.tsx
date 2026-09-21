@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/site-url";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import { notFound } from "next/navigation";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -281,6 +282,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
+      <RelatedGuides />
     </main>
   );
 }

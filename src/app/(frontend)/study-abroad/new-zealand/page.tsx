@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/site-url";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import { DestinationHero } from "@/components/destinations/DestinationContent";
 import { CheckCircle2, ListChecks, GraduationCap, FileText } from "lucide-react";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -187,6 +188,7 @@ export default function NewZealandPage() {
           </div>
         </div>
       </section>
+      <RelatedGuides />
     </main>
   );
 }

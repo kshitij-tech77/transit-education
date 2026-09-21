@@ -23,6 +23,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { config as loadEnv } from "dotenv";
 import { SITE_URL } from "../src/lib/site-url";
+import { GUIDES } from "../src/lib/study-abroad";
 
 loadEnv({ path: ".env.local", quiet: true });
 
@@ -189,6 +190,16 @@ function mainLinks(html: string): string[] {
   return [...new Set([...main.matchAll(/href="(\/[^"#?]*)"/g)].map((m) => m[1]))];
 }
 
+/** Every guide in GUIDES is linked from the server HTML as a plain <a> with its own headline as text. */
+function checkGuideLinks(path: string, html: string) {
+  const visible = stripScripts(html);
+  const missing = GUIDES.filter(
+    (guide) => !new RegExp(`<a[^>]*href="/blog/${guide.slug}"[^>]*>\\s*${guide.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*</a>`).test(visible)
+  );
+  check(`${path} links every guide with descriptive anchor text`, missing.length === 0,
+    missing.map((g) => g.slug).join(", "));
+}
+
 /** Breadcrumb JSON-LD on a country page or sub-page: Home > Study Abroad > Country (> Sub-page). */
 function checkCountryTrail(path: string, html: string) {
   const crumb = jsonLdNodes(html).nodes.find((n) => n["@type"] === "BreadcrumbList");
@@ -288,6 +299,7 @@ async function checkHub(sitemap: Map<string, string | null>) {
     check(`links to ${required}`, links.includes(required));
   }
   check("does not link to the out-of-date cost calculator", !links.includes("/tools/cost-calculator"));
+  checkGuideLinks(path, html);
 
   check("listed in sitemap.xml", sitemap.has(url));
   check("sitemap entry has lastmod", Boolean(sitemap.get(url)));
@@ -297,8 +309,15 @@ async function checkHub(sitemap: Map<string, string | null>) {
   const trailPaths = links.filter((l) => /^\/study-abroad\/[^/]+(\/[^/]+)?$/.test(l));
   for (const trailPath of trailPaths) {
     const page = await get(`${BASE_URL}${trailPath}`);
-    if (page.status === 200) checkCountryTrail(trailPath, page.text);
+    if (page.status === 200) {
+      checkCountryTrail(trailPath, page.text);
+      checkGuideLinks(trailPath, page.text);
+    }
   }
+
+  const visaService = await get(`${BASE_URL}/services/student-visa-service`);
+  if (visaService.status === 200) checkGuideLinks("/services/student-visa-service", visaService.text);
+  else check("/services/student-visa-service status 200", false, `got ${visaService.status}`);
 }
 
 async function checkSitemapUrls(sitemap: Map<string, string | null>) {
@@ -376,6 +395,9 @@ async function main() {
   const missingRobots = metaTags(missing.text, "robots");
   check("exactly one robots meta, and it is noindex", missingRobots.length === 1 && /noindex/i.test(missingRobots[0]),
     missingRobots.join(" "));
+  check('title is "Page not found | Transit Education"',
+    /<title>Page not found \| Transit Education<\/title>/.test(missing.text),
+    /<title>([^<]*)<\/title>/.exec(missing.text)?.[1] ?? "no title");
 
   console.log("\nhost redirect");
   if (IS_LOCAL) {
