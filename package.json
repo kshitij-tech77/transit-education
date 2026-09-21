@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check-usage": "tsx scripts/check-supabase-usage.ts",
+    "check-legacy-redirects": "tsx scripts/check-legacy-redirects.ts",
     "migrate:cloudinary": "npx tsx scripts/migrate-to-cloudinary.ts"
   },
   "dependencies": {
