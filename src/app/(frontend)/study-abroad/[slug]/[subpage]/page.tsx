@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/site-url";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
@@ -586,6 +587,7 @@ export default async function CountrySubPage({
           </div>
         </section>
       )}
+      <RelatedGuides />
     </main>
   );
 }

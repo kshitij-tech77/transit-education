@@ -1,4 +1,5 @@
 import { GraduationCap, CheckCircle2, ListChecks, FileText } from "lucide-react";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import { supabase } from "@/lib/supabase";
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import SectionLabel from "@/components/shared/SectionLabel";
@@ -248,6 +249,7 @@ export default async function CountryDestinationPage({ countryId, heroImage, fal
           </div>
         </section>
       )}
+      <RelatedGuides />
     </main>
   );
 }

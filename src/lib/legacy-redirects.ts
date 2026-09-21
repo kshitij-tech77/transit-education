@@ -47,11 +47,14 @@ export const LEGACY_REDIRECTS: LegacyRedirect[] = [
   { source: "/toefl", destination: "/courses/test-preparation", status: "redirect", confidence: "medium", note: "No dedicated TOEFL page exists." },
   { source: "/ielts", destination: "/courses/test-preparation", status: "redirect", confidence: "medium", note: "No dedicated IELTS course page exists." },
   { source: "/test-preparation-2", destination: "/courses/test-preparation", status: "redirect", confidence: "medium", note: "/services/test-preparation overlaps; see PR notes." },
+  { source: "/test-preparation", destination: "/courses/test-preparation", status: "redirect", confidence: "medium", note: "Old WordPress slug without the -2 suffix; /services/test-preparation overlaps." },
 
   // ── Destinations ─────────────────────────────────────────────────────
   { source: "/new-zealand", destination: "/study-abroad/new-zealand", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad." },
   { source: "/italy", destination: "/study-abroad/italy", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad." },
   { source: "/australia", destination: "/study-abroad/australia", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad." },
+  { source: "/uk", destination: "/study-abroad/uk", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad." },
+  { source: "/ireland", destination: "/study-abroad/ireland", status: "redirect", confidence: "high", note: "Country page moved under /study-abroad. The page is hand-written, so it needs no countries row." },
   { source: "/south-korea-2", destination: "/study-abroad/south-korea", status: "redirect", confidence: "high", note: "WordPress duplicate slug (-2) of the country page." },
   { source: "/netherlands", status: "gone", confidence: "n/a", note: "No Netherlands page exists. 410 rather than a redirect to an unrelated page." },
   // "/study-abroad" is the live hub page, so it is not a source. Its slash form

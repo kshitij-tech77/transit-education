@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/site-url";
+import RelatedGuides from "@/components/shared/RelatedGuides";
 import SectionLabel from "@/components/shared/SectionLabel";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import FAQAccordion from "@/components/shared/FAQAccordion";
@@ -212,6 +213,7 @@ export default async function StudentVisaServicePage() {
           </div>
         </section>
       )}
+      <RelatedGuides />
     </main>
   );
 }
