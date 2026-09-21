@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { ShieldCheck, Award, Globe2, GraduationCap, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { ICEF_BADGE, ICEF_BADGE_ALT, ICEF_LOGO } from "@/lib/icef";
 
 export const metadata: Metadata = {
   title: "ICEF Accredited Study Abroad Agency | Transit Education Nepal",
@@ -74,8 +76,23 @@ export default function AccreditationPage() {
         <div className="container">
           <div className="bg-white rounded-3xl border border-brand/20 shadow-sm overflow-hidden">
             <div className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
-              <div className="w-28 h-28 md:w-40 md:h-40 rounded-3xl bg-brand flex items-center justify-center shrink-0 shadow-xl">
-                <ShieldCheck className="w-16 h-16 md:w-24 md:h-24 text-white" />
+              <div className="flex flex-col items-center gap-5 shrink-0">
+                <Image
+                  src={ICEF_BADGE.src}
+                  alt={ICEF_BADGE_ALT}
+                  width={ICEF_BADGE.width}
+                  height={ICEF_BADGE.height}
+                  sizes="(min-width: 768px) 220px, 180px"
+                  className="w-44 md:w-56 h-auto drop-shadow-xl"
+                />
+                <Image
+                  src={ICEF_LOGO.src}
+                  alt="ICEF – Connect. Recruit. Grow."
+                  width={ICEF_LOGO.width}
+                  height={ICEF_LOGO.height}
+                  sizes="160px"
+                  className="w-32 md:w-40 h-auto"
+                />
               </div>
               <div className="flex-1 text-center md:text-left">
                 <span className="inline-block bg-brand/10 text-brand text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-4">ICEF Verified Agency</span>

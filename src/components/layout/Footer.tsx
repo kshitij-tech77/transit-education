@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
 import NewsletterForm from "./NewsletterForm";
+import { ICEF_BADGE, ICEF_BADGE_ALT, ICEF_LOGO } from "@/lib/icef";
 
 export default function Footer({ settings }: { settings?: any }) {
   const socialLinks = {
@@ -39,6 +40,29 @@ export default function Footer({ settings }: { settings?: any }) {
               <p>Itahari | Damak | Damauli</p>
             </div>
           </div>
+          {/* ICEF marks are navy-on-light, so they sit on a white card and are never inverted */}
+          <Link
+            href="/accreditation"
+            aria-label="View our ICEF accreditation"
+            className="mt-8 flex items-center gap-4 bg-white rounded-2xl p-4 w-fit hover:shadow-lg hover:shadow-white/10 transition-shadow"
+          >
+            <Image
+              src={ICEF_BADGE.src}
+              alt={ICEF_BADGE_ALT}
+              width={ICEF_BADGE.width}
+              height={ICEF_BADGE.height}
+              sizes="80px"
+              className="w-20 h-auto"
+            />
+            <Image
+              src={ICEF_LOGO.src}
+              alt="ICEF – Connect. Recruit. Grow."
+              width={ICEF_LOGO.width}
+              height={ICEF_LOGO.height}
+              sizes="112px"
+              className="w-28 h-auto"
+            />
+          </Link>
         </div>
 
         {/* Column 2 */}
