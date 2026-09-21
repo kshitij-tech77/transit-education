@@ -39,6 +39,22 @@ function slugifyHeading(text: string): string {
 }
 
 /**
+ * Wrap every table in a scroll container. A table wider than the article
+ * column (any three-column table on a phone) would otherwise be clipped at the
+ * right edge. The inner div is the scroller: focusable so keyboard users can
+ * scroll it, and named so a screen reader announces what it is. The outer div
+ * only carries the border and the edge fades (see `.table-scroll` in
+ * globals.css). Runs after sanitising, so the wrapper is never author input.
+ */
+function wrapTables(html: string): string {
+  return html.replace(
+    /<table\b[\s\S]*?<\/table>/gi,
+    (table) =>
+      `<div class="table-scroll"><div class="table-scroll-x" role="region" aria-label="Scrollable table" tabindex="0">${table}</div></div>`
+  );
+}
+
+/**
  * Sanitise the body, guarantee a stable unique id on every h2/h3 (keeping an
  * id the author already set) and derive the table of contents from them.
  * Runs on the server so all of it lands in the initial HTML.
@@ -48,7 +64,7 @@ export function prepareBlogHtml(rawHtml: string): PreparedBlogHtml {
   const toc: TOCItem[] = [];
   const used = new Set<string>();
 
-  const html = clean.replace(
+  const html = wrapTables(clean).replace(
     /<(h[23])((?:\s[^>]*)?)>([\s\S]*?)<\/\1>/gi,
     (_match, tag: string, attrs: string, inner: string) => {
       const text = htmlToText(inner);

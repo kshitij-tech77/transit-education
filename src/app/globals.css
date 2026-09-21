@@ -346,14 +346,58 @@
   display: block;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
+/* Tables sit in a scroll container (see wrapTables in lib/blog-html.ts) so a
+   wide table scrolls sideways instead of being clipped. The fades over each
+   edge are exactly one cell padding wide: at either end of the scroll they
+   cover only empty padding and cannot be seen, and they appear only on a side
+   where more content continues. */
+.blog-content .table-scroll {
+  position: relative;
+  margin: 2rem 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.blog-content .table-scroll::before,
+.blog-content .table-scroll::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.1rem;
+  z-index: 1;
+  pointer-events: none;
+}
+.blog-content .table-scroll::before {
+  left: 0;
+  background: linear-gradient(to right, #fff, rgb(255 255 255 / 0));
+}
+.blog-content .table-scroll::after {
+  right: 0;
+  background: linear-gradient(to left, #fff, rgb(255 255 255 / 0));
+}
+.blog-content .table-scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.blog-content .table-scroll-x:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
 .blog-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  border: 1px solid var(--gray-200);
+  margin: 0;
   font-size: 0.9375rem;
+}
+/* Narrow screens: keep columns readable and let the table scroll instead of
+   squeezing each cell to a word or two per line. */
+@media (max-width: 640px) {
+  .blog-content th,
+  .blog-content td {
+    min-width: 9rem;
+  }
 }
 .blog-content th {
   background: var(--off-white);
