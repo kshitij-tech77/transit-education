@@ -9,6 +9,7 @@
     "lint": "eslint",
     "check-usage": "tsx scripts/check-supabase-usage.ts",
     "seo-check": "tsx scripts/seo-check.ts",
+    "check-legacy-redirects": "tsx scripts/check-legacy-redirects.ts",
     "migrate:cloudinary": "npx tsx scripts/migrate-to-cloudinary.ts"
   },
   "dependencies": {
