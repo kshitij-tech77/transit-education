@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import SectionLabel from "@/components/shared/SectionLabel";
 import { proxiedMediaUrl } from "@/lib/media-url";
 import { Calendar, User } from "lucide-react";
+import type { HomeBlogCard } from "@/lib/home-blog";
 
 /* Fix #12 — topic-relevant fallback image when no thumbnail is set */
 const FALLBACK_IMAGE = "https://res.cloudinary.com/xgpct4gs/image/upload/media/2021/03/micheile-henderson-ZVprbBmT8QA-unsplash-scaled.webp";
@@ -17,7 +18,7 @@ function sanitizeCategory(cat: string | null | undefined): string {
   return trimmed;
 }
 
-export default function LatestBlog({ posts }: { posts: any[] }) {
+export default function LatestBlog({ posts }: { posts: HomeBlogCard[] }) {
   const postsData = posts || [];
   return (
     <section className="py-20 bg-white">
@@ -53,7 +54,7 @@ export default function LatestBlog({ posts }: { posts: any[] }) {
 
             return (
               <motion.div
-                key={i}
+                key={post.slug}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -76,11 +77,11 @@ export default function LatestBlog({ posts }: { posts: any[] }) {
                   </h3>
                 </Link>
                 <p className="text-gray-600 text-sm mb-6 line-clamp-3 flex-1">
-                  {post.body?.replace(/<[^>]*>?/gm, '').replace(/#{1,6}\s+/g, '').replace(/[*_`~]/g, '').slice(0, 120)}...
+                  {post.excerpt}...
                 </p>
                 <div className="flex items-center gap-4 text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100">
-                  <span className="flex items-center gap-1.5"><User size={14} /> {post.authorName || post.author_name || 'Transit Education'}</span>
-                  <span className="flex items-center gap-1.5"><Calendar size={14} /> {post.publishDate || post.publish_date ? new Date(post.publishDate || post.publish_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
+                  <span className="flex items-center gap-1.5"><User size={14} /> {post.authorName || 'Transit Education'}</span>
+                  <span className="flex items-center gap-1.5"><Calendar size={14} /> {post.publishDate ? new Date(post.publishDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
                 </div>
               </motion.div>
             );
