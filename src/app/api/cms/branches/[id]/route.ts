@@ -1,3 +1,4 @@
+import { revalidatePublicContent } from '@/lib/revalidate-public-content';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
@@ -28,6 +29,7 @@ export async function PUT(
       .single();
 
     if (error) throw error;
+    revalidatePublicContent('branches');
     return NextResponse.json(updated);
   } catch (error) {
     console.error('PUT /api/cms/branches/[id] error:', error);
@@ -51,6 +53,7 @@ export async function DELETE(
       .eq('id', id);
 
     if (error) throw error;
+    revalidatePublicContent('branches');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('DELETE /api/cms/branches/[id] error:', error);

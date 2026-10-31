@@ -1,3 +1,4 @@
+import { revalidatePublicContent } from '@/lib/revalidate-public-content';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
@@ -60,6 +61,7 @@ export async function PUT(req: NextRequest) {
       .single();
 
     if (error) throw error;
+    revalidatePublicContent('site-settings');
     return NextResponse.json(updated);
   } catch (error) {
     console.error('PUT /api/cms/settings error:', error);

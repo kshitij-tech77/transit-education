@@ -1,3 +1,4 @@
+import { revalidatePublicContent } from '@/lib/revalidate-public-content';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) throw error;
+    revalidatePublicContent('events');
     return NextResponse.json(data, { status: 201 });
   } catch (err) {
     console.error('POST /api/cms/events error:', err);

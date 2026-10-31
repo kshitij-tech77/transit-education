@@ -15,10 +15,12 @@ import { toBranchSlug } from "@/lib/branch-slug";
 // `dynamic = 'force-dynamic'` so they don't hit Supabase on every request.
 const getCachedCountries = unstable_cache(
   async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('countries')
       .select('name, id')
-      .eq('status', 'LIVE');
+      .eq('status', 'LIVE')
+      .order('id', { ascending: true });
+    if (error) throw error;
     return data;
   },
   ['frontend-layout-countries'],
@@ -27,9 +29,11 @@ const getCachedCountries = unstable_cache(
 
 const getCachedBranches = unstable_cache(
   async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('branches')
-      .select('id, name, address, phone');
+      .select('id, name, address, phone')
+      .order('id', { ascending: true });
+    if (error) throw error;
     return data;
   },
   ['frontend-layout-branches'],
@@ -38,10 +42,11 @@ const getCachedBranches = unstable_cache(
 
 const getCachedSiteSettings = unstable_cache(
   async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('site_settings')
       .select('*')
       .single();
+    if (error) throw error;
     return data;
   },
   ['frontend-layout-site-settings'],
