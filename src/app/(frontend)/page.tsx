@@ -22,11 +22,12 @@ import FAQAccordion from "@/components/shared/FAQAccordion";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 import { unstable_cache } from "next/cache";
+import { toHomeBlogCard } from "@/lib/home-blog";
 
 export const revalidate = 300;
 
-// Homepage data changes rarely enough that a 5-minute cache is safe. Each
-// query is wrapped independently so the page keeps the same shape below.
+// Keep the five-minute fallback for automatic event expiry and out-of-band
+// edits. CMS mutations also expire the matching tags on demand.
 const getCachedFaqs = unstable_cache(
   async () => {
     const res = await supabase
@@ -35,7 +36,9 @@ const getCachedFaqs = unstable_cache(
       .eq('is_featured', true)
       .eq('status', 'published')
       .order('display_order', { ascending: true })
+      .order('id', { ascending: true })
       .limit(6);
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-faqs'],
@@ -52,7 +55,9 @@ const getCachedTeamMembers = unstable_cache(
       `)
       .eq('is_visible', true)
       .order('display_order', { ascending: true })
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .order('id', { ascending: true });
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-team-members'],
@@ -66,10 +71,12 @@ const getCachedHomeBlogPosts = unstable_cache(
       .select('*')
       .eq('status', 'published')
       .order('publish_date', { ascending: false })
+      .order('id', { ascending: true })
       .limit(3);
-    return { data: res.data };
+    if (res.error) throw res.error;
+    return { data: res.data?.map(toHomeBlogCard) ?? [] };
   },
-  ['homepage-blog-posts'],
+  ['homepage-blog-cards-v2'],
   { revalidate: 300, tags: ['blog-posts'] }
 );
 
@@ -79,7 +86,9 @@ const getCachedTestimonials = unstable_cache(
       .from('testimonials')
       .select('*')
       .order('created_at', { ascending: false })
+      .order('id', { ascending: true })
       .limit(12);
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-testimonials'],
@@ -92,7 +101,9 @@ const getCachedSuccessStories = unstable_cache(
       .from('success_stories')
       .select('*')
       .order('year', { ascending: false })
+      .order('id', { ascending: true })
       .limit(8);
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-success-stories'],
@@ -105,6 +116,7 @@ const getCachedHomeSettings = unstable_cache(
       .from('site_settings')
       .select('*')
       .single();
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-site-settings'],
@@ -117,7 +129,9 @@ const getCachedHomeCountries = unstable_cache(
       .from('countries')
       .select('id, code, flag, name, status')
       .eq('status', 'LIVE')
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .order('id', { ascending: true });
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-countries'],
@@ -132,7 +146,9 @@ const getCachedHomeEvents = unstable_cache(
       .eq('is_published', true)
       .gte('event_date', new Date().toISOString())
       .order('event_date', { ascending: true })
+      .order('id', { ascending: true })
       .limit(3);
+    if (res.error) throw res.error;
     return { data: res.data };
   },
   ['homepage-events'],
@@ -208,11 +224,7 @@ export default async function Home() {
     .filter(m => !HOMEPAGE_TEASER_EXCLUDED_NAMES.includes(m.name))
     .slice(0, 4);
 
-  const blogPosts = postsRes.data?.map(p => ({
-    ...p,
-    publishDate: p.publish_date,
-    featuredImage: p.featured_image
-  })) || [];
+  const blogPosts = postsRes.data;
 
   const testimonials = testimonialsRes.data?.map(t => {
     const flagCode = (t.country_id || '').trim();

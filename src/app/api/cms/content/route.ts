@@ -1,3 +1,4 @@
+import { revalidatePublicContent } from '@/lib/revalidate-public-content';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { requireCmsAuth } from '@/lib/cms-auth-guard';
@@ -28,6 +29,9 @@ export async function PATCH(req: Request) {
     const supabase = await createClient();
     const store = supabaseContentStore(supabase as unknown as SupabaseLike);
     const outcome = await applyContentUpdate(store, body);
+    if (outcome.status === 200) {
+      revalidatePublicContent(outcome.body.record === 'country' ? 'countries' : 'faqs');
+    }
     return NextResponse.json(outcome.body, { status: outcome.status });
   } catch (error) {
     console.error('PATCH /api/cms/content error:', error instanceof Error ? error.name : 'unknown');
